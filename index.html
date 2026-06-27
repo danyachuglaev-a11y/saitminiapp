@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ===== ПРЕМИУМ СТИЛИ ===== */
+        /* ============================================================
+           ПРЕМИУМ СТИЛИ
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -51,62 +53,32 @@
             overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--ton-blue);
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--ton-blue); border-radius: 10px; }
 
         @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-8px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
         }
         @keyframes pulse-ring {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(0, 152, 234, 0.3);
-            }
-            50% {
-                box-shadow: 0 0 0 20px rgba(0, 152, 234, 0);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 152, 234, 0.3); }
+            50% { box-shadow: 0 0 0 20px rgba(0, 152, 234, 0); }
         }
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         @keyframes spin-slow {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
 
         /* ===== ВЫБОР ЯЗЫКА ===== */
         .language-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(10, 14, 26, 0.98);
             backdrop-filter: blur(40px);
             display: none;
@@ -117,13 +89,8 @@
             gap: 24px;
             padding: 24px;
         }
-        .language-overlay.active {
-            display: flex;
-        }
-        .language-overlay .logo-icon {
-            font-size: 64px;
-            animation: float 3s ease-in-out infinite;
-        }
+        .language-overlay.active { display: flex; }
+        .language-overlay .logo-icon { font-size: 64px; animation: float 3s ease-in-out infinite; }
         .language-overlay h1 {
             font-size: 32px;
             font-weight: 900;
@@ -132,19 +99,8 @@
             -webkit-text-fill-color: transparent;
             text-align: center;
         }
-        .language-overlay p {
-            color: var(--text-secondary);
-            font-size: 15px;
-            text-align: center;
-            font-weight: 300;
-        }
-        .language-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            max-width: 380px;
-            width: 100%;
-        }
+        .language-overlay p { color: var(--text-secondary); font-size: 15px; text-align: center; font-weight: 300; }
+        .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 380px; width: 100%; }
         .lang-btn {
             padding: 18px;
             border: 1px solid var(--border-color);
@@ -158,14 +114,8 @@
             transition: all 0.35s;
             text-align: center;
         }
-        .lang-btn:hover {
-            border-color: var(--ton-blue);
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 152, 234, 0.15);
-        }
-        .lang-btn:active {
-            transform: scale(0.97);
-        }
+        .lang-btn:hover { border-color: var(--ton-blue); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 152, 234, 0.15); }
+        .lang-btn:active { transform: scale(0.97); }
 
         /* ===== ХЕДЕР ===== */
         .header {
@@ -182,14 +132,8 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .header-logo {
-            font-size: 32px;
-        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-logo { font-size: 32px; }
         .header-title {
             font-size: 20px;
             font-weight: 900;
@@ -197,29 +141,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header-title span {
-            font-weight: 400;
-            -webkit-text-fill-color: var(--text-secondary);
-        }
-        .header-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-        }
-        .header-user {
-            font-size: 12px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        .header-balance {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--gold);
-            background: rgba(240, 185, 11, 0.06);
-            padding: 2px 14px;
-            border-radius: 20px;
-        }
+        .header-title span { font-weight: 400; -webkit-text-fill-color: var(--text-secondary); }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .header-user { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+        .header-balance { font-size: 15px; font-weight: 700; color: var(--gold); background: rgba(240, 185, 11, 0.06); padding: 2px 14px; border-radius: 20px; }
         .online-badge {
             display: inline-flex;
             align-items: center;
@@ -232,14 +157,7 @@
             color: #2ecc71;
             border: 1px solid rgba(46, 204, 113, 0.1);
         }
-        .online-dot {
-            width: 7px;
-            height: 7px;
-            background: #2ecc71;
-            border-radius: 50%;
-            display: inline-block;
-            animation: pulse-ring 1.8s ease-in-out infinite;
-        }
+        .online-dot { width: 7px; height: 7px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: pulse-ring 1.8s ease-in-out infinite; }
 
         /* ===== СТАТИСТИКА ===== */
         .stats-grid {
@@ -257,10 +175,7 @@
             text-align: center;
             transition: all 0.4s;
         }
-        .stat-card:hover {
-            border-color: rgba(0, 152, 234, 0.2);
-            transform: translateY(-3px);
-        }
+        .stat-card:hover { border-color: rgba(0, 152, 234, 0.2); transform: translateY(-3px); }
         .stat-number {
             font-size: 22px;
             font-weight: 900;
@@ -269,14 +184,7 @@
             -webkit-text-fill-color: transparent;
             display: block;
         }
-        .stat-label {
-            font-size: 9px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
+        .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
 
         /* ===== НАВИГАЦИЯ ===== */
         .nav {
@@ -311,45 +219,16 @@
             justify-content: center;
             gap: 2px;
         }
-        .nav button i {
-            font-size: 18px;
-            transition: all 0.3s;
-        }
-        .nav button span {
-            font-size: 8px;
-            opacity: 0.7;
-            font-weight: 500;
-        }
-        .nav button .badge-count {
-            background: var(--ton-gradient);
-            color: #fff;
-            border-radius: 30px;
-            padding: 0 7px;
-            font-size: 8px;
-            font-weight: 700;
-            margin-left: 2px;
-        }
-        .nav button.active {
-            background: var(--ton-gradient);
-            color: #fff;
-            box-shadow: 0 8px 30px rgba(0, 152, 234, 0.25);
-        }
-        .nav button.active i {
-            color: #fff;
-        }
-        .nav button:hover:not(.active) {
-            color: var(--text-primary);
-            background: rgba(0, 152, 234, 0.06);
-        }
+        .nav button i { font-size: 18px; transition: all 0.3s; }
+        .nav button span { font-size: 8px; opacity: 0.7; font-weight: 500; }
+        .nav button .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
+        .nav button.active { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0, 152, 234, 0.25); }
+        .nav button.active i { color: #fff; }
+        .nav button:hover:not(.active) { color: var(--text-primary); background: rgba(0, 152, 234, 0.06); }
 
         /* ===== СТРАНИЦЫ ===== */
-        .page {
-            display: none;
-            animation: slideUp 0.5s ease;
-        }
-        .page.active {
-            display: block;
-        }
+        .page { display: none; animation: slideUp 0.5s ease; }
+        .page.active { display: block; }
 
         /* ===== КАРТОЧКИ ===== */
         .card {
@@ -362,31 +241,11 @@
             box-shadow: var(--shadow-glow);
             transition: all 0.4s;
         }
-        .card:hover {
-            border-color: rgba(0, 152, 234, 0.12);
-        }
-        .card-glow {
-            border-color: rgba(0, 152, 234, 0.15);
-        }
-        .card-title {
-            font-size: 17px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.3px;
-        }
-        .card-title i {
-            color: var(--ton-blue);
-            font-size: 18px;
-        }
-        .card-subtitle {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 400;
-            margin-bottom: 14px;
-        }
+        .card:hover { border-color: rgba(0, 152, 234, 0.12); }
+        .card-glow { border-color: rgba(0, 152, 234, 0.15); }
+        .card-title { font-size: 17px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
+        .card-title i { color: var(--ton-blue); font-size: 18px; }
+        .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-bottom: 14px; }
 
         /* ===== КНОПКИ ===== */
         .btn {
@@ -404,85 +263,25 @@
             gap: 10px;
             width: 100%;
         }
-        .btn-primary {
-            background: var(--ton-gradient);
-            color: #fff;
-            box-shadow: 0 8px 30px rgba(0, 152, 234, 0.2);
-        }
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0, 152, 234, 0.3);
-        }
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-        }
-        .btn-gold {
-            background: linear-gradient(135deg, var(--gold), #d4a00a);
-            color: #0a0e1a;
-            box-shadow: 0 8px 30px rgba(240, 185, 11, 0.15);
-        }
-        .btn-gold:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(240, 185, 11, 0.25);
-        }
-        .btn-success {
-            background: rgba(46, 204, 113, 0.12);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.15);
-        }
-        .btn-success:hover {
-            background: rgba(46, 204, 113, 0.2);
-            transform: translateY(-2px);
-        }
-        .btn-danger {
-            background: rgba(231, 76, 60, 0.12);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.15);
-        }
-        .btn-danger:hover {
-            background: rgba(231, 76, 60, 0.2);
-            transform: translateY(-2px);
-        }
-        .btn-sm {
-            padding: 8px 16px;
-            font-size: 12px;
-            width: auto;
-        }
-        .btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none !important;
-        }
-        .btn-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-group .btn {
-            flex: 1;
-            min-width: 60px;
-        }
+        .btn-primary { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0, 152, 234, 0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 152, 234, 0.3); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.04); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-2px); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), #d4a00a); color: #0a0e1a; box-shadow: 0 8px 30px rgba(240, 185, 11, 0.15); }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240, 185, 11, 0.25); }
+        .btn-success { background: rgba(46, 204, 113, 0.12); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.15); }
+        .btn-success:hover { background: rgba(46, 204, 113, 0.2); transform: translateY(-2px); }
+        .btn-danger { background: rgba(231, 76, 60, 0.12); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.15); }
+        .btn-danger:hover { background: rgba(231, 76, 60, 0.2); transform: translateY(-2px); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group .btn { flex: 1; min-width: 60px; }
 
         /* ===== ФОРМЫ ===== */
-        .form-group {
-            margin: 12px 0;
-        }
-        .form-group label {
-            display: block;
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+        .form-group { margin: 12px 0; }
+        .form-group label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px 16px;
             background: rgba(0, 0, 0, 0.3);
@@ -494,24 +293,15 @@
             transition: all 0.3s;
             box-sizing: border-box;
         }
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--ton-blue);
             box-shadow: 0 0 0 4px rgba(0, 152, 234, 0.06);
         }
-        .form-group textarea {
-            resize: vertical;
-            min-height: 70px;
-        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
 
         /* ===== БАЛАНС ===== */
-        .balance-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
+        .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .balance-item {
             display: flex;
             flex-direction: column;
@@ -522,31 +312,13 @@
             border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
-        .balance-item:hover {
-            border-color: rgba(0, 152, 234, 0.2);
-        }
-        .balance-item .label {
-            font-size: 10px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .balance-item .value {
-            font-size: 18px;
-            font-weight: 800;
-            margin-top: 2px;
-        }
-        .balance-item .value.ton {
-            color: var(--ton-blue);
-        }
-        .balance-item .value.stars {
-            color: var(--gold);
-        }
-        .balance-item .value.rub {
-            color: #4ecdc4;
-        }
-        .balance-item .value.uah {
-            color: #ff6b6b;
-        }
+        .balance-item:hover { border-color: rgba(0, 152, 234, 0.2); }
+        .balance-item .label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+        .balance-item .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
+        .balance-item .value.ton { color: var(--ton-blue); }
+        .balance-item .value.stars { color: var(--gold); }
+        .balance-item .value.rub { color: #4ecdc4; }
+        .balance-item .value.uah { color: #ff6b6b; }
 
         /* ===== ОТЗЫВЫ ===== */
         .review-card {
@@ -557,53 +329,14 @@
             border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
-        .review-card:hover {
-            border-color: rgba(0, 152, 234, 0.1);
-        }
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-        .review-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .review-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--ton-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #fff;
-            font-size: 13px;
-            flex-shrink: 0;
-        }
-        .review-name.anonymous {
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 500;
-        }
-        .review-date {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-        .review-text {
-            font-size: 13px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            margin-top: 6px;
-        }
-        .review-stars {
-            color: var(--gold);
-            font-size: 13px;
-            margin-top: 2px;
-        }
+        .review-card:hover { border-color: rgba(0, 152, 234, 0.1); }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .review-user { display: flex; align-items: center; gap: 10px; }
+        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ton-gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 13px; flex-shrink: 0; }
+        .review-name.anonymous { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+        .review-date { font-size: 10px; color: var(--text-muted); }
+        .review-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-top: 6px; }
+        .review-stars { color: var(--gold); font-size: 13px; margin-top: 2px; }
 
         /* ===== СДЕЛКИ ===== */
         .deal-card {
@@ -614,9 +347,7 @@
             border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
-        .deal-card:hover {
-            border-color: rgba(0, 152, 234, 0.1);
-        }
+        .deal-card:hover { border-color: rgba(0, 152, 234, 0.1); }
         .deal-status {
             display: inline-block;
             padding: 2px 14px;
@@ -624,22 +355,10 @@
             font-size: 10px;
             font-weight: 700;
         }
-        .deal-status.waiting {
-            background: rgba(243, 156, 18, 0.12);
-            color: #f39c12;
-        }
-        .deal-status.paid {
-            background: rgba(46, 204, 113, 0.12);
-            color: #2ecc71;
-        }
-        .deal-status.awaiting {
-            background: rgba(52, 152, 219, 0.12);
-            color: #3498db;
-        }
-        .deal-status.completed {
-            background: rgba(155, 89, 182, 0.12);
-            color: #9b59b6;
-        }
+        .deal-status.waiting { background: rgba(243, 156, 18, 0.12); color: #f39c12; }
+        .deal-status.paid { background: rgba(46, 204, 113, 0.12); color: #2ecc71; }
+        .deal-status.awaiting { background: rgba(52, 152, 219, 0.12); color: #3498db; }
+        .deal-status.completed { background: rgba(155, 89, 182, 0.12); color: #9b59b6; }
 
         .deal-progress {
             display: flex;
@@ -655,22 +374,13 @@
             background: rgba(255, 255, 255, 0.03);
             color: var(--text-muted);
         }
-        .deal-progress .step.done {
-            background: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-        }
-        .deal-progress .step.active {
-            background: rgba(0, 152, 234, 0.12);
-            color: var(--ton-blue);
-        }
+        .deal-progress .step.done { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+        .deal-progress .step.active { background: rgba(0, 152, 234, 0.12); color: var(--ton-blue); }
 
         /* ===== МОДАЛКА ===== */
         .modal {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(20px);
             display: none;
@@ -679,9 +389,7 @@
             z-index: 1000;
             padding: 16px;
         }
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
         .modal-content {
             background: var(--bg-secondary);
             border-radius: var(--radius);
@@ -694,20 +402,8 @@
             box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
             animation: slideUp 0.4s ease;
         }
-        .modal-close {
-            float: right;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-muted);
-            background: none;
-            border: none;
-            transition: 0.3s;
-            padding: 4px;
-        }
-        .modal-close:hover {
-            color: var(--text-primary);
-            transform: rotate(90deg);
-        }
+        .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; padding: 4px; }
+        .modal-close:hover { color: var(--text-primary); transform: rotate(90deg); }
 
         /* ===== TOAST ===== */
         .toast {
@@ -729,15 +425,9 @@
             font-size: 14px;
             backdrop-filter: blur(20px);
         }
-        .toast.success {
-            border-color: rgba(46, 204, 113, 0.3);
-        }
-        .toast.error {
-            border-color: rgba(231, 76, 60, 0.3);
-        }
-        .toast.info {
-            border-color: rgba(0, 152, 234, 0.3);
-        }
+        .toast.success { border-color: rgba(46, 204, 113, 0.3); }
+        .toast.error { border-color: rgba(231, 76, 60, 0.3); }
+        .toast.info { border-color: rgba(0, 152, 234, 0.3); }
 
         /* ===== ПОДДЕРЖКА ===== */
         .support-block {
@@ -747,149 +437,50 @@
             border-left: 3px solid var(--ton-blue);
             margin-top: 8px;
         }
-        .support-block a {
-            color: var(--ton-blue);
-            text-decoration: none;
-            font-weight: 600;
-        }
+        .support-block a { color: var(--ton-blue); text-decoration: none; font-weight: 600; }
 
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-        }
-        .loading i {
-            font-size: 28px;
-            color: var(--ton-blue);
-            animation: spin-slow 1.2s linear infinite;
-            display: block;
-            margin-bottom: 12px;
-        }
+        .loading { text-align: center; padding: 30px; color: var(--text-muted); }
+        .loading i { font-size: 28px; color: var(--ton-blue); animation: spin-slow 1.2s linear infinite; display: block; margin-bottom: 12px; }
 
-        .text-gold {
-            color: var(--gold);
-        }
-        .text-ton {
-            color: var(--ton-blue);
-        }
-        .text-muted {
-            color: var(--text-muted);
-        }
-        .text-secondary {
-            color: var(--text-secondary);
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-success {
-            color: #2ecc71;
-        }
-        .text-danger {
-            color: #e74c3c;
-        }
-        .mt-6 {
-            margin-top: 6px;
-        }
-        .mt-10 {
-            margin-top: 10px;
-        }
-        .mt-16 {
-            margin-top: 16px;
-        }
-        .mb-10 {
-            margin-bottom: 10px;
-        }
-        .flex {
-            display: flex;
-            gap: 8px;
-        }
-        .flex .btn {
-            flex: 1;
-        }
-        .gap-6 {
-            gap: 6px;
-        }
-        .badge-count {
-            background: var(--ton-gradient);
-            color: #fff;
-            border-radius: 30px;
-            padding: 0 7px;
-            font-size: 8px;
-            font-weight: 700;
-            margin-left: 2px;
-        }
+        .text-gold { color: var(--gold); }
+        .text-ton { color: var(--ton-blue); }
+        .text-muted { color: var(--text-muted); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-center { text-align: center; }
+        .text-success { color: #2ecc71; }
+        .text-danger { color: #e74c3c; }
+        .mt-6 { margin-top: 6px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-16 { margin-top: 16px; }
+        .mb-10 { margin-bottom: 10px; }
+        .flex { display: flex; gap: 8px; }
+        .flex .btn { flex: 1; }
+        .gap-6 { gap: 6px; }
+        .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
 
-        /* ===== АДАПТИВ ===== */
         @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            .header {
-                padding: 12px 14px;
-            }
-            .header-title {
-                font-size: 16px;
-            }
-            .header-logo {
-                font-size: 26px;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 6px;
-            }
-            .stat-number {
-                font-size: 18px;
-            }
-            .balance-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .nav button {
-                min-width: 42px;
-                padding: 8px 4px;
-            }
-            .nav button i {
-                font-size: 15px;
-            }
-            .nav button span {
-                font-size: 7px;
-            }
-            .card {
-                padding: 14px;
-            }
-            .btn {
-                padding: 10px 14px;
-                font-size: 12px;
-            }
-            .language-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .language-overlay h1 {
-                font-size: 24px;
-            }
-            .language-overlay .logo-icon {
-                font-size: 48px;
-            }
+            body { padding: 10px; }
+            .header { padding: 12px 14px; }
+            .header-title { font-size: 16px; }
+            .header-logo { font-size: 26px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .stat-number { font-size: 18px; }
+            .balance-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav button { min-width: 42px; padding: 8px 4px; }
+            .nav button i { font-size: 15px; }
+            .nav button span { font-size: 7px; }
+            .card { padding: 14px; }
+            .btn { padding: 10px 14px; font-size: 12px; }
+            .language-grid { grid-template-columns: 1fr 1fr; }
+            .language-overlay h1 { font-size: 24px; }
+            .language-overlay .logo-icon { font-size: 48px; }
         }
-
         @media (min-width: 768px) {
-            body {
-                padding: 24px;
-                max-width: 860px;
-                margin: 0 auto;
-            }
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .balance-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .nav button {
-                font-size: 12px;
-                padding: 12px 8px;
-            }
-            .nav button span {
-                font-size: 10px;
-            }
+            body { padding: 24px; max-width: 860px; margin: 0 auto; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            .balance-grid { grid-template-columns: repeat(4, 1fr); }
+            .nav button { font-size: 12px; padding: 12px 8px; }
+            .nav button span { font-size: 10px; }
         }
     </style>
 </head>
@@ -1039,7 +630,7 @@
             </div>
         </div>
 
-        <!-- ===== МОИ СДЕЛКИ ===== -->
+        <!-- ===== МОИ СДЕЛКИ (ПОЛНЫЙ ЦИКЛ) ===== -->
         <div class="page" id="page-deals">
             <div class="card">
                 <div class="card-title"><i class="fas fa-list text-ton"></i> Мои сделки</div>
@@ -1091,7 +682,7 @@
                 <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> Вывести средства</button>
                 <div id="withdrawSection" style="display:none;" class="mt-10">
                     <div class="support-block" style="margin-bottom:8px;">
-                        <span style="font-size:12px; color:var(--text-secondary);">⚠️ Для вывода необходима верификация и 2 сделки с одним покупателем</span>
+                        <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">⚠️ Для вывода необходима верификация и 2 сделки с одним покупателем</span>
                     </div>
                     <div class="form-group">
                         <label>Валюта</label>
@@ -1121,18 +712,30 @@
             </div>
         </div>
 
-        <!-- ===== ВЕРИФИКАЦИЯ ===== -->
+        <!-- ===== ВЕРИФИКАЦИЯ (ТОЛЬКО ПОСЛЕ 2 СДЕЛОК) ===== -->
         <div class="page" id="page-verify">
             <div class="card">
                 <div class="card-title"><i class="fas fa-shield-alt text-ton"></i> Верификация</div>
                 <div id="verifyContent">
                     <div class="support-block" style="margin-bottom:12px;">
-                        <span style="font-size:13px;">🔐 Для защиты от мошенников необходимо пройти верификацию</span>
+                        <span style="font-size:13px;" id="verifyInfo">🔐 Для вывода средств необходима верификация</span>
                     </div>
                     <div id="verifyStatus" class="text-center mt-10">
                         <span class="verify-status unverified">⛔ Не верифицирован</span>
                     </div>
-                    <button class="btn btn-primary mt-10" onclick="startVerification()"><i class="fas fa-check-circle"></i> Пройти верификацию</button>
+                    <div id="verifyForm" style="display:block; margin-top:12px;">
+                        <div class="form-group">
+                            <label>📱 Номер телефона</label>
+                            <input type="text" id="phoneInput" placeholder="+79001234567">
+                        </div>
+                        <div class="form-group">
+                            <label>👤 ФИО (опционально)</label>
+                            <input type="text" id="fullNameInput" placeholder="Иван Иванов">
+                        </div>
+                        <button class="btn btn-primary mt-10" onclick="submitVerification()">
+                            <i class="fas fa-check-circle"></i> Пройти верификацию
+                        </button>
+                    </div>
                     <div id="verifyResult" class="mt-10"></div>
                 </div>
                 <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
@@ -1201,6 +804,7 @@
             reviewPage: 0,
             reviewLimit: 10,
             verified: false,
+            has2Deals: false,
             stats: { dealsToday: 23, users: 1250, reviews: 5234, volume: 45.6 }
         };
 
@@ -1227,12 +831,11 @@
         }
 
         // ============================================================
-        // 6. ОНЛАЙН (6200-6800 — плавный)
+        // 6. ОНЛАЙН (6200-6800)
         // ============================================================
         let onlineBase = 6500;
 
         function getOnlineCount() {
-            // Плавные колебания ±300
             onlineBase += (Math.random() - 0.5) * 20;
             onlineBase = Math.max(6200, Math.min(6800, onlineBase));
             return Math.round(onlineBase);
@@ -1363,7 +966,7 @@
         }
 
         // ============================================================
-        // 10. СДЕЛКИ (ПОЛНЫЙ ЦИКЛ ВНУТРИ САЙТА)
+        // 10. СДЕЛКИ
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
@@ -1461,6 +1064,15 @@
 
         // ===== ОПЛАТА СДЕЛКИ =====
         async function payDeal(dealId) {
+            // Проверяем 2 сделки и верификацию
+            const check = await apiCall('/api/has_2_deals');
+            state.has2Deals = check.has_2_deals || false;
+
+            if (!state.has2Deals) {
+                showToast('⚠️ Для оплаты нужно 2 сделки с одним покупателем!', 'error');
+                return;
+            }
+
             // Проверяем верификацию
             const verCheck = await apiCall('/api/check_verification');
             if (!verCheck.verified) {
@@ -1757,7 +1369,7 @@
         }
 
         // ============================================================
-        // 13. ВЫВОД
+        // 13. ВЫВОД (С ПРОВЕРКОЙ 2 СДЕЛОК И ВЕРИФИКАЦИИ)
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
@@ -1765,6 +1377,25 @@
         }
 
         async function confirmWithdraw() {
+            // Проверяем 2 сделки
+            const check = await apiCall('/api/has_2_deals');
+            state.has2Deals = check.has_2_deals || false;
+
+            if (!state.has2Deals) {
+                showToast('⚠️ Для вывода нужно 2 сделки с одним покупателем!', 'error');
+                document.getElementById('withdrawInfo').textContent = '⚠️ Для вывода нужно 2 сделки с одним покупателем';
+                return;
+            }
+
+            // Проверяем верификацию
+            const verCheck = await apiCall('/api/check_verification');
+            if (!verCheck.verified) {
+                showToast('⚠️ Сначала пройдите верификацию!', 'error');
+                document.getElementById('withdrawInfo').textContent = '⚠️ Для вывода необходима верификация';
+                showPage('verify');
+                return;
+            }
+
             const currency = document.getElementById('withdrawCurrency').value;
             const details = document.getElementById('withdrawDetails').value.trim();
 
@@ -1796,10 +1427,24 @@
         }
 
         // ============================================================
-        // 14. ВЕРИФИКАЦИЯ
+        // 14. ВЕРИФИКАЦИЯ (ТОЛЬКО ПОСЛЕ 2 СДЕЛОК)
         // ============================================================
         async function loadVerification() {
             try {
+                // Проверяем 2 сделки
+                const check = await apiCall('/api/has_2_deals');
+                state.has2Deals = check.has_2_deals || false;
+
+                if (!state.has2Deals) {
+                    document.getElementById('verifyInfo').textContent = '⚠️ Для верификации нужно 2 сделки с одним покупателем';
+                    document.getElementById('verifyForm').style.display = 'none';
+                    document.getElementById('verifyStatus').innerHTML = '<span class="verify-status unverified">⛔ Требуется 2 сделки</span>';
+                    return;
+                }
+
+                document.getElementById('verifyInfo').textContent = '🔐 Для вывода средств необходима верификация';
+                document.getElementById('verifyForm').style.display = 'block';
+
                 const data = await apiCall('/api/check_verification');
                 if (data.success) {
                     state.verified = data.verified || false;
@@ -1815,20 +1460,57 @@
             const status = document.getElementById('verifyStatus');
             if (state.verified) {
                 status.innerHTML = '<span class="verify-status verified">✅ Верифицирован</span>';
-                document.querySelector('#verifyContent .btn-primary').style.display = 'none';
+                document.getElementById('verifyForm').style.display = 'none';
             } else {
                 status.innerHTML = '<span class="verify-status unverified">⛔ Не верифицирован</span>';
-                document.querySelector('#verifyContent .btn-primary').style.display = 'block';
+                document.getElementById('verifyForm').style.display = 'block';
             }
         }
 
-        async function startVerification() {
-            showToast('📱 Отправьте номер телефона в бота', 'info');
-            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
-            setTimeout(() => {
-                showToast('🔄 Проверяем статус...', 'info');
-                loadVerification();
-            }, 5000);
+        async function submitVerification() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            const fullName = document.getElementById('fullNameInput').value.trim();
+
+            if (!phone) {
+                showToast('❌ Введите номер телефона', 'error');
+                return;
+            }
+
+            if (!phone.startsWith('+') || phone.length < 11) {
+                showToast('❌ Введите номер в формате +79001234567', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#verifyForm .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/verify', {
+                    phone: phone,
+                    full_name: fullName,
+                    username: user.username
+                });
+
+                if (data.success) {
+                    showToast('✅ Верификация пройдена!', 'success');
+                    state.verified = true;
+                    updateVerifyUI();
+                    document.getElementById('verifyResult').innerHTML = `
+                        <div class="support-block" style="border-color: var(--success);">
+                            <span style="color: var(--success);">✅ Верификация успешно пройдена!</span>
+                            <p style="font-size:12px; color:var(--text-secondary); margin-top:4px;">📱 ${phone}</p>
+                        </div>
+                    `;
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка верификации'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Пройти верификацию';
+                btn.disabled = false;
+            }
         }
 
         // ============================================================
