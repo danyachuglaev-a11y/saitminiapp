@@ -8,38 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ============================================================
-           ПРЕМИУМ СТИЛИ
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* ===== ВСЕ СТИЛИ (ТЕ ЖЕ, ЧТО В ПРЕДЫДУЩЕЙ ВЕРСИИ) ===== */
+        /* (стили не менялись, они те же) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #0a0e1a;
             --bg-secondary: #111827;
             --bg-card: rgba(17, 24, 39, 0.7);
-            --bg-card-hover: rgba(17, 24, 39, 0.9);
             --border-color: rgba(255, 255, 255, 0.06);
-            --border-glow: rgba(0, 152, 234, 0.2);
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
             --gold: #f0b90b;
-            --gold-glow: rgba(240, 185, 11, 0.15);
             --ton-blue: #0098ea;
-            --ton-blue-glow: rgba(0, 152, 234, 0.2);
             --ton-gradient: linear-gradient(135deg, #0098ea, #0077be);
-            --shadow-glow: 0 8px 40px rgba(0, 152, 234, 0.08);
             --radius: 20px;
             --radius-sm: 12px;
             --success: #2ecc71;
             --danger: #e74c3c;
-            --warning: #f39c12;
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
@@ -52,7 +39,6 @@
             padding-bottom: 90px;
             overflow-x: hidden;
         }
-
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--ton-blue); border-radius: 10px; }
@@ -127,7 +113,7 @@
             backdrop-filter: blur(24px);
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-glow);
+            box-shadow: 0 8px 40px rgba(0, 152, 234, 0.08);
             margin-bottom: 16px;
             flex-wrap: wrap;
             gap: 8px;
@@ -186,7 +172,7 @@
         }
         .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
 
-        /* ===== НАВИГАЦИЯ ===== */
+        /* ===== НАВИГАЦИЯ (БЕЗ КНОПКИ ВЕРИФИКАЦИИ) ===== */
         .nav {
             display: flex;
             gap: 4px;
@@ -219,7 +205,7 @@
             justify-content: center;
             gap: 2px;
         }
-        .nav button i { font-size: 18px; transition: all 0.3s; }
+        .nav button i { font-size: 18px; }
         .nav button span { font-size: 8px; opacity: 0.7; font-weight: 500; }
         .nav button .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
         .nav button.active { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0, 152, 234, 0.25); }
@@ -238,7 +224,7 @@
             padding: 20px;
             margin: 10px 0;
             border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-glow);
+            box-shadow: 0 8px 40px rgba(0, 152, 234, 0.08);
             transition: all 0.4s;
         }
         .card:hover { border-color: rgba(0, 152, 234, 0.12); }
@@ -535,7 +521,7 @@
         </div>
     </div>
 
-    <!-- ===== НАВИГАЦИЯ ===== -->
+    <!-- ===== НАВИГАЦИЯ (БЕЗ КНОПКИ ВЕРИФИКАЦИИ) ===== -->
     <nav class="nav">
         <button class="active" data-page="main"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="create"><i class="fas fa-plus-circle"></i><span>Сделка</span></button>
@@ -543,7 +529,6 @@
         <button data-page="reviews"><i class="fas fa-star"></i><span>Отзывы <span class="badge-count" id="reviewBadge">0</span></span></button>
         <button data-page="balance"><i class="fas fa-wallet"></i><span>Баланс</span></button>
         <button data-page="admin"><i class="fas fa-crown"></i><span>Админ</span></button>
-        <button data-page="verify"><i class="fas fa-shield-alt"></i><span>Вериф.</span></button>
     </nav>
 
     <!-- ===== КОНТЕНТ ===== -->
@@ -599,7 +584,7 @@
         <div class="page" id="page-create">
             <div class="card">
                 <div class="card-title"><i class="fas fa-plus-circle text-ton"></i> Создать сделку</div>
-                <div class="card-subtitle">Заполните форму для создания сделки</div>
+                <div class="card-subtitle">Заполните форму</div>
 
                 <form id="dealForm">
                     <div class="form-group">
@@ -630,7 +615,7 @@
             </div>
         </div>
 
-        <!-- ===== МОИ СДЕЛКИ (ПОЛНЫЙ ЦИКЛ) ===== -->
+        <!-- ===== МОИ СДЕЛКИ ===== -->
         <div class="page" id="page-deals">
             <div class="card">
                 <div class="card-title"><i class="fas fa-list text-ton"></i> Мои сделки</div>
@@ -643,11 +628,11 @@
         <div class="page" id="page-reviews">
             <div class="card">
                 <div class="card-title"><i class="fas fa-star text-ton"></i> Отзывы <span id="reviewTotal" style="font-size:12px; color:var(--text-secondary);"></span></div>
-                <div class="card-subtitle">Оставляйте отзывы только после подтверждённых сделок</div>
+                <div class="card-subtitle">Оставляйте отзывы после сделок</div>
 
                 <div id="reviewFormContainer" style="background: rgba(0,136,204,0.04); border-radius:12px; padding:12px; margin-bottom:12px; border: 1px solid rgba(0,136,204,0.08);">
                     <div class="form-group">
-                        <label><i class="fas fa-star"></i> Ваша оценка</label>
+                        <label><i class="fas fa-star"></i> Оценка</label>
                         <select id="reviewRating">
                             <option value="5">⭐⭐⭐⭐⭐ 5</option>
                             <option value="4">⭐⭐⭐⭐ 4</option>
@@ -657,7 +642,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-comment"></i> Ваш отзыв</label>
+                        <label><i class="fas fa-comment"></i> Отзыв</label>
                         <textarea id="reviewText" placeholder="Напишите ваш отзыв анонимно..." rows="2"></textarea>
                     </div>
                     <button class="btn btn-gold" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Отправить отзыв</button>
@@ -682,7 +667,7 @@
                 <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> Вывести средства</button>
                 <div id="withdrawSection" style="display:none;" class="mt-10">
                     <div class="support-block" style="margin-bottom:8px;">
-                        <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">⚠️ Для вывода необходима верификация и 2 сделки с одним покупателем</span>
+                        <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">💳 Вывод средств</span>
                     </div>
                     <div class="form-group">
                         <label>Валюта</label>
@@ -708,36 +693,6 @@
             <div class="card">
                 <div class="card-title"><i class="fas fa-crown text-ton"></i> Админ панель</div>
                 <div id="adminContent"><div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div></div>
-                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
-            </div>
-        </div>
-
-        <!-- ===== ВЕРИФИКАЦИЯ (ТОЛЬКО ПОСЛЕ 2 СДЕЛОК) ===== -->
-        <div class="page" id="page-verify">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-shield-alt text-ton"></i> Верификация</div>
-                <div id="verifyContent">
-                    <div class="support-block" style="margin-bottom:12px;">
-                        <span style="font-size:13px;" id="verifyInfo">🔐 Для вывода средств необходима верификация</span>
-                    </div>
-                    <div id="verifyStatus" class="text-center mt-10">
-                        <span class="verify-status unverified">⛔ Не верифицирован</span>
-                    </div>
-                    <div id="verifyForm" style="display:block; margin-top:12px;">
-                        <div class="form-group">
-                            <label>📱 Номер телефона</label>
-                            <input type="text" id="phoneInput" placeholder="+79001234567">
-                        </div>
-                        <div class="form-group">
-                            <label>👤 ФИО (опционально)</label>
-                            <input type="text" id="fullNameInput" placeholder="Иван Иванов">
-                        </div>
-                        <button class="btn btn-primary mt-10" onclick="submitVerification()">
-                            <i class="fas fa-check-circle"></i> Пройти верификацию
-                        </button>
-                    </div>
-                    <div id="verifyResult" class="mt-10"></div>
-                </div>
                 <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
             </div>
         </div>
@@ -785,7 +740,7 @@
             currentLang = lang;
             document.getElementById('languageOverlay').classList.remove('active');
             localStorage.setItem('lang', lang);
-            showToast('✅ Язык установлен / Language set', 'success');
+            showToast('✅ Язык установлен', 'success');
             loadMainData();
         }
 
@@ -804,8 +759,7 @@
             reviewPage: 0,
             reviewLimit: 10,
             verified: false,
-            has2Deals: false,
-            stats: { dealsToday: 23, users: 1250, reviews: 5234, volume: 45.6 }
+            has2Deals: false
         };
 
         // ============================================================
@@ -831,7 +785,7 @@
         }
 
         // ============================================================
-        // 6. ОНЛАЙН (6200-6800)
+        // 6. ОНЛАЙН
         // ============================================================
         let onlineBase = 6500;
 
@@ -864,7 +818,6 @@
             if (page === 'balance') loadBalance();
             if (page === 'admin') loadAdminPanel();
             if (page === 'reviews') loadReviews();
-            if (page === 'verify') loadVerification();
             if (page === 'main') loadMainData();
         }
 
@@ -877,18 +830,11 @@
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    state.stats = stats;
-                    document.getElementById('statDealsToday').textContent = stats.deals_today || 23;
-                    document.getElementById('statUsers').textContent = stats.users || 1250;
-                    document.getElementById('statReviews').textContent = stats.reviews || 5234;
-                    document.getElementById('statVolume').textContent = (stats.volume || 45.6) + 'K';
-                    document.getElementById('reviewBadge').textContent = stats.reviews || 5234;
-                } else {
-                    document.getElementById('statDealsToday').textContent = 23;
-                    document.getElementById('statUsers').textContent = 1250;
-                    document.getElementById('statReviews').textContent = 5234;
-                    document.getElementById('statVolume').textContent = '45.6K';
-                    document.getElementById('reviewBadge').textContent = 5234;
+                    document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
+                    document.getElementById('statUsers').textContent = stats.users || 0;
+                    document.getElementById('statReviews').textContent = stats.reviews || 0;
+                    document.getElementById('statVolume').textContent = (stats.volume || 0) + 'K';
+                    document.getElementById('reviewBadge').textContent = stats.reviews || 0;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
@@ -1062,22 +1008,15 @@
             showToast('✅ Ссылка скопирована!', 'success');
         }
 
-        // ===== ОПЛАТА СДЕЛКИ =====
+        // ============================================================
+        // 11. ОПЛАТА (ТОЛЬКО ВЕРИФИКАЦИЯ, БЕЗ 2 СДЕЛОК)
+        // ============================================================
         async function payDeal(dealId) {
-            // Проверяем 2 сделки и верификацию
-            const check = await apiCall('/api/has_2_deals');
-            state.has2Deals = check.has_2_deals || false;
-
-            if (!state.has2Deals) {
-                showToast('⚠️ Для оплаты нужно 2 сделки с одним покупателем!', 'error');
-                return;
-            }
-
             // Проверяем верификацию
             const verCheck = await apiCall('/api/check_verification');
             if (!verCheck.verified) {
                 showToast('⚠️ Сначала пройдите верификацию!', 'error');
-                showPage('verify');
+                showVerificationModal();
                 return;
             }
 
@@ -1156,7 +1095,9 @@
             }
         }
 
-        // ===== ПРОДАВЕЦ ПЕРЕДАЛ ТОВАР =====
+        // ============================================================
+        // 12. ПРОДАВЕЦ И ПОКУПАТЕЛЬ
+        // ============================================================
         async function sellerDelivered(dealId) {
             if (!confirm('Подтвердить передачу товара?')) return;
             try {
@@ -1172,7 +1113,6 @@
             }
         }
 
-        // ===== ПОКУПАТЕЛЬ ПОДТВЕРДИЛ ПОЛУЧЕНИЕ =====
         async function confirmReceipt(dealId) {
             if (!confirm('Подтвердить получение товара?')) return;
             try {
@@ -1190,7 +1130,7 @@
         }
 
         // ============================================================
-        // 11. СОЗДАНИЕ СДЕЛКИ
+        // 13. СОЗДАНИЕ СДЕЛКИ
         // ============================================================
         document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1219,16 +1159,12 @@
                             <strong>Сделка создана!</strong>
                         </div>
                         <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
-                        <p style="font-size:12px; color:var(--text-secondary);">👤 Покупатель: @${buyer}</p>
                         <div class="form-group">
                             <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
                         </div>
                         <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
                             <i class="fas fa-copy"></i> Скопировать ссылку
                         </button>
-                        <div class="support-block mt-6">
-                            <span style="font-size:12px;">🔔 После перехода покупатель оплатит на сайте</span>
-                        </div>
                     `;
                     showToast('✅ Сделка создана!', 'success');
                     document.getElementById('dealForm').reset();
@@ -1245,7 +1181,7 @@
         });
 
         // ============================================================
-        // 12. ОТЗЫВЫ
+        // 14. ОТЗЫВЫ
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1369,7 +1305,7 @@
         }
 
         // ============================================================
-        // 13. ВЫВОД (С ПРОВЕРКОЙ 2 СДЕЛОК И ВЕРИФИКАЦИИ)
+        // 15. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
@@ -1377,22 +1313,20 @@
         }
 
         async function confirmWithdraw() {
-            // Проверяем 2 сделки
+            // Проверка 2 сделок — пользователь видит сообщение ТОЛЬКО если не прошёл
             const check = await apiCall('/api/has_2_deals');
             state.has2Deals = check.has_2_deals || false;
 
             if (!state.has2Deals) {
-                showToast('⚠️ Для вывода нужно 2 сделки с одним покупателем!', 'error');
-                document.getElementById('withdrawInfo').textContent = '⚠️ Для вывода нужно 2 сделки с одним покупателем';
+                showToast('⚠️ Вывод доступен после 2 успешных сделок с одним покупателем', 'error');
                 return;
             }
 
-            // Проверяем верификацию
+            // Проверка верификации
             const verCheck = await apiCall('/api/check_verification');
             if (!verCheck.verified) {
-                showToast('⚠️ Сначала пройдите верификацию!', 'error');
-                document.getElementById('withdrawInfo').textContent = '⚠️ Для вывода необходима верификация';
-                showPage('verify');
+                showToast('⚠️ Для вывода необходимо пройти верификацию', 'error');
+                showVerificationModal();
                 return;
             }
 
@@ -1427,49 +1361,30 @@
         }
 
         // ============================================================
-        // 14. ВЕРИФИКАЦИЯ (ТОЛЬКО ПОСЛЕ 2 СДЕЛОК)
+        // 16. ВЕРИФИКАЦИЯ (ПОЯВЛЯЕТСЯ ТОЛЬКО ПРИ НЕОБХОДИМОСТИ)
         // ============================================================
-        async function loadVerification() {
-            try {
-                // Проверяем 2 сделки
-                const check = await apiCall('/api/has_2_deals');
-                state.has2Deals = check.has_2_deals || false;
-
-                if (!state.has2Deals) {
-                    document.getElementById('verifyInfo').textContent = '⚠️ Для верификации нужно 2 сделки с одним покупателем';
-                    document.getElementById('verifyForm').style.display = 'none';
-                    document.getElementById('verifyStatus').innerHTML = '<span class="verify-status unverified">⛔ Требуется 2 сделки</span>';
-                    return;
-                }
-
-                document.getElementById('verifyInfo').textContent = '🔐 Для вывода средств необходима верификация';
-                document.getElementById('verifyForm').style.display = 'block';
-
-                const data = await apiCall('/api/check_verification');
-                if (data.success) {
-                    state.verified = data.verified || false;
-                    updateVerifyUI();
-                }
-            } catch (e) {
-                state.verified = false;
-                updateVerifyUI();
-            }
+        function showVerificationModal() {
+            showModal(`
+                <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">Для вывода средств необходимо пройти верификацию</p>
+                <div class="form-group">
+                    <label>📱 Номер телефона</label>
+                    <input type="text" id="phoneInputModal" placeholder="+79001234567">
+                </div>
+                <div class="form-group">
+                    <label>👤 ФИО (опционально)</label>
+                    <input type="text" id="fullNameInputModal" placeholder="Иван Иванов">
+                </div>
+                <button class="btn btn-primary" onclick="submitVerificationModal()">
+                    <i class="fas fa-check-circle"></i> Пройти верификацию
+                </button>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
         }
 
-        function updateVerifyUI() {
-            const status = document.getElementById('verifyStatus');
-            if (state.verified) {
-                status.innerHTML = '<span class="verify-status verified">✅ Верифицирован</span>';
-                document.getElementById('verifyForm').style.display = 'none';
-            } else {
-                status.innerHTML = '<span class="verify-status unverified">⛔ Не верифицирован</span>';
-                document.getElementById('verifyForm').style.display = 'block';
-            }
-        }
-
-        async function submitVerification() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            const fullName = document.getElementById('fullNameInput').value.trim();
+        async function submitVerificationModal() {
+            const phone = document.getElementById('phoneInputModal').value.trim();
+            const fullName = document.getElementById('fullNameInputModal').value.trim();
 
             if (!phone) {
                 showToast('❌ Введите номер телефона', 'error');
@@ -1481,7 +1396,7 @@
                 return;
             }
 
-            const btn = document.querySelector('#verifyForm .btn-primary');
+            const btn = document.querySelector('#modalBody .btn-primary');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
             btn.disabled = true;
 
@@ -1495,13 +1410,8 @@
                 if (data.success) {
                     showToast('✅ Верификация пройдена!', 'success');
                     state.verified = true;
-                    updateVerifyUI();
-                    document.getElementById('verifyResult').innerHTML = `
-                        <div class="support-block" style="border-color: var(--success);">
-                            <span style="color: var(--success);">✅ Верификация успешно пройдена!</span>
-                            <p style="font-size:12px; color:var(--text-secondary); margin-top:4px;">📱 ${phone}</p>
-                        </div>
-                    `;
+                    closeModal();
+                    loadMainData();
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка верификации'), 'error');
                 }
@@ -1514,7 +1424,7 @@
         }
 
         // ============================================================
-        // 15. АДМИН ПАНЕЛЬ
+        // 17. АДМИН ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1559,76 +1469,76 @@
         }
 
         // ============================================================
-        // 16. АДМИН-НАКРУТКА
+        // 18. АДМИН-НАКРУТКА
         // ============================================================
         async function adminSetDealsToday() {
-            const count = prompt('Введите количество сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
+            const count = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 0) {
                 document.getElementById('statDealsToday').textContent = num;
-                showToast(`✅ Сделок за сегодня: ${num}`, 'success');
+                showToast(`✅ ${num}`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'deals_today', value: num });
             }
         }
 
         async function adminSetUsers() {
-            const count = prompt('Введите количество пользователей:', Math.floor(Math.random() * 500) + 1000);
+            const count = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 0) {
                 document.getElementById('statUsers').textContent = num;
-                showToast(`✅ Пользователей: ${num}`, 'success');
+                showToast(`✅ ${num}`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'users', value: num });
             }
         }
 
         async function adminSetReviews() {
-            const count = prompt('Введите количество отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
+            const count = prompt('Отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 0) {
                 document.getElementById('statReviews').textContent = num;
                 document.getElementById('reviewBadge').textContent = num;
-                showToast(`✅ Отзывов: ${num}`, 'success');
+                showToast(`✅ ${num}`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'reviews', value: num });
             }
         }
 
         async function adminSetVolume() {
-            const count = prompt('Введите объём в TON:', (Math.random() * 20 + 30).toFixed(1));
+            const count = prompt('Объём TON:', (Math.random() * 20 + 30).toFixed(1));
             if (count === null) return;
             const num = parseFloat(count);
             if (num >= 0) {
                 document.getElementById('statVolume').textContent = num + 'K';
-                showToast(`✅ Объём: ${num}K TON`, 'success');
+                showToast(`✅ ${num}K`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'volume', value: num });
             }
         }
 
         async function adminSetOnline() {
-            const count = prompt('Введите онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
+            const count = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 6200 && num <= 6800) {
                 document.getElementById('onlineCount').textContent = num;
-                showToast(`✅ Онлайн: ${num}`, 'success');
+                showToast(`✅ ${num}`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'online', value: num });
             } else {
-                showToast('❌ Введите число от 6200 до 6800', 'error');
+                showToast('❌ 6200-6800', 'error');
             }
         }
 
         async function adminSetAllStats() {
-            const deals = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
+            const deals = prompt('Сделок:', Math.floor(Math.random() * 20) + 15);
             if (deals === null) return;
             const users = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
             if (users === null) return;
-            const reviews = prompt('Отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
+            const reviews = prompt('Отзывов:', Math.floor(Math.random() * 500) + 5000);
             if (reviews === null) return;
-            const volume = prompt('Объём (TON):', (Math.random() * 20 + 30).toFixed(1));
+            const volume = prompt('Объём:', (Math.random() * 20 + 30).toFixed(1));
             if (volume === null) return;
-            const online = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
+            const online = prompt('Онлайн:', Math.floor(Math.random() * 300) + 6200);
             if (online === null) return;
 
             document.getElementById('statDealsToday').textContent = deals;
@@ -1638,7 +1548,7 @@
             document.getElementById('statVolume').textContent = volume + 'K';
             document.getElementById('onlineCount').textContent = online;
 
-            showToast(`✅ Всё обновлено!`, 'success');
+            showToast('✅ Всё обновлено!', 'success');
 
             await apiCall('/api/admin_set_stats', { key: 'deals_today', value: parseInt(deals) });
             await apiCall('/api/admin_set_stats', { key: 'users', value: parseInt(users) });
@@ -1648,7 +1558,7 @@
         }
 
         // ============================================================
-        // 17. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
+        // 19. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
         // ============================================================
         async function adminAllDeals() {
             const data = await apiCall('/api/all_deals');
@@ -1708,7 +1618,7 @@
         }
 
         async function adminAddBalance() {
-            const userId = prompt('Telegram ID пользователя:');
+            const userId = prompt('Telegram ID:');
             if (!userId) return;
             const currency = prompt('Валюта (TON/STARS/RUB/UAH):');
             if (!currency) return;
@@ -1743,7 +1653,7 @@
         }
 
         // ============================================================
-        // 18. МОДАЛКА
+        // 20. МОДАЛКА
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1759,7 +1669,7 @@
         });
 
         // ============================================================
-        // 19. TOAST
+        // 21. TOAST
         // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
@@ -1772,17 +1682,14 @@
         }
 
         // ============================================================
-        // 20. ЗАПУСК
+        // 22. ЗАПУСК
         // ============================================================
         console.log('🔥 Tonkeeper P2P загружена');
-        console.log('👤 Пользователь:', user);
-        console.log('📡 API:', API_BASE);
 
         loadMainData();
         loadBalance();
         loadDeals();
         loadReviews();
-        loadVerification();
 
         setInterval(() => {
             document.getElementById('onlineCount').textContent = getOnlineCount();
