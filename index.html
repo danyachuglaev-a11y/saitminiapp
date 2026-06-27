@@ -7,12 +7,8 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #0a1628;
             --secondary: #0d1f3c;
@@ -24,169 +20,138 @@
             --card-bg: rgba(13, 31, 60, 0.85);
             --border: rgba(26, 58, 107, 0.5);
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            --gradient: linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%);
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
         }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--primary);
             color: var(--text);
             min-height: 100vh;
-            padding: 16px;
+            padding: 12px;
             background-image: radial-gradient(ellipse at 20% 50%, rgba(26, 58, 107, 0.3) 0%, transparent 60%),
                 radial-gradient(ellipse at 80% 50%, rgba(240, 185, 11, 0.05) 0%, transparent 60%);
+            padding-bottom: 80px;
         }
-
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--primary); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
 
+        /* ===== ВЫБОР ЯЗЫКА ===== */
+        .language-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 22, 40, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+        .language-overlay h1 { font-size: 24px; color: var(--gold); }
+        .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 400px; width: 100%; }
+        .lang-btn {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: var(--card-bg);
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .lang-btn:hover { border-color: var(--gold); transform: scale(1.02); }
+
+        /* ===== ХЕДЕР ===== */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 12px 16px;
             background: var(--card-bg);
-            border-radius: 16px;
+            border-radius: 14px;
             border: 1px solid var(--border);
             backdrop-filter: blur(20px);
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            gap: 8px;
         }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .header-logo {
-            font-size: 28px;
-            color: var(--gold);
-        }
-
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .header-logo { font-size: 24px; color: var(--gold); }
         .header-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 800;
             background: linear-gradient(135deg, var(--gold), var(--gold-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .header-title span {
-            font-weight: 400;
-            -webkit-text-fill-color: var(--text-muted);
-        }
-
-        .header-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-        }
-
-        .header-user {
-            font-size: 13px;
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .header-balance {
-            font-size: 14px;
-            color: var(--gold);
-            font-weight: 700;
-        }
-
+        .header-title span { font-weight: 400; -webkit-text-fill-color: var(--text-muted); }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .header-user { font-size: 12px; color: var(--text); font-weight: 600; }
+        .header-balance { font-size: 13px; color: var(--gold); font-weight: 700; }
         .online-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: rgba(46, 204, 113, 0.15);
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             color: #2ecc71;
             border: 1px solid rgba(46, 204, 113, 0.2);
             animation: pulse-online 2s infinite;
         }
+        .online-dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+        @keyframes pulse-online { 0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.3); } 50% { box-shadow: 0 0 15px 3px rgba(46, 204, 113, 0.1); } }
 
-        .online-dot {
-            width: 8px;
-            height: 8px;
-            background: #2ecc71;
-            border-radius: 50%;
-            display: inline-block;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        @keyframes pulse-online {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.3); }
-            50% { box-shadow: 0 0 20px 5px rgba(46, 204, 113, 0.1); }
-        }
-
+        /* ===== СТАТИСТИКА ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-bottom: 16px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
         }
-
         .stat-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 14px 16px;
+            border-radius: 10px;
+            padding: 10px 8px;
             border: 1px solid var(--border);
             text-align: center;
             backdrop-filter: blur(10px);
             transition: all 0.3s;
         }
+        .stat-card:hover { border-color: var(--gold); }
+        .stat-number { font-size: 18px; font-weight: 800; color: var(--gold); display: block; }
+        .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+        .stat-icon { font-size: 14px; color: var(--gold); }
 
-        .stat-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--gold);
-            box-shadow: 0 4px 20px rgba(240, 185, 11, 0.1);
-        }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--gold);
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 4px;
-        }
-
+        /* ===== НАВИГАЦИЯ ===== */
         .nav {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             background: var(--card-bg);
-            padding: 6px;
-            border-radius: 14px;
-            margin-bottom: 16px;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 12px;
             border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
             overflow-x: auto;
+            flex-wrap: nowrap;
         }
-
         .nav button {
             flex: 1;
-            padding: 10px 8px;
+            padding: 8px 6px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             background: transparent;
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -194,285 +159,140 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            min-width: 60px;
+            gap: 4px;
+            min-width: 50px;
         }
+        .nav button i { font-size: 14px; }
+        .nav button.active { background: var(--gold); color: var(--primary); box-shadow: 0 4px 12px rgba(240, 185, 11, 0.25); }
 
-        .nav button i { font-size: 16px; }
-
-        .nav button.active {
-            background: var(--gold);
-            color: var(--primary);
-            box-shadow: 0 4px 15px rgba(240, 185, 11, 0.3);
-        }
-
-        .nav button:hover:not(.active) {
-            color: var(--text);
-            background: rgba(240, 185, 11, 0.05);
-        }
-
-        .page {
-            display: none;
-            animation: fadeSlide 0.4s ease;
-        }
-
+        /* ===== СТРАНИЦЫ ===== */
+        .page { display: none; animation: fadeSlide 0.3s ease; }
         .page.active { display: block; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        /* ===== КАРТОЧКИ ===== */
         .card {
             background: var(--card-bg);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 12px 0;
+            border-radius: 14px;
+            padding: 16px;
+            margin: 8px 0;
             border: 1px solid var(--border);
             backdrop-filter: blur(20px);
             box-shadow: var(--shadow);
             transition: all 0.3s;
         }
-
-        .card:hover {
-            border-color: rgba(240, 185, 11, 0.2);
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .card-title i { color: var(--gold); }
+        .card-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
 
+        /* ===== КНОПКИ ===== */
         .btn {
-            width: 100%;
-            padding: 14px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--gold), #d4a00a);
-            color: var(--primary);
-            box-shadow: 0 4px 20px rgba(240, 185, 11, 0.25);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 30px rgba(240, 185, 11, 0.35);
-        }
-
-        .btn-secondary {
-            background: var(--accent);
-            color: var(--text);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: #234a8a;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background: rgba(231, 76, 60, 0.2);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.3);
-        }
-
-        .btn-success {
-            background: rgba(46, 204, 113, 0.2);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.3);
-        }
-
-        .form-group {
-            margin: 14px 0;
-        }
-
-        .form-group label {
-            display: block;
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+            gap: 8px;
             width: 100%;
-            padding: 12px 16px;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--gold), #d4a00a); color: var(--primary); box-shadow: 0 4px 15px rgba(240, 185, 11, 0.2); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(240, 185, 11, 0.3); }
+        .btn-secondary { background: var(--accent); color: var(--text); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #234a8a; transform: translateY(-2px); }
+        .btn-success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3); }
+        .btn-danger { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.3); }
+        .btn-sm { padding: 6px 12px; font-size: 11px; width: auto; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-group .btn { flex: 1; min-width: 60px; }
+
+        /* ===== ФОРМЫ ===== */
+        .form-group { margin: 10px 0; }
+        .form-group label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
             background: rgba(10, 22, 40, 0.8);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
             color: var(--text);
-            font-size: 15px;
+            font-size: 14px;
             transition: all 0.3s;
             box-sizing: border-box;
         }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 20px rgba(240, 185, 11, 0.05);
+            box-shadow: 0 0 15px rgba(240, 185, 11, 0.05);
         }
+        .form-group textarea { resize: vertical; min-height: 60px; font-family: inherit; }
 
-        .balance-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
+        /* ===== БАЛАНС ===== */
+        .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .balance-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
+            padding: 8px;
             background: rgba(10, 22, 40, 0.6);
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid var(--border);
             transition: all 0.3s;
         }
-
-        .balance-item:hover {
-            border-color: var(--gold);
-        }
-
-        .balance-item .label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        .balance-item .value {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text);
-        }
-
+        .balance-item:hover { border-color: var(--gold); }
+        .balance-item .label { font-size: 10px; color: var(--text-muted); }
+        .balance-item .value { font-size: 16px; font-weight: 700; color: var(--text); }
         .balance-item .value.ton { color: #0088cc; }
         .balance-item .value.stars { color: var(--gold); }
         .balance-item .value.rub { color: #4ecdc4; }
         .balance-item .value.uah { color: #ff6b6b; }
 
+        /* ===== ОТЗЫВЫ ===== */
         .review-card {
             background: rgba(10, 22, 40, 0.6);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 10px 0;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 6px 0;
             border: 1px solid var(--border);
             transition: all 0.3s;
         }
+        .review-card:hover { border-color: rgba(240, 185, 11, 0.15); }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .review-user { display: flex; align-items: center; gap: 8px; }
+        .review-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--gold); font-size: 11px; }
+        .review-name.anonymous { color: var(--text-muted); font-size: 13px; }
+        .review-date { font-size: 10px; color: var(--text-muted); }
+        .review-text { font-size: 13px; line-height: 1.5; color: var(--text); margin-top: 4px; }
+        .review-stars { color: var(--gold); font-size: 12px; }
 
-        .review-card:hover {
-            border-color: rgba(240, 185, 11, 0.15);
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .review-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .review-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--gold);
-            font-size: 14px;
-        }
-
-        .review-name.anonymous {
-            color: var(--text-muted);
-        }
-
-        .review-date {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .review-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: var(--text);
-            margin-top: 6px;
-        }
-
-        .review-stars {
-            color: var(--gold);
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
-        .review-delete {
-            background: none;
-            border: none;
-            color: #e74c3c;
-            cursor: pointer;
-            font-size: 14px;
-            opacity: 0.6;
-            transition: 0.3s;
-        }
-
-        .review-delete:hover {
-            opacity: 1;
-        }
-
+        /* ===== СДЕЛКИ ===== */
         .deal-card {
             background: rgba(10, 22, 40, 0.6);
-            border-radius: 12px;
-            padding: 16px;
-            margin: 10px 0;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 6px 0;
             border: 1px solid var(--border);
             transition: all 0.3s;
         }
-
-        .deal-card:hover {
-            border-color: rgba(240, 185, 11, 0.15);
-        }
-
+        .deal-card:hover { border-color: rgba(240, 185, 11, 0.15); }
         .deal-status {
             display: inline-block;
-            padding: 2px 12px;
+            padding: 1px 10px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
         }
-
         .deal-status.waiting { background: rgba(243, 156, 18, 0.2); color: #f39c12; }
         .deal-status.paid { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
         .deal-status.awaiting { background: rgba(52, 152, 219, 0.2); color: #3498db; }
         .deal-status.completed { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
 
+        /* ===== МОДАЛКА ===== */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -484,16 +304,12 @@
             padding: 16px;
             backdrop-filter: blur(10px);
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        .modal.active { display: flex; }
         .modal-content {
             background: var(--secondary);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 500px;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 450px;
             width: 100%;
             max-height: 85vh;
             overflow-y: auto;
@@ -501,45 +317,11 @@
             box-shadow: var(--shadow);
             animation: modalIn 0.3s ease;
         }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(15px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; }
+        .modal-close:hover { color: var(--text); transform: rotate(90deg); }
 
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .modal-close {
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--text-muted);
-            background: none;
-            border: none;
-            transition: 0.3s;
-        }
-
-        .modal-close:hover {
-            color: var(--text);
-            transform: rotate(90deg);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-muted);
-        }
-
-        .loading i {
-            font-size: 30px;
-            color: var(--gold);
-            animation: spin 1s linear infinite;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -547,62 +329,85 @@
             transform: translateX(-50%);
             background: var(--secondary);
             color: var(--text);
-            padding: 14px 24px;
-            border-radius: 12px;
+            padding: 12px 20px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             z-index: 2000;
             animation: toastIn 0.4s ease;
-            max-width: 90%;
+            max-width: 92%;
             text-align: center;
             font-weight: 500;
+            font-size: 14px;
         }
-
         .toast.success { border-color: #2ecc71; }
         .toast.error { border-color: #e74c3c; }
         .toast.info { border-color: var(--gold); }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(-50%) translateY(15px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
+        /* ===== ЗАГРУЗКА ===== */
+        .loading { text-align: center; padding: 20px; color: var(--text-muted); }
+        .loading i { font-size: 24px; color: var(--gold); animation: spin 1s linear infinite; display: block; margin-bottom: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .badge-count {
-            background: var(--gold);
-            color: var(--primary);
-            border-radius: 20px;
-            padding: 1px 10px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-left: 6px;
-        }
-
-        @media (max-width: 480px) {
-            .header { padding: 12px 16px; }
-            .header-title { font-size: 16px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .balance-grid { grid-template-columns: 1fr; }
-            .nav button { font-size: 11px; padding: 8px 6px; }
-            .card { padding: 16px; }
-        }
-
-        @media (min-width: 768px) {
-            body { padding: 24px; max-width: 800px; margin: 0 auto; }
-            .stats-grid { grid-template-columns: repeat(4, 1fr); }
-            .balance-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-
+        /* ===== УТИЛИТЫ ===== */
         .text-gold { color: var(--gold); }
         .text-muted { color: var(--text-muted); }
         .text-center { text-align: center; }
+        .text-success { color: var(--success); }
+        .text-danger { color: var(--danger); }
+        .mt-6 { margin-top: 6px; }
         .mt-10 { margin-top: 10px; }
         .mt-16 { margin-top: 16px; }
-        .flex { display: flex; gap: 10px; }
+        .mb-10 { margin-bottom: 10px; }
+        .flex { display: flex; gap: 6px; }
         .flex .btn { flex: 1; }
-        .hidden { display: none !important; }
+        .gap-6 { gap: 6px; }
+        .badge-count { background: var(--gold); color: var(--primary); border-radius: 20px; padding: 0 8px; font-size: 10px; font-weight: 700; margin-left: 4px; }
+
+        /* ===== ПОДДЕРЖКА ===== */
+        .support-block {
+            background: rgba(240, 185, 11, 0.05);
+            border-radius: 10px;
+            padding: 12px;
+            border-left: 3px solid var(--gold);
+            margin-top: 8px;
+        }
+        .support-block a { color: var(--gold); text-decoration: none; font-weight: 600; }
+        .support-block a:hover { text-decoration: underline; }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 480px) {
+            .header { padding: 10px 12px; }
+            .header-title { font-size: 15px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .balance-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav button { font-size: 9px; padding: 6px 4px; }
+            .nav button i { font-size: 12px; }
+            .card { padding: 12px; }
+            .btn { padding: 8px 12px; font-size: 12px; }
+            .stat-number { font-size: 15px; }
+            .language-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (min-width: 768px) {
+            body { padding: 20px; max-width: 820px; margin: 0 auto; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            .balance-grid { grid-template-columns: repeat(4, 1fr); }
+        }
     </style>
 </head>
 <body>
+
+    <!-- ===== ВЫБОР ЯЗЫКА ===== -->
+    <div class="language-overlay" id="languageOverlay">
+        <h1>🌐 Выберите язык / Choose language</h1>
+        <div class="language-grid">
+            <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 Русский</button>
+            <button class="lang-btn" onclick="setLanguage('en')">🇬🇧 English</button>
+            <button class="lang-btn" onclick="setLanguage('zh')">🇨🇳 中文</button>
+            <button class="lang-btn" onclick="setLanguage('ar')">🇸🇦 العربية</button>
+        </div>
+    </div>
 
     <!-- ===== ХЕДЕР ===== -->
     <header class="header">
@@ -661,8 +466,8 @@
             </div>
 
             <div class="card" style="background: linear-gradient(135deg, rgba(240,185,11,0.05), rgba(240,185,11,0.01)); border-color: rgba(240,185,11,0.15);">
-                <div class="card-title" style="font-size: 16px;"><i class="fas fa-bolt text-gold"></i> Быстрый старт</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="card-title" style="font-size: 14px;"><i class="fas fa-bolt text-gold"></i> Быстрый старт</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                     <button class="btn btn-primary" onclick="showPage('create')"><i class="fas fa-plus-circle"></i> Создать сделку</button>
                     <button class="btn btn-secondary" onclick="showPage('reviews')"><i class="fas fa-star"></i> Отзывы</button>
                     <button class="btn btn-secondary" onclick="showPage('balance')"><i class="fas fa-wallet"></i> Баланс</button>
@@ -672,14 +477,14 @@
 
             <div class="card">
                 <div class="card-title"><i class="fas fa-shield-alt"></i> Как это работает</div>
-                <div style="display: grid; gap: 8px; font-size: 14px; color: var(--text-muted);">
+                <div style="display: grid; gap: 4px; font-size: 13px; color: var(--text-muted);">
                     <div>1️⃣ <span style="color: var(--text);">Создайте сделку</span> — опишите товар и укажите сумму</div>
                     <div>2️⃣ <span style="color: var(--text);">Отправьте ссылку</span> покупателю через Telegram</div>
                     <div>3️⃣ <span style="color: var(--text);">Админ проверяет</span> оплату и подтверждает</div>
                     <div>4️⃣ <span style="color: var(--text);">Получите деньги</span> на баланс и выводите в любой момент</div>
                 </div>
-                <div style="margin-top: 12px; padding: 12px; background: rgba(240,185,11,0.05); border-radius: 8px; border-left: 3px solid var(--gold);">
-                    <span style="font-size: 13px; color: var(--text-muted);">🔒 Защита от мошенников • Верификация • 24/7 поддержка</span>
+                <div class="support-block">
+                    <span style="font-size: 12px; color: var(--text-muted);">🔒 Защита от мошенников • Верификация • 24/7 поддержка</span>
                 </div>
             </div>
 
@@ -687,16 +492,38 @@
                 <div class="card-title"><i class="fas fa-comment-dots"></i> Последние отзывы</div>
                 <div id="recentReviews"><div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div></div>
             </div>
+
+            <div class="support-block">
+                <p style="font-size: 13px; color: var(--text-muted);">
+                    <i class="fas fa-headset"></i> Поддержка: 
+                    <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
+                    <i class="fas fa-bullhorn"></i> Канал: 
+                    <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
+                </p>
+            </div>
         </div>
 
         <!-- ===== СОЗДАНИЕ СДЕЛКИ ===== -->
         <div class="page" id="page-create">
             <div class="card">
                 <div class="card-title"><i class="fas fa-plus-circle"></i> Создать сделку</div>
+                <div class="card-subtitle">Выберите способ создания</div>
+                
+                <div class="btn-group mt-10">
+                    <button class="btn btn-primary" onclick="createInMiniApp()">
+                        <i class="fas fa-external-link-alt"></i> В Mini App
+                    </button>
+                    <button class="btn btn-secondary" onclick="createInBot()">
+                        <i class="fas fa-robot"></i> В боте
+                    </button>
+                </div>
+
+                <hr style="border-color: var(--border); margin: 12px 0;">
+
                 <form id="dealForm">
                     <div class="form-group">
                         <label><i class="fas fa-tag"></i> Товар или услуга</label>
-                        <input type="text" id="productInput" placeholder="Например: NFT-подарок Telegram Premium" required>
+                        <input type="text" id="productInput" placeholder="NFT-подарок Telegram Premium" required>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-coins"></i> Валюта</label>
@@ -714,6 +541,13 @@
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> Username покупателя (без @)</label>
                         <input type="text" id="buyerInput" placeholder="john_doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-credit-card"></i> Способ оплаты</label>
+                        <select id="paymentMethod">
+                            <option value="balance">💰 С баланса</option>
+                            <option value="rekvisits">💳 По реквизитам</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Создать сделку</button>
                 </form>
@@ -734,10 +568,10 @@
         <!-- ===== ОТЗЫВЫ ===== -->
         <div class="page" id="page-reviews">
             <div class="card">
-                <div class="card-title"><i class="fas fa-star"></i> Отзывы <span id="reviewTotal" style="font-size:14px; color:var(--text-muted);"></span></div>
+                <div class="card-title"><i class="fas fa-star"></i> Отзывы <span id="reviewTotal" style="font-size:12px; color:var(--text-muted);"></span></div>
                 <div class="card-subtitle">Оставляйте отзывы только после подтверждённых сделок</div>
 
-                <div id="reviewFormContainer" style="background: rgba(10,22,40,0.5); border-radius:12px; padding:16px; margin-bottom:16px;">
+                <div id="reviewFormContainer" style="background: rgba(10,22,40,0.5); border-radius:10px; padding:12px; margin-bottom:12px;">
                     <div class="form-group">
                         <label><i class="fas fa-star"></i> Ваша оценка</label>
                         <select id="reviewRating">
@@ -750,10 +584,10 @@
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-comment"></i> Ваш отзыв</label>
-                        <textarea id="reviewText" placeholder="Напишите ваш отзыв анонимно..." rows="3"></textarea>
+                        <textarea id="reviewText" placeholder="Напишите ваш отзыв анонимно..." rows="2"></textarea>
                     </div>
                     <button class="btn btn-primary" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Отправить отзыв</button>
-                    <div id="reviewStatus" style="margin-top:8px; font-size:13px;"></div>
+                    <div id="reviewStatus" style="margin-top:6px; font-size:12px;"></div>
                 </div>
 
                 <div id="reviewsList"><div class="loading"><i class="fas fa-spinner"></i> Загрузка отзывов...</div></div>
@@ -773,8 +607,8 @@
                 </div>
                 <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> Вывести средства</button>
                 <div id="withdrawSection" style="display:none;" class="mt-10">
-                    <div style="background: rgba(240,185,11,0.05); padding:12px; border-radius:8px; border-left:3px solid var(--gold); margin-bottom:12px;">
-                        <span style="font-size:13px; color:var(--text-muted);">⚠️ Для вывода необходима верификация и 2 сделки с одним покупателем</span>
+                    <div class="support-block" style="margin-bottom:8px;">
+                        <span style="font-size:12px; color:var(--text-muted);">⚠️ Для вывода необходима верификация и 2 сделки с одним покупателем</span>
                     </div>
                     <div class="form-group">
                         <label>Валюта</label>
@@ -814,48 +648,56 @@
         </div>
     </div>
 
-    <!-- ===== СКРИПТЫ ===== -->
+    <!-- ============================================================ -->
+    <!-- СКРИПТЫ -->
+    <!-- ============================================================ -->
     <script>
         // ============================================================
-        // 1. КОНФИГУРАЦИЯ — ВАШ АДРЕС НА RENDER
+        // 1. КОНФИГУРАЦИЯ
         // ============================================================
         const API_BASE = 'https://otc-bot-hwua.onrender.com';
         const BOT_USERNAME = 'tonkeeperp2p_bot';
 
         // ============================================================
-        // 2. TELEGRAM ИНИЦИАЛИЗАЦИЯ
+        // 2. TELEGRAM
         // ============================================================
         const tg = window.Telegram.WebApp;
         tg.expand();
-        tg.enableClosingConfirmation();
 
         const user = {
             id: tg.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
             username: tg.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
-            firstName: tg.initDataUnsafe?.user?.first_name || 'Пользователь',
-            isPremium: tg.initDataUnsafe?.user?.is_premium || false
+            firstName: tg.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
 
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 3. СОСТОЯНИЕ
+        // 3. ЯЗЫКИ
+        // ============================================================
+        let currentLang = 'ru';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('languageOverlay').style.display = 'none';
+            showToast('✅ Язык установлен', 'success');
+            loadMainData();
+        }
+
+        // ============================================================
+        // 4. СОСТОЯНИЕ
         // ============================================================
         let state = {
             balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
             deals: [],
             reviews: [],
             isAdmin: false,
-            onlineCount: 0,
-            stats: { dealsToday: 0, users: 0, reviews: 0, volume: 0 },
             reviewPage: 0,
-            reviewLimit: 10,
-            verified: false,
-            hasDeals: false
+            reviewLimit: 10
         };
 
         // ============================================================
-        // 4. API ВЫЗОВЫ
+        // 5. API ВЫЗОВЫ
         // ============================================================
         async function apiCall(endpoint, data = {}) {
             try {
@@ -871,13 +713,20 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 return await response.json();
             } catch (error) {
-                console.error(`API Error (${endpoint}):`, error);
+                console.error(`API Error:`, error);
                 return { success: false, error: error.message };
             }
         }
 
         // ============================================================
-        // 5. НАВИГАЦИЯ
+        // 6. ОНЛАЙН (6000-7000)
+        // ============================================================
+        function getOnlineCount() {
+            return Math.floor(Math.random() * 1000) + 6000;
+        }
+
+        // ============================================================
+        // 7. НАВИГАЦИЯ
         // ============================================================
         document.querySelectorAll('.nav button').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -903,10 +752,12 @@
         }
 
         // ============================================================
-        // 6. ГЛАВНАЯ
+        // 8. ГЛАВНАЯ
         // ============================================================
         async function loadMainData() {
             try {
+                document.getElementById('onlineCount').textContent = getOnlineCount();
+
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
                     document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
@@ -914,11 +765,6 @@
                     document.getElementById('statReviews').textContent = stats.reviews || 0;
                     document.getElementById('statVolume').textContent = (stats.volume || 0) + 'K';
                     document.getElementById('reviewBadge').textContent = stats.reviews || 0;
-                }
-
-                const online = await apiCall('/api/online');
-                if (online.success) {
-                    document.getElementById('onlineCount').textContent = online.online || 0;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
@@ -933,25 +779,23 @@
         }
 
         function renderDemoReviews() {
-            const demo = [
-                { user: 'Аноним', text: 'Отличная платформа! Всё чётко.', rating: 5, date: '2 минуты назад' },
-                { user: 'Аноним', text: 'Быстро вывели средства. Рекомендую!', rating: 5, date: '15 минут назад' },
-                { user: 'Аноним', text: 'Надёжно. Админ всё проверил.', rating: 4, date: '1 час назад' }
+            const texts = [
+                'Отличная платформа! Всё работает быстро и надёжно.',
+                'Лучший P2P обменник! Рекомендую всем друзьям.',
+                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
+                'Отличная поддержка! Помогли разобраться с выводом.'
             ];
-            const html = demo.map(r => `
-                <div class="review-card">
-                    <div class="review-header">
-                        <div class="review-user">
-                            <div class="review-avatar">👤</div>
-                            <span class="review-name anonymous">${r.user}</span>
-                        </div>
-                        <span class="review-date">${r.date}</span>
-                    </div>
-                    <div class="review-stars">${'⭐'.repeat(r.rating)}</div>
-                    <div class="review-text">${r.text}</div>
-                </div>
-            `).join('');
-            document.getElementById('recentReviews').innerHTML = html;
+            const demo = [];
+            for (let i = 0; i < 3; i++) {
+                demo.push({
+                    user: 'Аноним',
+                    text: texts[Math.floor(Math.random() * texts.length)],
+                    rating: 4 + Math.floor(Math.random() * 2),
+                    date: Math.floor(Math.random() * 60) + ' минут назад',
+                    anonymous: true
+                });
+            }
+            renderRecentReviews(demo);
         }
 
         function renderRecentReviews(reviews) {
@@ -972,7 +816,7 @@
         }
 
         // ============================================================
-        // 7. БАЛАНС
+        // 9. БАЛАНС
         // ============================================================
         async function loadBalance() {
             try {
@@ -998,7 +842,7 @@
         }
 
         // ============================================================
-        // 8. СДЕЛКИ
+        // 10. СДЕЛКИ
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
@@ -1012,7 +856,7 @@
                     state.deals = [
                         { deal_id: 'DEMO-001', product: 'NFT-подарок Premium', amount: 100, currency: 'TON',
                             buyer_username: 'john_doe', status: 'waiting_payment', created_at: new Date().toISOString() },
-                        { deal_id: 'DEMO-002', product: 'Telegram Premium 1 год', amount: 50, currency: 'STARS',
+                        { deal_id: 'DEMO-002', product: 'Telegram Premium', amount: 50, currency: 'STARS',
                             buyer_username: 'jane_smith', status: 'completed', created_at: new Date().toISOString() }
                     ];
                     renderDeals();
@@ -1025,22 +869,22 @@
         function renderDeals() {
             const container = document.getElementById('dealsList');
             if (!state.deals || state.deals.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center" style="padding:20px;">📭 У вас нет сделок</p>';
+                container.innerHTML = '<p class="text-muted text-center" style="padding:15px;">📭 У вас нет сделок</p>';
                 return;
             }
             container.innerHTML = state.deals.map(d => `
                 <div class="deal-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                        <strong>${d.product}</strong>
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                        <strong style="font-size:14px;">${d.product}</strong>
                         <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
                     </div>
-                    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:6px; font-size:14px; color:var(--text-muted);">
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; font-size:12px; color:var(--text-muted);">
                         <span>💰 ${d.amount} ${d.currency}</span>
                         <span>👤 @${d.buyer_username}</span>
                         <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
                     </div>
                     ${d.status === 'waiting_payment' ? `
-                        <button class="btn btn-secondary mt-10" onclick="copyDealLink('${d.deal_id}')" style="padding:8px; font-size:13px;">
+                        <button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')">
                             <i class="fas fa-copy"></i> Скопировать ссылку
                         </button>
                     ` : ''}
@@ -1065,14 +909,23 @@
         }
 
         // ============================================================
-        // 9. СОЗДАНИЕ СДЕЛКИ
+        // 11. СОЗДАНИЕ СДЕЛКИ
         // ============================================================
+        function createInMiniApp() {
+            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
+        }
+
+        function createInBot() {
+            tg.openTelegramLink(`https://t.me/${BOT_USERNAME}`);
+        }
+
         document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const product = document.getElementById('productInput').value.trim();
             const currency = document.getElementById('currencySelect').value;
             const amount = parseFloat(document.getElementById('amountInput').value);
             const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
+            const paymentMethod = document.getElementById('paymentMethod').value;
 
             if (!product || !amount || !buyer) {
                 showToast('❌ Заполните все поля!', 'error');
@@ -1084,20 +937,21 @@
             btn.disabled = true;
 
             try {
-                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
+                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer,
+                    payment_method: paymentMethod });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
                     resultDiv.style.display = 'block';
                     resultDiv.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:8px; color:#2ecc71;">
-                            <i class="fas fa-check-circle" style="font-size:20px;"></i>
+                        <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
+                            <i class="fas fa-check-circle" style="font-size:18px;"></i>
                             <strong>Сделка создана!</strong>
                         </div>
-                        <p style="margin:8px 0;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
+                        <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
                         <div class="form-group">
-                            <input type="text" value="${data.link}" readonly style="width:100%;padding:10px;background:rgba(10,22,40,0.8);border:1px solid var(--border);border-radius:8px;color:var(--text);">
+                            <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(10,22,40,0.8);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;">
                         </div>
-                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
+                        <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
                             <i class="fas fa-copy"></i> Скопировать ссылку
                         </button>
                     `;
@@ -1116,7 +970,7 @@
         });
 
         // ============================================================
-        // 10. ОТЗЫВЫ
+        // 12. ОТЗЫВЫ (5000+)
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1135,16 +989,20 @@
         }
 
         function renderDemoReviewsFull() {
-            const demos = [];
             const texts = [
                 'Отличная платформа! Всё работает быстро и надёжно.',
                 'Лучший P2P обменник! Рекомендую всем друзьям.',
                 'Быстро, удобно, безопасно. Буду пользоваться дальше.',
                 'Отличная поддержка! Помогли разобраться с выводом.',
                 'Наконец-то нашёл нормальный обменник. Всё честно.',
-                'Сделал первую сделку, всё прошло гладко. Спасибо!'
+                'Сделал первую сделку, всё прошло гладко. Спасибо!',
+                'За сутки сделал 5 сделок, все успешно завершены.',
+                'Очень доволен сервисом. Вывод моментальный.',
+                'Пользуюсь уже месяц, ни одной проблемы.',
+                'Лучший сервис в Telegram! Успехов разработчикам.'
             ];
-            for (let i = 0; i < 20; i++) {
+            const demos = [];
+            for (let i = 0; i < 50; i++) {
                 demos.push({
                     user: 'Аноним',
                     text: texts[Math.floor(Math.random() * texts.length)],
@@ -1160,7 +1018,7 @@
         function renderReviews() {
             const container = document.getElementById('reviewsList');
             if (!state.reviews || state.reviews.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center" style="padding:20px;">📭 Пока нет отзывов</p>';
+                container.innerHTML = '<p class="text-muted text-center" style="padding:15px;">📭 Пока нет отзывов</p>';
                 return;
             }
             const html = state.reviews.map(r => `
@@ -1168,14 +1026,14 @@
                     <div class="review-header">
                         <div class="review-user">
                             <div class="review-avatar">${r.user ? r.user.charAt(0).toUpperCase() : '👤'}</div>
-                            <span class="review-name ${r.anonymous !== false ? 'anonymous' : ''}">${r.anonymous !== false ? 'Аноним' : r.user}</span>
+                            <span class="review-name anonymous">${r.anonymous !== false ? 'Аноним' : r.user}</span>
                         </div>
                         <span class="review-date">${r.date || 'только что'}</span>
                     </div>
                     <div class="review-stars">${'⭐'.repeat(r.rating || 5)}</div>
                     <div class="review-text">${r.text}</div>
                     ${state.isAdmin ? `
-                        <button class="review-delete" onclick="deleteReview('${r.id || r._id}')">
+                        <button class="btn btn-danger btn-sm mt-6" onclick="deleteReview('${r.id || r._id}')" style="width:auto;">
                             <i class="fas fa-trash"></i> Удалить
                         </button>
                     ` : ''}
@@ -1236,7 +1094,7 @@
         }
 
         // ============================================================
-        // 11. ВЫВОД СРЕДСТВ
+        // 13. ВЫВОД
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
@@ -1259,7 +1117,7 @@
             try {
                 const data = await apiCall('/api/withdraw', { currency, details });
                 if (data.success) {
-                    showToast('✅ Заявка на вывод создана! Ожидайте 1-5 минут', 'success');
+                    showToast('✅ Заявка на вывод создана!', 'success');
                     document.getElementById('withdrawSection').style.display = 'none';
                     document.getElementById('withdrawDetails').value = '';
                     loadBalance();
@@ -1275,7 +1133,7 @@
         }
 
         // ============================================================
-        // 12. АДМИН ПАНЕЛЬ
+        // 14. АДМИН ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1285,7 +1143,18 @@
                 state.isAdmin = data.is_admin || false;
                 if (state.isAdmin) {
                     container.innerHTML = `
-                        <div style="display:grid; gap:8px;">
+                        <div style="display:grid; gap:6px;">
+                            <div class="card" style="padding:10px; background:rgba(240,185,11,0.05); border-color:rgba(240,185,11,0.15);">
+                                <div class="card-title" style="font-size:13px;">📊 Накрутка статистики</div>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetDealsToday()"><i class="fas fa-calendar-day"></i> Сделки сегодня</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetUsers()"><i class="fas fa-users"></i> Пользователей</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetReviews()"><i class="fas fa-star"></i> Отзывы</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetVolume()"><i class="fas fa-chart-line"></i> Объём (TON)</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetOnline()"><i class="fas fa-users"></i> Онлайн</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetAllStats()"><i class="fas fa-magic"></i> Всё сразу</button>
+                                </div>
+                            </div>
                             <button class="btn btn-secondary" onclick="adminAllDeals()"><i class="fas fa-list"></i> Все сделки</button>
                             <button class="btn btn-secondary" onclick="adminWithdrawRequests()"><i class="fas fa-arrow-up"></i> Заявки на вывод</button>
                             <button class="btn btn-secondary" onclick="adminAddBalance()"><i class="fas fa-plus-circle"></i> Начислить баланс</button>
@@ -1296,10 +1165,10 @@
                     `;
                 } else {
                     container.innerHTML = `
-                        <div style="background:rgba(231,76,60,0.1);padding:16px;border-radius:12px;border:1px solid rgba(231,76,60,0.2);">
-                            <i class="fas fa-lock" style="color:#e74c3c;font-size:20px;"></i>
-                            <span style="color:#e74c3c;font-weight:600;margin-left:8px;">Доступ запрещён</span>
-                            <p style="color:var(--text-muted);margin-top:4px;">У вас нет прав администратора</p>
+                        <div style="background:rgba(231,76,60,0.1);padding:12px;border-radius:10px;border:1px solid rgba(231,76,60,0.2);">
+                            <i class="fas fa-lock" style="color:#e74c3c;font-size:18px;"></i>
+                            <span style="color:#e74c3c;font-weight:600;margin-left:6px;">Доступ запрещён</span>
+                            <p style="color:var(--text-muted);margin-top:4px;font-size:13px;">Недостаточно прав</p>
                         </div>
                     `;
                 }
@@ -1309,7 +1178,96 @@
         }
 
         // ============================================================
-        // 13. АДМИН-ФУНКЦИИ
+        // 15. АДМИН-НАКРУТКА
+        // ============================================================
+        async function adminSetDealsToday() {
+            const count = prompt('Введите количество сделок за сегодня:', Math.floor(Math.random() * 50) + 10);
+            if (count === null) return;
+            const num = parseInt(count);
+            if (num >= 0) {
+                document.getElementById('statDealsToday').textContent = num;
+                showToast(`✅ Сделок за сегодня: ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'deals_today', value: num });
+            }
+        }
+
+        async function adminSetUsers() {
+            const count = prompt('Введите количество пользователей:', Math.floor(Math.random() * 2000) + 1000);
+            if (count === null) return;
+            const num = parseInt(count);
+            if (num >= 0) {
+                document.getElementById('statUsers').textContent = num;
+                showToast(`✅ Пользователей: ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'users', value: num });
+            }
+        }
+
+        async function adminSetReviews() {
+            const count = prompt('Введите количество отзывов (5000+):', Math.floor(Math.random() * 1000) + 5000);
+            if (count === null) return;
+            const num = parseInt(count);
+            if (num >= 0) {
+                document.getElementById('statReviews').textContent = num;
+                document.getElementById('reviewBadge').textContent = num;
+                showToast(`✅ Отзывов: ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'reviews', value: num });
+            }
+        }
+
+        async function adminSetVolume() {
+            const count = prompt('Введите объём в TON:', (Math.random() * 100 + 20).toFixed(1));
+            if (count === null) return;
+            const num = parseFloat(count);
+            if (num >= 0) {
+                document.getElementById('statVolume').textContent = num + 'K';
+                showToast(`✅ Объём: ${num}K TON`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'volume', value: num });
+            }
+        }
+
+        async function adminSetOnline() {
+            const count = prompt('Введите онлайн (6000-7000):', Math.floor(Math.random() * 1000) + 6000);
+            if (count === null) return;
+            const num = parseInt(count);
+            if (num >= 6000 && num <= 7000) {
+                document.getElementById('onlineCount').textContent = num;
+                showToast(`✅ Онлайн: ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'online', value: num });
+            } else {
+                showToast('❌ Введите число от 6000 до 7000', 'error');
+            }
+        }
+
+        async function adminSetAllStats() {
+            const deals = prompt('Сделок за сегодня:', Math.floor(Math.random() * 50) + 10);
+            if (deals === null) return;
+            const users = prompt('Пользователей:', Math.floor(Math.random() * 2000) + 1000);
+            if (users === null) return;
+            const reviews = prompt('Отзывов (5000+):', Math.floor(Math.random() * 1000) + 5000);
+            if (reviews === null) return;
+            const volume = prompt('Объём (TON):', (Math.random() * 100 + 20).toFixed(1));
+            if (volume === null) return;
+            const online = prompt('Онлайн (6000-7000):', Math.floor(Math.random() * 1000) + 6000);
+            if (online === null) return;
+
+            document.getElementById('statDealsToday').textContent = deals;
+            document.getElementById('statUsers').textContent = users;
+            document.getElementById('statReviews').textContent = reviews;
+            document.getElementById('reviewBadge').textContent = reviews;
+            document.getElementById('statVolume').textContent = volume + 'K';
+            document.getElementById('onlineCount').textContent = online;
+
+            showToast(`✅ Всё обновлено!`, 'success');
+
+            await apiCall('/api/admin_set_stats', { key: 'deals_today', value: parseInt(deals) });
+            await apiCall('/api/admin_set_stats', { key: 'users', value: parseInt(users) });
+            await apiCall('/api/admin_set_stats', { key: 'reviews', value: parseInt(reviews) });
+            await apiCall('/api/admin_set_stats', { key: 'volume', value: parseFloat(volume) });
+            await apiCall('/api/admin_set_stats', { key: 'online', value: parseInt(online) });
+        }
+
+        // ============================================================
+        // 16. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
         // ============================================================
         async function adminAllDeals() {
             const data = await apiCall('/api/all_deals');
@@ -1317,13 +1275,11 @@
                 const html = data.deals.map(d => `
                     <div class="deal-card">
                         <strong>#${d.deal_id}</strong> - ${d.product}
-                        <div style="font-size:13px;color:var(--text-muted);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
+                        <div style="font-size:12px;color:var(--text-muted);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
                         <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
                     </div>
                 `).join('');
                 showModal('<h3>📊 Все сделки</h3>' + (html || '<p class="text-muted">Нет сделок</p>'));
-            } else {
-                showModal('<h3>📊 Все сделки</h3><p class="text-muted">Нет сделок</p>');
             }
         }
 
@@ -1339,16 +1295,14 @@
                     <div class="deal-card">
                         <strong>👤 ${r.username}</strong>
                         <div>💰 ${r.amount} ${r.currency}</div>
-                        <div style="font-size:13px;color:var(--text-muted);">📝 ${r.details}</div>
-                        <div class="flex mt-10">
-                            <button class="btn btn-success" onclick="adminConfirmWithdraw('${r.id}')" style="padding:8px;"><i class="fas fa-check"></i> Подтвердить</button>
-                            <button class="btn btn-danger" onclick="adminRejectWithdraw('${r.id}')" style="padding:8px;"><i class="fas fa-times"></i> Отклонить</button>
+                        <div style="font-size:12px;color:var(--text-muted);">📝 ${r.details}</div>
+                        <div class="flex mt-6">
+                            <button class="btn btn-success btn-sm" onclick="adminConfirmWithdraw('${r.id}')"><i class="fas fa-check"></i> Подтвердить</button>
+                            <button class="btn btn-danger btn-sm" onclick="adminRejectWithdraw('${r.id}')"><i class="fas fa-times"></i> Отклонить</button>
                         </div>
                     </div>
                 `).join('');
                 showModal('<h3>💲 Заявки на вывод</h3>' + html);
-            } else {
-                showModal('<h3>💲 Заявки на вывод</h3><p class="text-muted">Нет активных заявок</p>');
             }
         }
 
@@ -1359,8 +1313,6 @@
                 showToast('✅ Вывод подтверждён', 'success');
                 closeModal();
                 adminWithdrawRequests();
-            } else {
-                showToast('❌ Ошибка', 'error');
             }
         }
 
@@ -1371,8 +1323,6 @@
                 showToast('✅ Заявка отклонена', 'success');
                 closeModal();
                 adminWithdrawRequests();
-            } else {
-                showToast('❌ Ошибка', 'error');
             }
         }
 
@@ -1388,11 +1338,7 @@
                 currency: currency.toUpperCase(),
                 amount: parseFloat(amount)
             });
-            if (data.success) {
-                showToast(`✅ Начислено ${amount} ${currency}`, 'success');
-            } else {
-                showToast('❌ Ошибка', 'error');
-            }
+            if (data.success) showToast(`✅ Начислено ${amount} ${currency}`, 'success');
         }
 
         async function adminManageAdmins() {
@@ -1403,11 +1349,7 @@
                 target_user_id: parseInt(userId),
                 action: action ? 'add' : 'remove'
             });
-            if (data.success) {
-                showToast(`✅ ${action ? 'Добавлен' : 'Удалён'} админ`, 'success');
-            } else {
-                showToast('❌ Ошибка', 'error');
-            }
+            if (data.success) showToast(`✅ ${action ? 'Добавлен' : 'Удалён'} админ`, 'success');
         }
 
         async function adminClearReviews() {
@@ -1416,13 +1358,11 @@
             if (data.success) {
                 showToast('✅ Все отзывы удалены', 'success');
                 loadReviews();
-            } else {
-                showToast('❌ Ошибка', 'error');
             }
         }
 
         // ============================================================
-        // 14. МОДАЛКА
+        // 17. МОДАЛКА
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1438,25 +1378,35 @@
         });
 
         // ============================================================
-        // 15. TOAST
+        // 18. TOAST
         // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = text;
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+            setTimeout(() => toast.remove(), 3500);
         }
 
         // ============================================================
-        // 16. ЗАПУСК
+        // 19. ЗАПУСК
         // ============================================================
         console.log('🔥 Tonkeeper P2P загружена');
         console.log('👤 Пользователь:', user);
         console.log('📡 API:', API_BASE);
+
+        if (!localStorage.getItem('lang')) {
+            document.getElementById('languageOverlay').style.display = 'flex';
+        } else {
+            setLanguage(localStorage.getItem('lang'));
+        }
+
+        window.setLanguage = function(lang) {
+            localStorage.setItem('lang', lang);
+            setLanguage(lang);
+        };
 
         loadMainData();
         loadBalance();
@@ -1464,21 +1414,15 @@
         loadReviews();
 
         setInterval(() => {
+            document.getElementById('onlineCount').textContent = getOnlineCount();
+        }, 5000);
+
+        setInterval(() => {
             if (document.getElementById('page-main').classList.contains('active')) loadMainData();
             if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
             if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
             if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
-        }, 45000);
-
-        setInterval(() => {
-            const el = document.getElementById('onlineCount');
-            if (el) {
-                const current = parseInt(el.textContent) || 0;
-                const delta = Math.floor(Math.random() * 10) - 4;
-                const newVal = Math.max(10, current + delta);
-                el.textContent = newVal;
-            }
-        }, 8000);
+        }, 30000);
     </script>
 </body>
 </html>
