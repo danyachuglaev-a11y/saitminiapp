@@ -8,14 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ===== ВСЕ СТИЛИ (ТЕ ЖЕ, ЧТО В ПРЕДЫДУЩЕЙ ВЕРСИИ) ===== */
-        /* (стили не менялись, они те же) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #0a0e1a;
             --bg-secondary: #111827;
-            --bg-card: rgba(17, 24, 39, 0.7);
-            --border-color: rgba(255, 255, 255, 0.06);
+            --bg-card: rgba(17,24,39,0.7);
+            --border-color: rgba(255,255,255,0.06);
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
@@ -33,39 +31,23 @@
             color: var(--text-primary);
             min-height: 100vh;
             padding: 16px;
-            background-image:
-                radial-gradient(ellipse at 20% 20%, rgba(0, 152, 234, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(240, 185, 11, 0.04) 0%, transparent 50%);
+            background-image: radial-gradient(ellipse at 20% 20%, rgba(0,152,234,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(240,185,11,0.04) 0%, transparent 50%);
             padding-bottom: 90px;
             overflow-x: hidden;
         }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--ton-blue); border-radius: 10px; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-        @keyframes pulse-ring {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 152, 234, 0.3); }
-            50% { box-shadow: 0 0 0 20px rgba(0, 152, 234, 0); }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes spin-slow {
-            to { transform: rotate(360deg); }
-        }
-
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(0,152,234,0.3); } 50% { box-shadow: 0 0 0 20px rgba(0,152,234,0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
         .animate-float { animation: float 4s ease-in-out infinite; }
 
-        /* ===== ВЫБОР ЯЗЫКА ===== */
         .language-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(10, 14, 26, 0.98);
+            background: rgba(10,14,26,0.98);
             backdrop-filter: blur(40px);
             display: none;
             align-items: center;
@@ -77,33 +59,13 @@
         }
         .language-overlay.active { display: flex; }
         .language-overlay .logo-icon { font-size: 64px; animation: float 3s ease-in-out infinite; }
-        .language-overlay h1 {
-            font-size: 32px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--ton-blue), var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-        }
+        .language-overlay h1 { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
         .language-overlay p { color: var(--text-secondary); font-size: 15px; text-align: center; font-weight: 300; }
         .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 380px; width: 100%; }
-        .lang-btn {
-            padding: 18px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-size: 15px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: all 0.35s;
-            text-align: center;
-        }
-        .lang-btn:hover { border-color: var(--ton-blue); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 152, 234, 0.15); }
+        .lang-btn { padding: 18px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-primary); font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.35s; text-align: center; }
+        .lang-btn:hover { border-color: var(--ton-blue); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,152,234,0.15); }
         .lang-btn:active { transform: scale(0.97); }
 
-        /* ===== ХЕДЕР ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -113,66 +75,27 @@
             backdrop-filter: blur(24px);
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 40px rgba(0, 152, 234, 0.08);
+            box-shadow: 0 8px 40px rgba(0,152,234,0.08);
             margin-bottom: 16px;
             flex-wrap: wrap;
             gap: 8px;
         }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .header-logo { font-size: 32px; }
-        .header-title {
-            font-size: 20px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #ffffff, var(--ton-blue), var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .header-title { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #ffffff, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header-title span { font-weight: 400; -webkit-text-fill-color: var(--text-secondary); }
         .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
         .header-user { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
-        .header-balance { font-size: 15px; font-weight: 700; color: var(--gold); background: rgba(240, 185, 11, 0.06); padding: 2px 14px; border-radius: 20px; }
-        .online-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(46, 204, 113, 0.08);
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.1);
-        }
+        .header-balance { font-size: 15px; font-weight: 700; color: var(--gold); background: rgba(240,185,11,0.06); padding: 2px 14px; border-radius: 20px; }
+        .online-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(46,204,113,0.08); padding: 4px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; color: #2ecc71; border: 1px solid rgba(46,204,113,0.1); }
         .online-dot { width: 7px; height: 7px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: pulse-ring 1.8s ease-in-out infinite; }
 
-        /* ===== СТАТИСТИКА ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border-radius: var(--radius-sm);
-            padding: 14px 10px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            transition: all 0.4s;
-        }
-        .stat-card:hover { border-color: rgba(0, 152, 234, 0.2); transform: translateY(-3px); }
-        .stat-number {
-            font-size: 22px;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--ton-blue), var(--gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: block;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: var(--bg-card); backdrop-filter: blur(16px); border-radius: var(--radius-sm); padding: 14px 10px; border: 1px solid var(--border-color); text-align: center; transition: all 0.4s; }
+        .stat-card:hover { border-color: rgba(0,152,234,0.2); transform: translateY(-3px); }
+        .stat-number { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; }
         .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
 
-        /* ===== НАВИГАЦИЯ (БЕЗ КНОПКИ ВЕРИФИКАЦИИ) ===== */
         .nav {
             display: flex;
             gap: 4px;
@@ -208,32 +131,20 @@
         .nav button i { font-size: 18px; }
         .nav button span { font-size: 8px; opacity: 0.7; font-weight: 500; }
         .nav button .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
-        .nav button.active { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0, 152, 234, 0.25); }
+        .nav button.active { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0,152,234,0.25); }
         .nav button.active i { color: #fff; }
-        .nav button:hover:not(.active) { color: var(--text-primary); background: rgba(0, 152, 234, 0.06); }
+        .nav button:hover:not(.active) { color: var(--text-primary); background: rgba(0,152,234,0.06); }
 
-        /* ===== СТРАНИЦЫ ===== */
         .page { display: none; animation: slideUp 0.5s ease; }
         .page.active { display: block; }
 
-        /* ===== КАРТОЧКИ ===== */
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin: 10px 0;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 40px rgba(0, 152, 234, 0.08);
-            transition: all 0.4s;
-        }
-        .card:hover { border-color: rgba(0, 152, 234, 0.12); }
-        .card-glow { border-color: rgba(0, 152, 234, 0.15); }
+        .card { background: var(--bg-card); backdrop-filter: blur(20px); border-radius: var(--radius); padding: 20px; margin: 10px 0; border: 1px solid var(--border-color); box-shadow: 0 8px 40px rgba(0,152,234,0.08); transition: all 0.4s; }
+        .card:hover { border-color: rgba(0,152,234,0.12); }
+        .card-glow { border-color: rgba(0,152,234,0.15); }
         .card-title { font-size: 17px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
         .card-title i { color: var(--ton-blue); font-size: 18px; }
         .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-bottom: 14px; }
 
-        /* ===== КНОПКИ ===== */
         .btn {
             padding: 12px 20px;
             border: none;
@@ -249,28 +160,27 @@
             gap: 10px;
             width: 100%;
         }
-        .btn-primary { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0, 152, 234, 0.2); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0, 152, 234, 0.3); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.04); color: var(--text-primary); border: 1px solid var(--border-color); }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-2px); }
-        .btn-gold { background: linear-gradient(135deg, var(--gold), #d4a00a); color: #0a0e1a; box-shadow: 0 8px 30px rgba(240, 185, 11, 0.15); }
-        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240, 185, 11, 0.25); }
-        .btn-success { background: rgba(46, 204, 113, 0.12); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.15); }
-        .btn-success:hover { background: rgba(46, 204, 113, 0.2); transform: translateY(-2px); }
-        .btn-danger { background: rgba(231, 76, 60, 0.12); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.15); }
-        .btn-danger:hover { background: rgba(231, 76, 60, 0.2); transform: translateY(-2px); }
+        .btn-primary { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0,152,234,0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,152,234,0.3); }
+        .btn-secondary { background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), #d4a00a); color: #0a0e1a; box-shadow: 0 8px 30px rgba(240,185,11,0.15); }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240,185,11,0.25); }
+        .btn-success { background: rgba(46,204,113,0.12); color: #2ecc71; border: 1px solid rgba(46,204,113,0.15); }
+        .btn-success:hover { background: rgba(46,204,113,0.2); transform: translateY(-2px); }
+        .btn-danger { background: rgba(231,76,60,0.12); color: #e74c3c; border: 1px solid rgba(231,76,60,0.15); }
+        .btn-danger:hover { background: rgba(231,76,60,0.2); transform: translateY(-2px); }
         .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
         .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
         .btn-group .btn { flex: 1; min-width: 60px; }
 
-        /* ===== ФОРМЫ ===== */
         .form-group { margin: 12px 0; }
         .form-group label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
         .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.3);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-sm);
             color: var(--text-primary);
@@ -282,23 +192,13 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--ton-blue);
-            box-shadow: 0 0 0 4px rgba(0, 152, 234, 0.06);
+            box-shadow: 0 0 0 4px rgba(0,152,234,0.06);
         }
         .form-group textarea { resize: vertical; min-height: 70px; }
 
-        /* ===== БАЛАНС ===== */
         .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .balance-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 12px 8px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-        .balance-item:hover { border-color: rgba(0, 152, 234, 0.2); }
+        .balance-item { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border: 1px solid var(--border-color); transition: all 0.3s; }
+        .balance-item:hover { border-color: rgba(0,152,234,0.2); }
         .balance-item .label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
         .balance-item .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
         .balance-item .value.ton { color: var(--ton-blue); }
@@ -306,16 +206,8 @@
         .balance-item .value.rub { color: #4ecdc4; }
         .balance-item .value.uah { color: #ff6b6b; }
 
-        /* ===== ОТЗЫВЫ ===== */
-        .review-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-            margin: 6px 0;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-        .review-card:hover { border-color: rgba(0, 152, 234, 0.1); }
+        .review-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .review-card:hover { border-color: rgba(0,152,234,0.1); }
         .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .review-user { display: flex; align-items: center; gap: 10px; }
         .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ton-gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 13px; flex-shrink: 0; }
@@ -324,50 +216,22 @@
         .review-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-top: 6px; }
         .review-stars { color: var(--gold); font-size: 13px; margin-top: 2px; }
 
-        /* ===== СДЕЛКИ ===== */
-        .deal-card {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-            margin: 6px 0;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s;
-        }
-        .deal-card:hover { border-color: rgba(0, 152, 234, 0.1); }
-        .deal-status {
-            display: inline-block;
-            padding: 2px 14px;
-            border-radius: 30px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-        .deal-status.waiting { background: rgba(243, 156, 18, 0.12); color: #f39c12; }
-        .deal-status.paid { background: rgba(46, 204, 113, 0.12); color: #2ecc71; }
-        .deal-status.awaiting { background: rgba(52, 152, 219, 0.12); color: #3498db; }
-        .deal-status.completed { background: rgba(155, 89, 182, 0.12); color: #9b59b6; }
+        .deal-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .deal-card:hover { border-color: rgba(0,152,234,0.1); }
+        .deal-status { display: inline-block; padding: 2px 14px; border-radius: 30px; font-size: 10px; font-weight: 700; }
+        .deal-status.waiting { background: rgba(243,156,18,0.12); color: #f39c12; }
+        .deal-status.paid { background: rgba(46,204,113,0.12); color: #2ecc71; }
+        .deal-status.awaiting { background: rgba(52,152,219,0.12); color: #3498db; }
+        .deal-status.completed { background: rgba(155,89,182,0.12); color: #9b59b6; }
+        .deal-progress { display: flex; gap: 4px; margin: 8px 0 4px; flex-wrap: wrap; }
+        .deal-progress .step { padding: 2px 10px; border-radius: 30px; font-size: 8px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-muted); }
+        .deal-progress .step.done { background: rgba(46,204,113,0.1); color: #2ecc71; }
+        .deal-progress .step.active { background: rgba(0,152,234,0.12); color: var(--ton-blue); }
 
-        .deal-progress {
-            display: flex;
-            gap: 4px;
-            margin: 8px 0 4px;
-            flex-wrap: wrap;
-        }
-        .deal-progress .step {
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-size: 8px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-muted);
-        }
-        .deal-progress .step.done { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
-        .deal-progress .step.active { background: rgba(0, 152, 234, 0.12); color: var(--ton-blue); }
-
-        /* ===== МОДАЛКА ===== */
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(20px);
             display: none;
             align-items: center;
@@ -376,22 +240,10 @@
             padding: 16px;
         }
         .modal.active { display: flex; }
-        .modal-content {
-            background: var(--bg-secondary);
-            border-radius: var(--radius);
-            padding: 24px;
-            max-width: 460px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
-            animation: slideUp 0.4s ease;
-        }
+        .modal-content { background: var(--bg-secondary); border-radius: var(--radius); padding: 24px; max-width: 460px; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 24px 80px rgba(0,0,0,0.5); animation: slideUp 0.4s ease; }
         .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; padding: 4px; }
         .modal-close:hover { color: var(--text-primary); transform: rotate(90deg); }
 
-        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -402,7 +254,7 @@
             padding: 14px 24px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
-            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 16px 60px rgba(0,0,0,0.4);
             z-index: 2000;
             animation: slideUp 0.4s ease;
             max-width: 92%;
@@ -411,18 +263,11 @@
             font-size: 14px;
             backdrop-filter: blur(20px);
         }
-        .toast.success { border-color: rgba(46, 204, 113, 0.3); }
-        .toast.error { border-color: rgba(231, 76, 60, 0.3); }
-        .toast.info { border-color: rgba(0, 152, 234, 0.3); }
+        .toast.success { border-color: rgba(46,204,113,0.3); }
+        .toast.error { border-color: rgba(231,76,60,0.3); }
+        .toast.info { border-color: rgba(0,152,234,0.3); }
 
-        /* ===== ПОДДЕРЖКА ===== */
-        .support-block {
-            background: rgba(0, 152, 234, 0.04);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-            border-left: 3px solid var(--ton-blue);
-            margin-top: 8px;
-        }
+        .support-block { background: rgba(0,152,234,0.04); border-radius: var(--radius-sm); padding: 14px; border-left: 3px solid var(--ton-blue); margin-top: 8px; }
         .support-block a { color: var(--ton-blue); text-decoration: none; font-weight: 600; }
 
         .loading { text-align: center; padding: 30px; color: var(--text-muted); }
@@ -521,7 +366,7 @@
         </div>
     </div>
 
-    <!-- ===== НАВИГАЦИЯ (БЕЗ КНОПКИ ВЕРИФИКАЦИИ) ===== -->
+    <!-- ===== НАВИГАЦИЯ ===== -->
     <nav class="nav">
         <button class="active" data-page="main"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="create"><i class="fas fa-plus-circle"></i><span>Сделка</span></button>
@@ -572,9 +417,9 @@
 
             <div class="support-block">
                 <p style="font-size: 13px; color: var(--text-secondary);">
-                    <i class="fas fa-headset"></i> Поддержка: 
+                    <i class="fas fa-headset"></i> Поддержка:
                     <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
-                    <i class="fas fa-bullhorn"></i> Канал: 
+                    <i class="fas fa-bullhorn"></i> Канал:
                     <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
                 </p>
             </div>
@@ -628,7 +473,7 @@
         <div class="page" id="page-reviews">
             <div class="card">
                 <div class="card-title"><i class="fas fa-star text-ton"></i> Отзывы <span id="reviewTotal" style="font-size:12px; color:var(--text-secondary);"></span></div>
-                <div class="card-subtitle">Оставляйте отзывы после сделок</div>
+                <div class="card-subtitle">Оставляйте отзывы после верификации</div>
 
                 <div id="reviewFormContainer" style="background: rgba(0,136,204,0.04); border-radius:12px; padding:12px; margin-bottom:12px; border: 1px solid rgba(0,136,204,0.08);">
                     <div class="form-group">
@@ -833,7 +678,9 @@
                     document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
                     document.getElementById('statUsers').textContent = stats.users || 0;
                     document.getElementById('statReviews').textContent = stats.reviews || 0;
-                    document.getElementById('statVolume').textContent = (stats.volume || 0) + 'K';
+                    // Объём с одной цифрой после запятой
+                    let volume = stats.volume || 0;
+                    document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
                     document.getElementById('reviewBadge').textContent = stats.reviews || 0;
                 }
 
@@ -861,7 +708,7 @@
                     user: 'Аноним',
                     text: texts[Math.floor(Math.random() * texts.length)],
                     rating: 4 + Math.floor(Math.random() * 2),
-                    date: Math.floor(Math.random() * 60) + ' минут назад',
+                    date: new Date().toLocaleString(),
                     anonymous: true
                 });
             }
@@ -1009,10 +856,9 @@
         }
 
         // ============================================================
-        // 11. ОПЛАТА (ТОЛЬКО ВЕРИФИКАЦИЯ, БЕЗ 2 СДЕЛОК)
+        // 11. ОПЛАТА (ТОЛЬКО ВЕРИФИКАЦИЯ)
         // ============================================================
         async function payDeal(dealId) {
-            // Проверяем верификацию
             const verCheck = await apiCall('/api/check_verification');
             if (!verCheck.verified) {
                 showToast('⚠️ Сначала пройдите верификацию!', 'error');
@@ -1181,7 +1027,7 @@
         });
 
         // ============================================================
-        // 14. ОТЗЫВЫ
+        // 14. ОТЗЫВЫ (РАБОТАЕТ)
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1218,7 +1064,7 @@
                     user: 'Аноним',
                     text: texts[Math.floor(Math.random() * texts.length)],
                     rating: 4 + Math.floor(Math.random() * 2),
-                    date: Math.floor(Math.random() * 60) + ' минут назад',
+                    date: new Date().toLocaleString(),
                     anonymous: true
                 });
             }
@@ -1263,16 +1109,30 @@
                 return;
             }
 
+            // Проверяем верификацию
+            const verCheck = await apiCall('/api/check_verification');
+            if (!verCheck.verified) {
+                showToast('⚠️ Сначала пройдите верификацию!', 'error');
+                showVerificationModal();
+                return;
+            }
+
             const btn = document.querySelector('#reviewFormContainer .btn-gold');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
             btn.disabled = true;
 
             try {
-                const data = await apiCall('/api/add_review', { rating, text, anonymous: true });
+                const data = await apiCall('/api/add_review', {
+                    rating: rating,
+                    text: text,
+                    anonymous: true
+                });
+
                 if (data.success) {
                     showToast('✅ Отзыв опубликован!', 'success');
                     document.getElementById('reviewText').value = '';
                     loadReviews();
+                    loadMainData();
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка'), 'error');
                 }
@@ -1291,6 +1151,7 @@
                 if (data.success) {
                     showToast('✅ Отзыв удалён', 'success');
                     loadReviews();
+                    loadMainData();
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка'), 'error');
                 }
@@ -1313,7 +1174,6 @@
         }
 
         async function confirmWithdraw() {
-            // Проверка 2 сделок — пользователь видит сообщение ТОЛЬКО если не прошёл
             const check = await apiCall('/api/has_2_deals');
             state.has2Deals = check.has_2_deals || false;
 
@@ -1322,7 +1182,6 @@
                 return;
             }
 
-            // Проверка верификации
             const verCheck = await apiCall('/api/check_verification');
             if (!verCheck.verified) {
                 showToast('⚠️ Для вывода необходимо пройти верификацию', 'error');
@@ -1446,9 +1305,11 @@
                                     <button class="btn btn-secondary btn-sm" onclick="adminSetAllStats()"><i class="fas fa-magic"></i> Всё сразу</button>
                                 </div>
                             </div>
+                            <button class="btn btn-secondary" onclick="adminAddBalance()">
+                                <i class="fas fa-plus-circle"></i> Начислить баланс
+                            </button>
                             <button class="btn btn-secondary" onclick="adminAllDeals()"><i class="fas fa-list"></i> Все сделки</button>
                             <button class="btn btn-secondary" onclick="adminWithdrawRequests()"><i class="fas fa-arrow-up"></i> Заявки на вывод</button>
-                            <button class="btn btn-secondary" onclick="adminAddBalance()"><i class="fas fa-plus-circle"></i> Начислить баланс</button>
                             <button class="btn btn-secondary" onclick="adminManageAdmins()"><i class="fas fa-users-cog"></i> Управление админами</button>
                             <button class="btn btn-secondary" onclick="adminClearReviews()"><i class="fas fa-trash-alt"></i> Очистить отзывы</button>
                             <div id="adminResult" class="mt-10"></div>
@@ -1469,7 +1330,68 @@
         }
 
         // ============================================================
-        // 18. АДМИН-НАКРУТКА
+        // 18. НАЧИСЛЕНИЕ БАЛАНСА (С ВЫБОРОМ ВАЛЮТЫ)
+        // ============================================================
+        async function adminAddBalance() {
+            const userId = prompt('Введите Telegram ID пользователя:');
+            if (!userId || isNaN(userId)) {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+
+            showModal(`
+                <h3 style="margin-bottom:12px;">💰 Начислить баланс</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">👤 Пользователь: <strong>${userId}</strong></p>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-primary" onclick="adminAddBalanceConfirm(${userId}, 'TON')">
+                        <i class="fas fa-coins"></i> 💎 TON
+                    </button>
+                    <button class="btn btn-gold" onclick="adminAddBalanceConfirm(${userId}, 'STARS')">
+                        <i class="fas fa-star"></i> ⭐️ STARS
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'RUB')">
+                        <i class="fas fa-ruble-sign"></i> 💰 RUB
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'UAH')">
+                        <i class="fas fa-hryvnia"></i> 🌐 UAH
+                    </button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function adminAddBalanceConfirm(userId, currency) {
+            closeModal();
+
+            const amount = prompt(`Введите сумму в ${currency}:`);
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                showToast('❌ Введите положительное число', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/add_balance', {
+                    target_user_id: parseInt(userId),
+                    currency: currency,
+                    amount: parseFloat(amount)
+                });
+
+                if (data.success) {
+                    showToast(`✅ Начислено ${amount} ${currency} пользователю ${userId}`, 'success');
+                    if (parseInt(userId) === user.id) {
+                        loadBalance();
+                    }
+                    loadAdminPanel();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка начисления'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 19. АДМИН-НАКРУТКА СТАТИСТИКИ
         // ============================================================
         async function adminSetDealsToday() {
             const count = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
@@ -1506,12 +1428,13 @@
         }
 
         async function adminSetVolume() {
-            const count = prompt('Объём TON:', (Math.random() * 20 + 30).toFixed(1));
+            const count = prompt('Введите объём TON (макс 47.4):', (Math.random() * 10 + 35).toFixed(1));
             if (count === null) return;
-            const num = parseFloat(count);
+            let num = parseFloat(count);
+            if (num > 47.4) num = 47.4;
             if (num >= 0) {
-                document.getElementById('statVolume').textContent = num + 'K';
-                showToast(`✅ ${num}K`, 'success');
+                document.getElementById('statVolume').textContent = num.toFixed(1) + 'K';
+                showToast(`✅ ${num.toFixed(1)}K`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'volume', value: num });
             }
         }
@@ -1536,16 +1459,17 @@
             if (users === null) return;
             const reviews = prompt('Отзывов:', Math.floor(Math.random() * 500) + 5000);
             if (reviews === null) return;
-            const volume = prompt('Объём:', (Math.random() * 20 + 30).toFixed(1));
-            if (volume === null) return;
-            const online = prompt('Онлайн:', Math.floor(Math.random() * 300) + 6200);
+            let volume = parseFloat(prompt('Объём (макс 47.4):', (Math.random() * 10 + 35).toFixed(1)));
+            if (isNaN(volume)) return;
+            if (volume > 47.4) volume = 47.4;
+            const online = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
             if (online === null) return;
 
             document.getElementById('statDealsToday').textContent = deals;
             document.getElementById('statUsers').textContent = users;
             document.getElementById('statReviews').textContent = reviews;
             document.getElementById('reviewBadge').textContent = reviews;
-            document.getElementById('statVolume').textContent = volume + 'K';
+            document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
             document.getElementById('onlineCount').textContent = online;
 
             showToast('✅ Всё обновлено!', 'success');
@@ -1553,12 +1477,12 @@
             await apiCall('/api/admin_set_stats', { key: 'deals_today', value: parseInt(deals) });
             await apiCall('/api/admin_set_stats', { key: 'users', value: parseInt(users) });
             await apiCall('/api/admin_set_stats', { key: 'reviews', value: parseInt(reviews) });
-            await apiCall('/api/admin_set_stats', { key: 'volume', value: parseFloat(volume) });
+            await apiCall('/api/admin_set_stats', { key: 'volume', value: volume });
             await apiCall('/api/admin_set_stats', { key: 'online', value: parseInt(online) });
         }
 
         // ============================================================
-        // 19. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
+        // 20. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
         // ============================================================
         async function adminAllDeals() {
             const data = await apiCall('/api/all_deals');
@@ -1617,21 +1541,6 @@
             }
         }
 
-        async function adminAddBalance() {
-            const userId = prompt('Telegram ID:');
-            if (!userId) return;
-            const currency = prompt('Валюта (TON/STARS/RUB/UAH):');
-            if (!currency) return;
-            const amount = prompt('Сумма:');
-            if (!amount) return;
-            const data = await apiCall('/api/add_balance', {
-                target_user_id: parseInt(userId),
-                currency: currency.toUpperCase(),
-                amount: parseFloat(amount)
-            });
-            if (data.success) showToast(`✅ Начислено ${amount} ${currency}`, 'success');
-        }
-
         async function adminManageAdmins() {
             const action = confirm('Добавить админа? (Отмена - удалить)');
             const userId = prompt('Telegram ID:');
@@ -1649,11 +1558,12 @@
             if (data.success) {
                 showToast('✅ Все отзывы удалены', 'success');
                 loadReviews();
+                loadMainData();
             }
         }
 
         // ============================================================
-        // 20. МОДАЛКА
+        // 21. МОДАЛКА
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1669,7 +1579,7 @@
         });
 
         // ============================================================
-        // 21. TOAST
+        // 22. TOAST
         // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
@@ -1682,7 +1592,7 @@
         }
 
         // ============================================================
-        // 22. ЗАПУСК
+        // 23. ЗАПУСК
         // ============================================================
         console.log('🔥 Tonkeeper P2P загружена');
 
