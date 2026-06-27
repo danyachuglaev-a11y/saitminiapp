@@ -8,9 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ============================================================
-           ПРЕМИУМ СТИЛИ
-           ============================================================ */
+        /* ===== ПРЕМИУМ СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -53,7 +51,17 @@
             overflow-x: hidden;
         }
 
-        /* ===== АНИМАЦИИ ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--ton-blue);
+            border-radius: 10px;
+        }
+
         @keyframes float {
             0%,
             100% {
@@ -92,20 +100,7 @@
             animation: float 4s ease-in-out infinite;
         }
 
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--ton-blue);
-            border-radius: 10px;
-        }
-
-        /* ============================================================
-           ВЫБОР ЯЗЫКА
-           ============================================================ */
+        /* ===== ВЫБОР ЯЗЫКА ===== */
         .language-overlay {
             position: fixed;
             top: 0;
@@ -172,9 +167,7 @@
             transform: scale(0.97);
         }
 
-        /* ============================================================
-           ХЕДЕР
-           ============================================================ */
+        /* ===== ХЕДЕР ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -248,9 +241,7 @@
             animation: pulse-ring 1.8s ease-in-out infinite;
         }
 
-        /* ============================================================
-           СТАТИСТИКА
-           ============================================================ */
+        /* ===== СТАТИСТИКА ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -286,15 +277,8 @@
             font-weight: 600;
             margin-top: 4px;
         }
-        .stat-icon {
-            font-size: 14px;
-            color: var(--ton-blue);
-            opacity: 0.6;
-        }
 
-        /* ============================================================
-           НАВИГАЦИЯ
-           ============================================================ */
+        /* ===== НАВИГАЦИЯ ===== */
         .nav {
             display: flex;
             gap: 4px;
@@ -358,9 +342,7 @@
             background: rgba(0, 152, 234, 0.06);
         }
 
-        /* ============================================================
-           СТРАНИЦЫ
-           ============================================================ */
+        /* ===== СТРАНИЦЫ ===== */
         .page {
             display: none;
             animation: slideUp 0.5s ease;
@@ -369,9 +351,7 @@
             display: block;
         }
 
-        /* ============================================================
-           КАРТОЧКИ
-           ============================================================ */
+        /* ===== КАРТОЧКИ ===== */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(20px);
@@ -408,9 +388,7 @@
             margin-bottom: 14px;
         }
 
-        /* ============================================================
-           КНОПКИ
-           ============================================================ */
+        /* ===== КНОПКИ ===== */
         .btn {
             padding: 12px 20px;
             border: none;
@@ -491,9 +469,7 @@
             min-width: 60px;
         }
 
-        /* ============================================================
-           ФОРМЫ
-           ============================================================ */
+        /* ===== ФОРМЫ ===== */
         .form-group {
             margin: 12px 0;
         }
@@ -530,9 +506,7 @@
             min-height: 70px;
         }
 
-        /* ============================================================
-           БАЛАНС
-           ============================================================ */
+        /* ===== БАЛАНС ===== */
         .balance-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -574,9 +548,7 @@
             color: #ff6b6b;
         }
 
-        /* ============================================================
-           ОТЗЫВЫ
-           ============================================================ */
+        /* ===== ОТЗЫВЫ ===== */
         .review-card {
             background: rgba(0, 0, 0, 0.2);
             border-radius: var(--radius-sm);
@@ -633,9 +605,7 @@
             margin-top: 2px;
         }
 
-        /* ============================================================
-           СДЕЛКИ (ОБНОВЛЕНО)
-           ============================================================ */
+        /* ===== СДЕЛКИ ===== */
         .deal-card {
             background: rgba(0, 0, 0, 0.2);
             border-radius: var(--radius-sm);
@@ -694,9 +664,7 @@
             color: var(--ton-blue);
         }
 
-        /* ============================================================
-           МОДАЛКА
-           ============================================================ */
+        /* ===== МОДАЛКА ===== */
         .modal {
             position: fixed;
             top: 0;
@@ -741,9 +709,7 @@
             transform: rotate(90deg);
         }
 
-        /* ============================================================
-           TOAST
-           ============================================================ */
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -773,9 +739,7 @@
             border-color: rgba(0, 152, 234, 0.3);
         }
 
-        /* ============================================================
-           ПОДДЕРЖКА
-           ============================================================ */
+        /* ===== ПОДДЕРЖКА ===== */
         .support-block {
             background: rgba(0, 152, 234, 0.04);
             border-radius: var(--radius-sm);
@@ -787,32 +751,6 @@
             color: var(--ton-blue);
             text-decoration: none;
             font-weight: 600;
-        }
-        .support-block a:hover {
-            text-decoration: underline;
-        }
-
-        /* ============================================================
-           ВЕРИФИКАЦИЯ
-           ============================================================ */
-        .verify-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 20px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .verify-status.verified {
-            background: rgba(46, 204, 113, 0.08);
-            color: #2ecc71;
-            border: 1px solid rgba(46, 204, 113, 0.1);
-        }
-        .verify-status.unverified {
-            background: rgba(231, 76, 60, 0.08);
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.1);
         }
 
         .loading {
@@ -881,9 +819,7 @@
             margin-left: 2px;
         }
 
-        /* ============================================================
-           АДАПТИВ
-           ============================================================ */
+        /* ===== АДАПТИВ ===== */
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -1103,7 +1039,7 @@
             </div>
         </div>
 
-        <!-- ===== МОИ СДЕЛКИ (С ПОЛНЫМ ЦИКЛОМ ВНУТРИ САЙТА) ===== -->
+        <!-- ===== МОИ СДЕЛКИ ===== -->
         <div class="page" id="page-deals">
             <div class="card">
                 <div class="card-title"><i class="fas fa-list text-ton"></i> Мои сделки</div>
@@ -1291,10 +1227,15 @@
         }
 
         // ============================================================
-        // 6. ОНЛАЙН (6000-7000)
+        // 6. ОНЛАЙН (6200-6800 — плавный)
         // ============================================================
+        let onlineBase = 6500;
+
         function getOnlineCount() {
-            return Math.floor(Math.random() * 1000) + 6000;
+            // Плавные колебания ±300
+            onlineBase += (Math.random() - 0.5) * 20;
+            onlineBase = Math.max(6200, Math.min(6800, onlineBase));
+            return Math.round(onlineBase);
         }
 
         // ============================================================
@@ -1518,7 +1459,7 @@
             showToast('✅ Ссылка скопирована!', 'success');
         }
 
-        // ===== ОПЛАТА СДЕЛКИ (ВНУТРИ САЙТА) =====
+        // ===== ОПЛАТА СДЕЛКИ =====
         async function payDeal(dealId) {
             // Проверяем верификацию
             const verCheck = await apiCall('/api/check_verification');
@@ -1528,7 +1469,6 @@
                 return;
             }
 
-            // Показываем модалку с выбором способа оплаты
             showModal(`
                 <h3 style="margin-bottom:12px;">💳 Выберите способ оплаты</h3>
                 <div style="display:grid; gap:8px;">
@@ -1543,7 +1483,6 @@
             `);
         }
 
-        // ===== ОПЛАТА С БАЛАНСА =====
         async function payWithBalance(dealId) {
             closeModal();
             const btn = document.querySelector(`#dealsList .deal-card:has([onclick*="payDeal('${dealId}')"]) .btn-primary`);
@@ -1565,11 +1504,10 @@
             }
         }
 
-        // ===== ОПЛАТА ПО РЕКВИЗИТАМ =====
         async function payWithRekvisits(dealId) {
             closeModal();
             try {
-                const data = await apiCall('/api/pay_rekvisits', { deal_id: dealId });
+                const data = await apiCall('/api/get_rekvisits', { deal_id: dealId });
                 if (data.success) {
                     showModal(`
                         <h3 style="margin-bottom:12px;">💳 Оплатите по реквизитам</h3>
@@ -1942,7 +1880,7 @@
         // 16. АДМИН-НАКРУТКА
         // ============================================================
         async function adminSetDealsToday() {
-            const count = prompt('Введите количество сделок за сегодня:', Math.floor(Math.random() * 50) + 10);
+            const count = prompt('Введите количество сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 0) {
@@ -1953,7 +1891,7 @@
         }
 
         async function adminSetUsers() {
-            const count = prompt('Введите количество пользователей:', Math.floor(Math.random() * 2000) + 1000);
+            const count = prompt('Введите количество пользователей:', Math.floor(Math.random() * 500) + 1000);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 0) {
@@ -1964,7 +1902,7 @@
         }
 
         async function adminSetReviews() {
-            const count = prompt('Введите количество отзывов (5000+):', Math.floor(Math.random() * 1000) + 5000);
+            const count = prompt('Введите количество отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
             if (count === null) return;
             const num = parseInt(count);
             if (num >= 0) {
@@ -1976,7 +1914,7 @@
         }
 
         async function adminSetVolume() {
-            const count = prompt('Введите объём в TON:', (Math.random() * 100 + 20).toFixed(1));
+            const count = prompt('Введите объём в TON:', (Math.random() * 20 + 30).toFixed(1));
             if (count === null) return;
             const num = parseFloat(count);
             if (num >= 0) {
@@ -1987,28 +1925,28 @@
         }
 
         async function adminSetOnline() {
-            const count = prompt('Введите онлайн (6000-7000):', Math.floor(Math.random() * 1000) + 6000);
+            const count = prompt('Введите онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
             if (count === null) return;
             const num = parseInt(count);
-            if (num >= 6000 && num <= 7000) {
+            if (num >= 6200 && num <= 6800) {
                 document.getElementById('onlineCount').textContent = num;
                 showToast(`✅ Онлайн: ${num}`, 'success');
                 await apiCall('/api/admin_set_stats', { key: 'online', value: num });
             } else {
-                showToast('❌ Введите число от 6000 до 7000', 'error');
+                showToast('❌ Введите число от 6200 до 6800', 'error');
             }
         }
 
         async function adminSetAllStats() {
-            const deals = prompt('Сделок за сегодня:', Math.floor(Math.random() * 50) + 10);
+            const deals = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
             if (deals === null) return;
-            const users = prompt('Пользователей:', Math.floor(Math.random() * 2000) + 1000);
+            const users = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
             if (users === null) return;
-            const reviews = prompt('Отзывов (5000+):', Math.floor(Math.random() * 1000) + 5000);
+            const reviews = prompt('Отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
             if (reviews === null) return;
-            const volume = prompt('Объём (TON):', (Math.random() * 100 + 20).toFixed(1));
+            const volume = prompt('Объём (TON):', (Math.random() * 20 + 30).toFixed(1));
             if (volume === null) return;
-            const online = prompt('Онлайн (6000-7000):', Math.floor(Math.random() * 1000) + 6000);
+            const online = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
             if (online === null) return;
 
             document.getElementById('statDealsToday').textContent = deals;
