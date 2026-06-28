@@ -929,28 +929,86 @@
 
         function applyLanguage(lang) {
             const t = LANG_TEXT[lang] || LANG_TEXT['ru'];
-            for (const [key, value] of Object.entries(t)) {
-                const el = document.getElementById(key);
-                if (el) {
-                    if (key === 'headerTitle' || key === 'headerTitleSpan') {
-                        // handled separately
-                    } else if (key === 'welcomeText') {
-                        el.innerHTML = value;
-                    } else {
-                        el.textContent = value;
-                    }
+            
+            const elements = {
+                'langPrompt': document.getElementById('langPrompt'),
+                'onlineLabel': document.getElementById('onlineLabel'),
+                'statLabel1': document.getElementById('statLabel1'),
+                'statLabel2': document.getElementById('statLabel2'),
+                'statLabel3': document.getElementById('statLabel3'),
+                'statLabel4': document.getElementById('statLabel4'),
+                'navMain': document.getElementById('navMain'),
+                'navCreate': document.getElementById('navCreate'),
+                'navDeals': document.getElementById('navDeals'),
+                'navReviews': document.getElementById('navReviews'),
+                'navBalance': document.getElementById('navBalance'),
+                'navAdmin': document.getElementById('navAdmin'),
+                'welcomeTitle': document.getElementById('welcomeTitle'),
+                'welcomeText': document.getElementById('welcomeText'),
+                'quickStart': document.getElementById('quickStart'),
+                'btnCreateDeal': document.getElementById('btnCreateDeal'),
+                'btnReviews': document.getElementById('btnReviews'),
+                'btnBalance': document.getElementById('btnBalance'),
+                'btnDeals': document.getElementById('btnDeals'),
+                'howWorks': document.getElementById('howWorks'),
+                'securityText': document.getElementById('securityText'),
+                'recentReviewsTitle': document.getElementById('recentReviewsTitle'),
+                'loadingText': document.getElementById('loadingText'),
+                'supportLabel': document.getElementById('supportLabel'),
+                'channelLabel': document.getElementById('channelLabel'),
+                'createTitle': document.getElementById('createTitle'),
+                'createSubtitle': document.getElementById('createSubtitle'),
+                'labelProduct': document.getElementById('labelProduct'),
+                'labelCurrency': document.getElementById('labelCurrency'),
+                'labelAmount': document.getElementById('labelAmount'),
+                'labelBuyer': document.getElementById('labelBuyer'),
+                'btnCreate': document.getElementById('btnCreate'),
+                'btnBackMain': document.getElementById('btnBackMain'),
+                'myDealsTitle': document.getElementById('myDealsTitle'),
+                'loadingDeals': document.getElementById('loadingDeals'),
+                'btnBackMain2': document.getElementById('btnBackMain2'),
+                'reviewsTitle': document.getElementById('reviewsTitle'),
+                'reviewsSubtitle': document.getElementById('reviewsSubtitle'),
+                'labelRating': document.getElementById('labelRating'),
+                'labelReviewText': document.getElementById('labelReviewText'),
+                'btnSubmitReview': document.getElementById('btnSubmitReview'),
+                'loadingReviews': document.getElementById('loadingReviews'),
+                'btnLoadMore': document.getElementById('btnLoadMore'),
+                'balanceTitle': document.getElementById('balanceTitle'),
+                'btnWithdraw': document.getElementById('btnWithdraw'),
+                'withdrawInfo': document.getElementById('withdrawInfo'),
+                'labelWithdrawCurrency': document.getElementById('labelWithdrawCurrency'),
+                'labelWithdrawDetails': document.getElementById('labelWithdrawDetails'),
+                'btnConfirmWithdraw': document.getElementById('btnConfirmWithdraw'),
+                'btnBackMain3': document.getElementById('btnBackMain3'),
+                'adminTitle': document.getElementById('adminTitle'),
+                'loadingAdmin': document.getElementById('loadingAdmin'),
+                'btnBackMain4': document.getElementById('btnBackMain4')
+            };
+
+            for (const [key, el] of Object.entries(elements)) {
+                if (el && t[key] !== undefined) {
+                    el.textContent = t[key];
                 }
             }
-            // Header title
-            document.getElementById('headerTitle').textContent = t.headerTitle || 'P2P';
-            document.getElementById('headerTitleSpan').textContent = t.headerTitleSpan || 'Exchange';
-            // Lang prompt
-            document.getElementById('langPrompt').textContent = t.langPrompt || 'Выберите язык';
+
+            for (let i = 1; i <= 6; i++) {
+                const el = document.getElementById('step' + i);
+                if (el && t['step' + i] !== undefined) {
+                    el.innerHTML = t['step' + i];
+                }
+            }
+
+            const headerTitle = document.getElementById('headerTitle');
+            const headerTitleSpan = document.getElementById('headerTitleSpan');
+            if (headerTitle && t.headerTitle) headerTitle.textContent = t.headerTitle;
+            if (headerTitleSpan && t.headerTitleSpan) headerTitleSpan.textContent = t.headerTitleSpan;
         }
 
         function setLanguage(lang) {
             currentLang = lang;
-            document.getElementById('languageOverlay').classList.remove('active');
+            const overlay = document.getElementById('languageOverlay');
+            if (overlay) overlay.classList.remove('active');
             localStorage.setItem('lang', lang);
             applyLanguage(lang);
             showToast('✅ ' + (lang === 'ru' ? 'Язык установлен' : 'Language set'), 'success');
@@ -962,20 +1020,15 @@
         }
 
         // ============================================================
-        // 4. СОСТОЯНИЕ
+        // 4. ОНЛАЙН
         // ============================================================
-        let state = {
-            balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
-            deals: [],
-            reviews: [],
-            isAdmin: false,
-            reviewPage: 0,
-            reviewLimit: 10,
-            has2Deals: false,
-            isVerified: false,
-            verificationExpires: null,
-            totalDeals: 0
-        };
+        let onlineBase = 6500;
+
+        function getOnlineCount() {
+            onlineBase += (Math.random() - 0.5) * 20;
+            onlineBase = Math.max(6200, Math.min(6800, onlineBase));
+            return Math.round(onlineBase);
+        }
 
         // ============================================================
         // 5. API ВЫЗОВЫ
@@ -1000,18 +1053,7 @@
         }
 
         // ============================================================
-        // 6. ОНЛАЙН
-        // ============================================================
-        let onlineBase = 6500;
-
-        function getOnlineCount() {
-            onlineBase += (Math.random() - 0.5) * 20;
-            onlineBase = Math.max(6200, Math.min(6800, onlineBase));
-            return Math.round(onlineBase);
-        }
-
-        // ============================================================
-        // 7. НАВИГАЦИЯ
+        // 6. НАВИГАЦИЯ
         // ============================================================
         document.querySelectorAll('.nav button').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -1037,7 +1079,7 @@
         }
 
         // ============================================================
-        // 8. ГЛАВНАЯ
+        // 7. ГЛАВНАЯ
         // ============================================================
         async function loadMainData() {
             try {
@@ -1079,7 +1121,7 @@
         }
 
         // ============================================================
-        // 9. БАЛАНС
+        // 8. БАЛАНС
         // ============================================================
         async function loadBalance() {
             try {
@@ -1104,8 +1146,21 @@
         }
 
         // ============================================================
-        // 10. СДЕЛКИ
+        // 9. СДЕЛКИ
         // ============================================================
+        let state = {
+            balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
+            deals: [],
+            reviews: [],
+            isAdmin: false,
+            reviewPage: 0,
+            reviewLimit: 10,
+            has2Deals: false,
+            isVerified: false,
+            verificationExpires: null,
+            totalDeals: 0
+        };
+
         async function loadDeals() {
             const container = document.getElementById('dealsList');
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
@@ -1214,7 +1269,7 @@
         }
 
         // ============================================================
-        // 11. ОПЛАТА
+        // 10. ОПЛАТА
         // ============================================================
         async function payDeal(dealId) {
             showModal(`
@@ -1293,7 +1348,7 @@
         }
 
         // ============================================================
-        // 12. ПРОДАВЕЦ И ПОКУПАТЕЛЬ
+        // 11. ПРОДАВЕЦ И ПОКУПАТЕЛЬ
         // ============================================================
         async function sellerDelivered(dealId) {
             if (!confirm('Подтвердить передачу товара?')) return;
@@ -1327,7 +1382,7 @@
         }
 
         // ============================================================
-        // 13. СОЗДАНИЕ СДЕЛКИ
+        // 12. СОЗДАНИЕ СДЕЛКИ
         // ============================================================
         document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1378,7 +1433,7 @@
         });
 
         // ============================================================
-        // 14. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
+        // 13. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1481,7 +1536,7 @@
         }
 
         // ============================================================
-        // 15. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
+        // 14. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
@@ -1495,7 +1550,6 @@
             const statusDiv = document.getElementById('withdrawStatus');
             statusDiv.style.display = 'block';
             
-            // Проверяем баланс
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
                          (state.balance.rub || 0) + (state.balance.uah || 0);
             
@@ -1505,7 +1559,6 @@
                 return;
             }
 
-            // Проверяем 2 сделки
             const check = await apiCall('/api/has_2_deals');
             state.has2Deals = check.has_2_deals || false;
             
@@ -1515,7 +1568,6 @@
                 return;
             }
 
-            // Проверяем верификацию
             const verif = await apiCall('/api/verification_status');
             state.isVerified = verif.verified || false;
             state.verificationExpires = verif.expires_at || null;
@@ -1532,7 +1584,6 @@
                 return;
             }
 
-            // Всё хорошо
             statusDiv.className = 'verification-status verified';
             statusDiv.innerHTML = `
                 <i class="fas fa-check-circle"></i>
@@ -1652,9 +1703,6 @@
         }
 
         async function confirmWithdraw() {
-            const statusDiv = document.getElementById('withdrawStatus');
-            
-            // Проверяем баланс
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
                          (state.balance.rub || 0) + (state.balance.uah || 0);
             
@@ -1663,14 +1711,12 @@
                 return;
             }
 
-            // Проверяем 2 сделки
             const check = await apiCall('/api/has_2_deals');
             if (!check.has_2_deals) {
                 showToast('⚠️ ' + getLangText('need2Deals') + state.totalDeals, 'error');
                 return;
             }
 
-            // Проверяем верификацию
             const verif = await apiCall('/api/verification_status');
             if (!verif.verified) {
                 showToast('⚠️ ' + getLangText('verificationRequired'), 'error');
@@ -1709,7 +1755,7 @@
         }
 
         // ============================================================
-        // 16. АДМИН ПАНЕЛЬ
+        // 15. АДМИН ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1929,7 +1975,7 @@
         }
 
         // ============================================================
-        // 17. МОДАЛКА
+        // 16. МОДАЛКА
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1945,7 +1991,7 @@
         });
 
         // ============================================================
-        // 18. TOAST
+        // 17. TOAST
         // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
@@ -1958,7 +2004,7 @@
         }
 
         // ============================================================
-        // 19. ЗАПУСК
+        // 18. ЗАПУСК
         // ============================================================
         console.log('🔥 P2P Exchange загружена');
 
