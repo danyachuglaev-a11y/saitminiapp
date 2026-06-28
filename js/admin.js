@@ -2,10 +2,8 @@
 // ADMIN — АДМИН-ПАНЕЛЬ
 // ============================================================
 
-let isAdmin = false;
-
 /**
-* Проверка прав админа
+ * Проверка прав админа
  */
 async function checkAdmin() {
     try {
@@ -17,7 +15,6 @@ async function checkAdmin() {
         return { is_admin: false };
     }
 }
-
 /**
  * Рендеринг админ-панели
  */
