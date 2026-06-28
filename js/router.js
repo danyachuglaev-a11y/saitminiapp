@@ -11,14 +11,11 @@ let currentPage = 'main';
 function navigateTo(page) {
     if (page === currentPage && page !== 'create') return;
     
-    // Обновляем навигацию
     document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
     });
 
     currentPage = page;
-    
-    // Рендерим страницу
     renderPage(page);
 }
 
@@ -102,7 +99,7 @@ async function renderCreateDeal() {
         `;
     }
 
-    function renderComplete() {
+    function renderComplete(link) {
         return `
             <div style="padding:4px 0 12px 0;">
                 <h1 style="font-size:24px; font-weight:900; letter-spacing:-0.5px;">
@@ -113,7 +110,7 @@ async function renderCreateDeal() {
                 <i class="fas fa-check-circle" style="font-size:48px; color:var(--success); margin-bottom:12px;"></i>
                 <p style="color:var(--text-secondary);">Ссылка для покупателя:</p>
                 <div style="background:var(--bg-input); padding:12px; border-radius:var(--radius-sm); margin:12px 0; word-break:break-all;">
-                    <span id="dealLink" style="font-size:13px; color:var(--text-primary);"></span>
+                    <span id="dealLink" style="font-size:13px; color:var(--text-primary);">${link}</span>
                 </div>
                 <button class="btn btn-secondary btn-sm" onclick="copyDealLinkFromWizard()" style="width:auto; padding:8px 24px; margin:0 auto;">
                     <i class="fas fa-copy"></i> Скопировать ссылку
@@ -143,7 +140,6 @@ async function renderCreateDeal() {
             mainContent.innerHTML = renderStep();
             mainContent.querySelectorAll('.card').forEach(el => el.classList.add('animate-fade-in'));
         } else {
-            // Создаём сделку
             const btn = document.querySelector('.wizard-step .btn-primary');
             if (btn) {
                 btn.disabled = true;
@@ -159,8 +155,7 @@ async function renderCreateDeal() {
                 });
 
                 if (result.success) {
-                    mainContent.innerHTML = renderComplete();
-                    document.getElementById('dealLink').textContent = result.link;
+                    mainContent.innerHTML = renderComplete(result.link);
                     window._dealLink = result.link;
                     showToast('✅ Сделка создана!', 'success');
                 } else {
