@@ -5,16 +5,16 @@
 let isAdmin = false;
 
 /**
- * Проверка прав админа
+* Проверка прав админа
  */
-async function checkAdminStatus() {
+async function checkAdmin() {
     try {
-        const data = await checkAdmin();
-        isAdmin = data.is_admin || false;
-        return isAdmin;
+        const data = await apiCall('/api/is_admin');
+        window.isAdmin = data.is_admin || false;
+        return { is_admin: window.isAdmin };
     } catch (error) {
         console.error('Admin check error:', error);
-        return false;
+        return { is_admin: false };
     }
 }
 
