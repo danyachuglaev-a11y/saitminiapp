@@ -576,13 +576,8 @@
         const tg = window.Telegram.WebApp;
         if (tg) tg.expand();
 
-        // Получаем параметры из URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const dealIdParam = urlParams.get('deal_id');
-        const userIdParam = urlParams.get('user_id');
-
         const user = {
-            id: userIdParam || tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+            id: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
             username: tg?.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
             firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
@@ -972,8 +967,7 @@
             has2Deals: false,
             isVerified: false,
             verificationExpires: null,
-            totalDeals: 0,
-            currentDeal: null
+            totalDeals: 0
         };
 
         async function loadBalance() {
@@ -1010,21 +1004,8 @@
             const container = document.getElementById('dealsList');
             if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            
             try {
-                // Если есть deal_id в URL — сначала загружаем конкретную сделку
-                if (dealIdParam) {
-                    const dealData = await apiCall('/api/get_deal', { deal_id: dealIdParam });
-                    if (dealData.success && dealData.deal) {
-                        state.currentDeal = dealData.deal;
-                        // Проверяем, что пользователь — покупатель этой сделки
-                        if (dealData.deal.buyer_username.toLowerCase() === user.username.toLowerCase()) {
-                            renderSingleDeal(dealData.deal);
-                            return;
-                        }
-                    }
-                }
-                
-                // Иначе загружаем все сделки пользователя
                 const data = await apiCall('/api/deals');
                 if (data.success && data.deals) {
                     state.deals = data.deals;
@@ -1034,79 +1015,9 @@
                     container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noDeals') + '</p>';
                 }
             } catch (e) {
-                container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
+                console.error(e);
+                container.innerHTML = '<div class="error-text">❌ Ошибка загрузки</div>';
             }
-        }
-
-        function renderSingleDeal(deal) {
-            const container = document.getElementById('dealsList');
-            if (!container) return;
-            const isSeller = deal.seller_id == user.id;
-            const isBuyer = deal.buyer_id == user.id || deal.buyer_username.toLowerCase() === user.username.toLowerCase();
-            
-            container.innerHTML = `
-                <div class="deal-card" style="border-color: var(--ton-blue);">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
-                        <strong style="font-size:16px; color: var(--ton-blue);">🔍 СДЕЛКА #${deal.deal_id}</strong>
-                        <span class="deal-status ${deal.status}">${getStatusText(deal.status)}</span>
-                    </div>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:6px; font-size:13px; color:var(--text-secondary);">
-                        <span>📦 <strong>${deal.product}</strong></span>
-                        <span>💰 ${deal.amount} ${deal.currency}</span>
-                        <span>👤 @${deal.buyer_username}</span>
-                        <span>📅 ${deal.created_at ? deal.created_at.slice(0,10) : 'недавно'}</span>
-                    </div>
-                    <div class="deal-progress">
-                        <span class="step ${deal.status === 'waiting_payment' ? 'active' : deal.status === 'paid' || deal.status === 'awaiting_confirmation' || deal.status === 'completed' ? 'done' : ''}">⏳ ${getLangText('waiting')}</span>
-                        <span class="step ${deal.status === 'paid' ? 'active' : deal.status === 'awaiting_confirmation' || deal.status === 'completed' ? 'done' : ''}">✅ ${getLangText('paid')}</span>
-                        <span class="step ${deal.status === 'awaiting_confirmation' ? 'active' : deal.status === 'completed' ? 'done' : ''}">📦 ${getLangText('awaiting')}</span>
-                        <span class="step ${deal.status === 'completed' ? 'done' : ''}">🎉 ${getLangText('completed')}</span>
-                    </div>
-                    
-                    ${deal.status === 'waiting_payment' && isBuyer ? `
-                        <div class="support-block mt-6" style="border-color: var(--gold);">
-                            <span style="font-size:13px;">💰 Ожидается оплата. Нажмите кнопку ниже</span>
-                            <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${deal.deal_id}')">
-                                <i class="fas fa-credit-card"></i> ${getLangText('pay')}
-                            </button>
-                        </div>
-                    ` : ''}
-                    
-                    ${deal.status === 'paid' && isSeller ? `
-                        <div class="support-block mt-6" style="border-color: var(--success);">
-                            <span style="font-size:12px; color: var(--success);">✅ ${getLangText('paid')}. Нажмите «${getLangText('sellerDelivered')}»</span>
-                            <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${deal.deal_id}')">
-                                <i class="fas fa-box"></i> ${getLangText('sellerDelivered')}
-                            </button>
-                        </div>
-                    ` : ''}
-                    
-                    ${deal.status === 'awaiting_confirmation' && isBuyer ? `
-                        <div class="support-block mt-6">
-                            <span style="font-size:12px;">📦 ${getLangText('sellerDelivered')}. ${getLangText('confirmReceipt')}</span>
-                            <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${deal.deal_id}')">
-                                <i class="fas fa-check"></i> ${getLangText('confirmReceipt')}
-                            </button>
-                        </div>
-                    ` : ''}
-                    
-                    ${deal.status === 'completed' ? `
-                        <div class="support-block mt-6" style="border-color: var(--success);">
-                            <span style="font-size:12px; color: var(--success);">🎉 ${getLangText('completed')}! Средства зачислены</span>
-                        </div>
-                    ` : ''}
-                    
-                    ${!isBuyer && !isSeller ? `
-                        <div class="support-block mt-6" style="border-color: var(--danger);">
-                            <span style="font-size:12px; color: var(--danger);">⛔ Вы не являетесь участником этой сделки</span>
-                        </div>
-                    ` : ''}
-                    
-                    <button class="btn btn-secondary btn-sm mt-10" onclick="showPage('deals')" style="width:auto;">
-                        <i class="fas fa-arrow-left"></i> Все сделки
-                    </button>
-                </div>
-            `;
         }
 
         function getLangText(key) {
@@ -1201,7 +1112,7 @@
         }
 
         // ============================================================
-        // 10. ОПЛАТА
+        // 10. ОПЛАТА (ПРАВИЛЬНЫЕ ЭНДПОИНТЫ)
         // ============================================================
         async function payDeal(dealId) {
             showModal(`
@@ -1348,7 +1259,7 @@
                                 <i class="fas fa-copy"></i> Скопировать ссылку
                             </button>
                             <div class="support-block mt-6">
-                                <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю.</span>
+                                <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю. Сделка появится у него в разделе «Сделки».</span>
                             </div>
                         `;
                     }
@@ -1958,14 +1869,6 @@
         loadBalance();
         loadDeals();
         loadReviews();
-
-        // Если есть deal_id в URL — открываем вкладку сделок
-        if (dealIdParam) {
-            setTimeout(() => {
-                showPage('deals');
-                showToast('🔍 Открыта сделка #' + dealIdParam, 'info');
-            }, 800);
-        }
 
         setInterval(() => {
             const onlineEl = document.getElementById('onlineCount');
