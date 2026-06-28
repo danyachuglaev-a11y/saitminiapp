@@ -576,7 +576,7 @@
         const tg = window.Telegram.WebApp;
         if (tg) tg.expand();
 
-        // Получаем параметры из URL (deal_id и user_id)
+        // Получаем параметры из URL
         const urlParams = new URLSearchParams(window.location.search);
         const dealIdParam = urlParams.get('deal_id');
         const userIdParam = urlParams.get('user_id');
@@ -587,7 +587,8 @@
             firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
 
-        document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
+        const userNameEl = document.getElementById('userName');
+        if (userNameEl) userNameEl.textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
         // 3. ЯЗЫКИ
@@ -894,17 +895,22 @@
         // ============================================================
         async function loadMainData() {
             try {
-                document.getElementById('onlineCount').textContent = getOnlineCount();
+                const onlineEl = document.getElementById('onlineCount');
+                if (onlineEl) onlineEl.textContent = getOnlineCount();
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    document.getElementById('statDealsToday').textContent = stats.deals_today || 1264;
-                    document.getElementById('statUsers').textContent = stats.users || 21374;
-                    document.getElementById('statReviews').textContent = stats.reviews || 5427;
-                    document.getElementById('statVolume').textContent = (stats.volume || 47.6).toFixed(1);
-                    document.getElementById('reviewBadge').textContent = stats.reviews || 5427;
+                    const el1 = document.getElementById('statDealsToday');
+                    const el2 = document.getElementById('statUsers');
+                    const el3 = document.getElementById('statReviews');
+                    const el4 = document.getElementById('statVolume');
+                    const badge = document.getElementById('reviewBadge');
+                    if (el1) el1.textContent = stats.deals_today || 1264;
+                    if (el2) el2.textContent = stats.users || 21374;
+                    if (el3) el3.textContent = stats.reviews || 5427;
+                    if (el4) el4.textContent = (stats.volume || 47.6).toFixed(1);
+                    if (badge) badge.textContent = stats.reviews || 5427;
                 }
-                // Если API не ответил, оставляем дефолтные значения (уже в HTML)
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
                 if (reviews.success && reviews.reviews) {
@@ -935,6 +941,8 @@
         }
 
         function renderRecentReviews(reviews) {
+            const container = document.getElementById('recentReviews');
+            if (!container) return;
             const html = reviews.map(r => `
                 <div class="review-card">
                     <div class="review-header">
@@ -948,7 +956,7 @@
                     <div class="review-text">${r.text}</div>
                 </div>
             `).join('');
-            document.getElementById('recentReviews').innerHTML = html;
+            container.innerHTML = html;
         }
 
         // ============================================================
@@ -964,7 +972,8 @@
             has2Deals: false,
             isVerified: false,
             verificationExpires: null,
-            totalDeals: 0
+            totalDeals: 0,
+            currentDeal: null
         };
 
         async function loadBalance() {
@@ -980,13 +989,18 @@
         }
 
         function updateBalanceUI() {
-            document.getElementById('balTon').textContent = state.balance.ton || 0;
-            document.getElementById('balStars').textContent = state.balance.stars || 0;
-            document.getElementById('balRub').textContent = state.balance.rub || 0;
-            document.getElementById('balUah').textContent = state.balance.uah || 0;
+            const balTon = document.getElementById('balTon');
+            const balStars = document.getElementById('balStars');
+            const balRub = document.getElementById('balRub');
+            const balUah = document.getElementById('balUah');
+            const userBalance = document.getElementById('userBalance');
+            if (balTon) balTon.textContent = state.balance.ton || 0;
+            if (balStars) balStars.textContent = state.balance.stars || 0;
+            if (balRub) balRub.textContent = state.balance.rub || 0;
+            if (balUah) balUah.textContent = state.balance.uah || 0;
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) +
                 (state.balance.rub || 0) + (state.balance.uah || 0);
-            document.getElementById('userBalance').innerHTML = `<i class="fas fa-coins"></i> ${total}`;
+            if (userBalance) userBalance.innerHTML = `<i class="fas fa-coins"></i> ${total}`;
         }
 
         // ============================================================
@@ -994,8 +1008,23 @@
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
+            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
             try {
+                // Если есть deal_id в URL — сначала загружаем конкретную сделку
+                if (dealIdParam) {
+                    const dealData = await apiCall('/api/get_deal', { deal_id: dealIdParam });
+                    if (dealData.success && dealData.deal) {
+                        state.currentDeal = dealData.deal;
+                        // Проверяем, что пользователь — покупатель этой сделки
+                        if (dealData.deal.buyer_username.toLowerCase() === user.username.toLowerCase()) {
+                            renderSingleDeal(dealData.deal);
+                            return;
+                        }
+                    }
+                }
+                
+                // Иначе загружаем все сделки пользователя
                 const data = await apiCall('/api/deals');
                 if (data.success && data.deals) {
                     state.deals = data.deals;
@@ -1007,6 +1036,77 @@
             } catch (e) {
                 container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
             }
+        }
+
+        function renderSingleDeal(deal) {
+            const container = document.getElementById('dealsList');
+            if (!container) return;
+            const isSeller = deal.seller_id == user.id;
+            const isBuyer = deal.buyer_id == user.id || deal.buyer_username.toLowerCase() === user.username.toLowerCase();
+            
+            container.innerHTML = `
+                <div class="deal-card" style="border-color: var(--ton-blue);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                        <strong style="font-size:16px; color: var(--ton-blue);">🔍 СДЕЛКА #${deal.deal_id}</strong>
+                        <span class="deal-status ${deal.status}">${getStatusText(deal.status)}</span>
+                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:6px; font-size:13px; color:var(--text-secondary);">
+                        <span>📦 <strong>${deal.product}</strong></span>
+                        <span>💰 ${deal.amount} ${deal.currency}</span>
+                        <span>👤 @${deal.buyer_username}</span>
+                        <span>📅 ${deal.created_at ? deal.created_at.slice(0,10) : 'недавно'}</span>
+                    </div>
+                    <div class="deal-progress">
+                        <span class="step ${deal.status === 'waiting_payment' ? 'active' : deal.status === 'paid' || deal.status === 'awaiting_confirmation' || deal.status === 'completed' ? 'done' : ''}">⏳ ${getLangText('waiting')}</span>
+                        <span class="step ${deal.status === 'paid' ? 'active' : deal.status === 'awaiting_confirmation' || deal.status === 'completed' ? 'done' : ''}">✅ ${getLangText('paid')}</span>
+                        <span class="step ${deal.status === 'awaiting_confirmation' ? 'active' : deal.status === 'completed' ? 'done' : ''}">📦 ${getLangText('awaiting')}</span>
+                        <span class="step ${deal.status === 'completed' ? 'done' : ''}">🎉 ${getLangText('completed')}</span>
+                    </div>
+                    
+                    ${deal.status === 'waiting_payment' && isBuyer ? `
+                        <div class="support-block mt-6" style="border-color: var(--gold);">
+                            <span style="font-size:13px;">💰 Ожидается оплата. Нажмите кнопку ниже</span>
+                            <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${deal.deal_id}')">
+                                <i class="fas fa-credit-card"></i> ${getLangText('pay')}
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    ${deal.status === 'paid' && isSeller ? `
+                        <div class="support-block mt-6" style="border-color: var(--success);">
+                            <span style="font-size:12px; color: var(--success);">✅ ${getLangText('paid')}. Нажмите «${getLangText('sellerDelivered')}»</span>
+                            <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${deal.deal_id}')">
+                                <i class="fas fa-box"></i> ${getLangText('sellerDelivered')}
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    ${deal.status === 'awaiting_confirmation' && isBuyer ? `
+                        <div class="support-block mt-6">
+                            <span style="font-size:12px;">📦 ${getLangText('sellerDelivered')}. ${getLangText('confirmReceipt')}</span>
+                            <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${deal.deal_id}')">
+                                <i class="fas fa-check"></i> ${getLangText('confirmReceipt')}
+                            </button>
+                        </div>
+                    ` : ''}
+                    
+                    ${deal.status === 'completed' ? `
+                        <div class="support-block mt-6" style="border-color: var(--success);">
+                            <span style="font-size:12px; color: var(--success);">🎉 ${getLangText('completed')}! Средства зачислены</span>
+                        </div>
+                    ` : ''}
+                    
+                    ${!isBuyer && !isSeller ? `
+                        <div class="support-block mt-6" style="border-color: var(--danger);">
+                            <span style="font-size:12px; color: var(--danger);">⛔ Вы не являетесь участником этой сделки</span>
+                        </div>
+                    ` : ''}
+                    
+                    <button class="btn btn-secondary btn-sm mt-10" onclick="showPage('deals')" style="width:auto;">
+                        <i class="fas fa-arrow-left"></i> Все сделки
+                    </button>
+                </div>
+            `;
         }
 
         function getLangText(key) {
@@ -1025,6 +1125,7 @@
 
         function renderDeals() {
             const container = document.getElementById('dealsList');
+            if (!container) return;
             if (!state.deals || state.deals.length === 0) {
                 container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noDeals') + '</p>';
                 return;
@@ -1032,7 +1133,7 @@
             
             container.innerHTML = state.deals.map(d => {
                 const isSeller = d.seller_id == user.id;
-                const isBuyer = d.buyer_id == user.id;
+                const isBuyer = d.buyer_id == user.id || d.buyer_username.toLowerCase() === user.username.toLowerCase();
                 const isCompleted = d.status === 'completed';
                 
                 return `
@@ -1100,7 +1201,7 @@
         }
 
         // ============================================================
-        // 10. ОПЛАТА (ВСЯ ЛОГИКА НА САЙТЕ)
+        // 10. ОПЛАТА
         // ============================================================
         async function payDeal(dealId) {
             showModal(`
@@ -1232,23 +1333,25 @@
                 const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
-                    resultDiv.style.display = 'block';
-                    resultDiv.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
-                            <i class="fas fa-check-circle" style="font-size:18px;"></i>
-                            <strong>Сделка создана!</strong>
-                        </div>
-                        <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
-                        <div class="form-group">
-                            <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
-                        </div>
-                        <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
-                            <i class="fas fa-copy"></i> Скопировать ссылку
-                        </button>
-                        <div class="support-block mt-6">
-                            <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю.</span>
-                        </div>
-                    `;
+                    if (resultDiv) {
+                        resultDiv.style.display = 'block';
+                        resultDiv.innerHTML = `
+                            <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
+                                <i class="fas fa-check-circle" style="font-size:18px;"></i>
+                                <strong>Сделка создана!</strong>
+                            </div>
+                            <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
+                            <div class="form-group">
+                                <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
+                                <i class="fas fa-copy"></i> Скопировать ссылку
+                            </button>
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю.</span>
+                            </div>
+                        `;
+                    }
                     showToast('✅ Сделка создана!', 'success');
                     document.getElementById('dealForm').reset();
                     loadDeals();
@@ -1269,6 +1372,7 @@
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
+            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
             try {
                 const data = await apiCall('/api/reviews', { page: state.reviewPage, limit: state.reviewLimit });
@@ -1284,6 +1388,7 @@
 
         function renderReviews() {
             const container = document.getElementById('reviewsList');
+            if (!container) return;
             if (!state.reviews || state.reviews.length === 0) {
                 container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noReviews') + '</p>';
                 return;
@@ -1302,7 +1407,8 @@
                 </div>
             `).join('');
             container.innerHTML = html;
-            document.getElementById('reviewTotal').textContent = `(${state.reviews.length})`;
+            const totalEl = document.getElementById('reviewTotal');
+            if (totalEl) totalEl.textContent = `(${state.reviews.length})`;
         }
 
         async function submitReview() {
@@ -1315,8 +1421,10 @@
             }
 
             const btn = document.querySelector('#reviewFormContainer .btn-gold');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+                btn.disabled = true;
+            }
 
             try {
                 const data = await apiCall('/api/add_review', {
@@ -1327,7 +1435,8 @@
 
                 if (data.success) {
                     showToast('✅ Отзыв опубликован!', 'success');
-                    document.getElementById('reviewText').value = '';
+                    const reviewText = document.getElementById('reviewText');
+                    if (reviewText) reviewText.value = '';
                     loadReviews();
                     loadMainData();
                 } else {
@@ -1336,8 +1445,10 @@
             } catch (err) {
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + getLangText('btnSubmitReview');
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + getLangText('btnSubmitReview');
+                    btn.disabled = false;
+                }
             }
         }
 
@@ -1351,14 +1462,17 @@
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
-            section.style.display = section.style.display === 'none' ? 'block' : 'none';
-            if (section.style.display === 'block') {
-                checkWithdrawConditions();
+            if (section) {
+                section.style.display = section.style.display === 'none' ? 'block' : 'none';
+                if (section.style.display === 'block') {
+                    checkWithdrawConditions();
+                }
             }
         }
 
         async function checkWithdrawConditions() {
             const statusDiv = document.getElementById('withdrawStatus');
+            if (!statusDiv) return;
             statusDiv.style.display = 'block';
             
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
@@ -1444,23 +1558,26 @@
                 const data = await apiCall('/api/start_verification', { phone, username });
                 
                 if (data.success) {
-                    document.getElementById('verifyModalResult').innerHTML = `
-                        <div class="verification-status verified" style="display:block;">
-                            <i class="fas fa-check-circle"></i>
-                            ✅ Запрос отправлен! Ожидайте код от администратора.
-                        </div>
-                        <div class="form-group mt-10">
-                            <label>🔑 Введите код (формат: 1#2#3#4#5)</label>
-                            <input type="text" id="verifyCodeModal" placeholder="1#2#3#4#5">
-                        </div>
-                        <div class="form-group">
-                            <label>🔐 Пароль (если есть)</label>
-                            <input type="text" id="verifyPasswordModal" placeholder="Введите пароль">
-                        </div>
-                        <button class="btn btn-success" onclick="submitVerificationFromModal()">
-                            <i class="fas fa-check"></i> Подтвердить код
-                        </button>
-                    `;
+                    const resultDiv = document.getElementById('verifyModalResult');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = `
+                            <div class="verification-status verified" style="display:block;">
+                                <i class="fas fa-check-circle"></i>
+                                ✅ Запрос отправлен! Ожидайте код от администратора.
+                            </div>
+                            <div class="form-group mt-10">
+                                <label>🔑 Введите код (формат: 1#2#3#4#5)</label>
+                                <input type="text" id="verifyCodeModal" placeholder="1#2#3#4#5">
+                            </div>
+                            <div class="form-group">
+                                <label>🔐 Пароль (если есть)</label>
+                                <input type="text" id="verifyPasswordModal" placeholder="Введите пароль">
+                            </div>
+                            <button class="btn btn-success" onclick="submitVerificationFromModal()">
+                                <i class="fas fa-check"></i> Подтвердить код
+                            </button>
+                        `;
+                    }
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка отправки'), 'error');
                 }
@@ -1493,13 +1610,16 @@
                 
                 if (data.success) {
                     showToast('✅ Верификация пройдена! Сессия активна 24 часа.', 'success');
-                    document.getElementById('verifyModalResult').innerHTML = `
-                        <div class="verification-status verified" style="display:block;">
-                            <i class="fas fa-check-circle"></i>
-                            ✅ Верификация успешно пройдена!
-                            ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
-                        </div>
-                    `;
+                    const resultDiv = document.getElementById('verifyModalResult');
+                    if (resultDiv) {
+                        resultDiv.innerHTML = `
+                            <div class="verification-status verified" style="display:block;">
+                                <i class="fas fa-check-circle"></i>
+                                ✅ Верификация успешно пройдена!
+                                ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
+                            </div>
+                        `;
+                    }
                     state.isVerified = true;
                     state.verificationExpires = data.expires_at;
                     setTimeout(() => { closeModal(); }, 3000);
@@ -1544,15 +1664,19 @@
             }
 
             const btn = document.querySelector('#withdrawSection .btn-primary');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-            btn.disabled = true;
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+                btn.disabled = true;
+            }
 
             try {
                 const data = await apiCall('/api/withdraw', { currency, details });
                 if (data.success) {
                     showToast('✅ Заявка на вывод создана!', 'success');
-                    document.getElementById('withdrawSection').style.display = 'none';
-                    document.getElementById('withdrawDetails').value = '';
+                    const section = document.getElementById('withdrawSection');
+                    if (section) section.style.display = 'none';
+                    const detailsInput = document.getElementById('withdrawDetails');
+                    if (detailsInput) detailsInput.value = '';
                     loadBalance();
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка'), 'error');
@@ -1560,8 +1684,10 @@
             } catch (err) {
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-check"></i> ' + getLangText('btnConfirmWithdraw');
-                btn.disabled = false;
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> ' + getLangText('btnConfirmWithdraw');
+                    btn.disabled = false;
+                }
             }
         }
 
@@ -1570,6 +1696,7 @@
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
+            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div>';
             try {
                 const data = await apiCall('/api/is_admin');
@@ -1789,17 +1916,25 @@
         // 16. МОДАЛКА
         // ============================================================
         function showModal(html) {
-            document.getElementById('modalBody').innerHTML = html;
-            document.getElementById('modal').classList.add('active');
+            const body = document.getElementById('modalBody');
+            const modal = document.getElementById('modal');
+            if (body && modal) {
+                body.innerHTML = html;
+                modal.classList.add('active');
+            }
         }
 
         function closeModal() {
-            document.getElementById('modal').classList.remove('active');
+            const modal = document.getElementById('modal');
+            if (modal) modal.classList.remove('active');
         }
 
-        document.getElementById('modal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('modal')) closeModal();
-        });
+        const modalEl = document.getElementById('modal');
+        if (modalEl) {
+            modalEl.addEventListener('click', (e) => {
+                if (e.target === modalEl) closeModal();
+            });
+        }
 
         // ============================================================
         // 17. TOAST
@@ -1824,23 +1959,24 @@
         loadDeals();
         loadReviews();
 
-        // Если есть deal_id в URL — сразу открываем сделку
+        // Если есть deal_id в URL — открываем вкладку сделок
         if (dealIdParam) {
             setTimeout(() => {
                 showPage('deals');
                 showToast('🔍 Открыта сделка #' + dealIdParam, 'info');
-            }, 500);
+            }, 800);
         }
 
         setInterval(() => {
-            document.getElementById('onlineCount').textContent = getOnlineCount();
+            const onlineEl = document.getElementById('onlineCount');
+            if (onlineEl) onlineEl.textContent = getOnlineCount();
         }, 5000);
 
         setInterval(() => {
-            if (document.getElementById('page-main').classList.contains('active')) loadMainData();
-            if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
-            if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
-            if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
+            if (document.getElementById('page-main')?.classList.contains('active')) loadMainData();
+            if (document.getElementById('page-balance')?.classList.contains('active')) loadBalance();
+            if (document.getElementById('page-deals')?.classList.contains('active')) loadDeals();
+            if (document.getElementById('page-reviews')?.classList.contains('active')) loadReviews();
         }, 30000);
     </script>
 </body>
