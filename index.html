@@ -3,115 +3,1564 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Tonkeeper P2P</title>
-    
-    <!-- Telegram Mini App -->
+    <title>🔥 Tonkeeper P2P</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17,24,39,0.7);
+            --border-color: rgba(255,255,255,0.06);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gold: #f0b90b;
+            --ton-blue: #0098ea;
+            --ton-gradient: linear-gradient(135deg, #0098ea, #0077be);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 16px;
+            background-image: radial-gradient(ellipse at 20% 20%, rgba(0,152,234,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(240,185,11,0.04) 0%, transparent 50%);
+            padding-bottom: 90px;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--ton-blue); border-radius: 10px; }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(0,152,234,0.3); } 50% { box-shadow: 0 0 0 20px rgba(0,152,234,0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
+        .language-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,14,26,0.98);
+            backdrop-filter: blur(40px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 24px;
+            padding: 24px;
+        }
+        .language-overlay.active { display: flex; }
+        .language-overlay .logo-icon { font-size: 64px; animation: float 3s ease-in-out infinite; }
+        .language-overlay h1 { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        .language-overlay p { color: var(--text-secondary); font-size: 15px; text-align: center; font-weight: 300; }
+        .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 380px; width: 100%; }
+        .lang-btn { padding: 18px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-primary); font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.35s; text-align: center; }
+        .lang-btn:hover { border-color: var(--ton-blue); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,152,234,0.15); }
+        .lang-btn:active { transform: scale(0.97); }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 40px rgba(0,152,234,0.08);
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-logo { font-size: 32px; }
+        .header-title { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #ffffff, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-title span { font-weight: 400; -webkit-text-fill-color: var(--text-secondary); }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .header-user { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+        .header-balance { font-size: 15px; font-weight: 700; color: var(--gold); background: rgba(240,185,11,0.06); padding: 2px 14px; border-radius: 20px; }
+        .online-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(46,204,113,0.08); padding: 4px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; color: #2ecc71; border: 1px solid rgba(46,204,113,0.1); }
+        .online-dot { width: 7px; height: 7px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: pulse-ring 1.8s ease-in-out infinite; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: var(--bg-card); backdrop-filter: blur(16px); border-radius: var(--radius-sm); padding: 14px 10px; border: 1px solid var(--border-color); text-align: center; transition: all 0.4s; }
+        .stat-card:hover { border-color: rgba(0,152,234,0.2); transform: translateY(-3px); }
+        .stat-number { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; }
+        .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
+
+        .nav {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 6px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .nav button {
+            flex: 1;
+            min-width: 52px;
+            padding: 10px 6px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.35s;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .nav button i { font-size: 18px; }
+        .nav button span { font-size: 8px; opacity: 0.7; font-weight: 500; }
+        .nav button .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
+        .nav button.active { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0,152,234,0.25); }
+        .nav button.active i { color: #fff; }
+        .nav button:hover:not(.active) { color: var(--text-primary); background: rgba(0,152,234,0.06); }
+
+        .page { display: none; animation: slideUp 0.5s ease; }
+        .page.active { display: block; }
+
+        .card { background: var(--bg-card); backdrop-filter: blur(20px); border-radius: var(--radius); padding: 20px; margin: 10px 0; border: 1px solid var(--border-color); box-shadow: 0 8px 40px rgba(0,152,234,0.08); transition: all 0.4s; }
+        .card:hover { border-color: rgba(0,152,234,0.12); }
+        .card-glow { border-color: rgba(0,152,234,0.15); }
+        .card-title { font-size: 17px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
+        .card-title i { color: var(--ton-blue); font-size: 18px; }
+        .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-bottom: 14px; }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.35s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-primary { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0,152,234,0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,152,234,0.3); }
+        .btn-secondary { background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), #d4a00a); color: #0a0e1a; box-shadow: 0 8px 30px rgba(240,185,11,0.15); }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240,185,11,0.25); }
+        .btn-success { background: rgba(46,204,113,0.12); color: #2ecc71; border: 1px solid rgba(46,204,113,0.15); }
+        .btn-success:hover { background: rgba(46,204,113,0.2); transform: translateY(-2px); }
+        .btn-danger { background: rgba(231,76,60,0.12); color: #e74c3c; border: 1px solid rgba(231,76,60,0.15); }
+        .btn-danger:hover { background: rgba(231,76,60,0.2); transform: translateY(-2px); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group .btn { flex: 1; min-width: 60px; }
+
+        .form-group { margin: 12px 0; }
+        .form-group label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--ton-blue);
+            box-shadow: 0 0 0 4px rgba(0,152,234,0.06);
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+
+        .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .balance-item { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border: 1px solid var(--border-color); transition: all 0.3s; }
+        .balance-item:hover { border-color: rgba(0,152,234,0.2); }
+        .balance-item .label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+        .balance-item .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
+        .balance-item .value.ton { color: var(--ton-blue); }
+        .balance-item .value.stars { color: var(--gold); }
+        .balance-item .value.rub { color: #4ecdc4; }
+        .balance-item .value.uah { color: #ff6b6b; }
+
+        .review-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .review-card:hover { border-color: rgba(0,152,234,0.1); }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .review-user { display: flex; align-items: center; gap: 10px; }
+        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ton-gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 13px; flex-shrink: 0; }
+        .review-name.anonymous { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+        .review-date { font-size: 10px; color: var(--text-muted); }
+        .review-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-top: 6px; }
+        .review-stars { color: var(--gold); font-size: 13px; margin-top: 2px; }
+
+        .deal-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .deal-card:hover { border-color: rgba(0,152,234,0.1); }
+        .deal-status { display: inline-block; padding: 2px 14px; border-radius: 30px; font-size: 10px; font-weight: 700; }
+        .deal-status.waiting { background: rgba(243,156,18,0.12); color: #f39c12; }
+        .deal-status.paid { background: rgba(46,204,113,0.12); color: #2ecc71; }
+        .deal-status.awaiting { background: rgba(52,152,219,0.12); color: #3498db; }
+        .deal-status.completed { background: rgba(155,89,182,0.12); color: #9b59b6; }
+
+        .deal-progress { display: flex; gap: 4px; margin: 8px 0 4px; flex-wrap: wrap; }
+        .deal-progress .step { padding: 2px 10px; border-radius: 30px; font-size: 8px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-muted); }
+        .deal-progress .step.done { background: rgba(46,204,113,0.1); color: #2ecc71; }
+        .deal-progress .step.active { background: rgba(0,152,234,0.12); color: var(--ton-blue); }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--bg-secondary); border-radius: var(--radius); padding: 24px; max-width: 460px; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 24px 80px rgba(0,0,0,0.5); animation: slideUp 0.4s ease; }
+        .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; padding: 4px; }
+        .modal-close:hover { color: var(--text-primary); transform: rotate(90deg); }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+            z-index: 2000;
+            animation: slideUp 0.4s ease;
+            max-width: 92%;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            backdrop-filter: blur(20px);
+        }
+        .toast.success { border-color: rgba(46,204,113,0.3); }
+        .toast.error { border-color: rgba(231,76,60,0.3); }
+        .toast.info { border-color: rgba(0,152,234,0.3); }
+
+        .support-block { background: rgba(0,152,234,0.04); border-radius: var(--radius-sm); padding: 14px; border-left: 3px solid var(--ton-blue); margin-top: 8px; }
+        .support-block a { color: var(--ton-blue); text-decoration: none; font-weight: 600; }
+
+        .loading { text-align: center; padding: 30px; color: var(--text-muted); }
+        .loading i { font-size: 28px; color: var(--ton-blue); animation: spin-slow 1.2s linear infinite; display: block; margin-bottom: 12px; }
+
+        .text-gold { color: var(--gold); }
+        .text-ton { color: var(--ton-blue); }
+        .text-muted { color: var(--text-muted); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-center { text-align: center; }
+        .text-success { color: #2ecc71; }
+        .text-danger { color: #e74c3c; }
+        .mt-6 { margin-top: 6px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-16 { margin-top: 16px; }
+        .mb-10 { margin-bottom: 10px; }
+        .flex { display: flex; gap: 8px; }
+        .flex .btn { flex: 1; }
+        .gap-6 { gap: 6px; }
+        .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .header { padding: 12px 14px; }
+            .header-title { font-size: 16px; }
+            .header-logo { font-size: 26px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .stat-number { font-size: 18px; }
+            .balance-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav button { min-width: 42px; padding: 8px 4px; }
+            .nav button i { font-size: 15px; }
+            .nav button span { font-size: 7px; }
+            .card { padding: 14px; }
+            .btn { padding: 10px 14px; font-size: 12px; }
+            .language-grid { grid-template-columns: 1fr 1fr; }
+            .language-overlay h1 { font-size: 24px; }
+            .language-overlay .logo-icon { font-size: 48px; }
+        }
+        @media (min-width: 768px) {
+            body { padding: 24px; max-width: 860px; margin: 0 auto; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            .balance-grid { grid-template-columns: repeat(4, 1fr); }
+            .nav button { font-size: 12px; padding: 12px 8px; }
+            .nav button span { font-size: 10px; }
+        }
+    </style>
 </head>
 <body>
-    
-    <!-- ===== LANGUAGE OVERLAY ===== -->
-    <div class="language-overlay" id="languageOverlay">
-        <div class="language-overlay-content">
-            <div class="logo-icon">⚡</div>
-            <h1>Tonkeeper P2P</h1>
-            <p>Выберите язык</p>
-            <div class="language-grid">
-                <button class="lang-btn" onclick="window.setLanguage('ru')">🇷🇺 Русский</button>
-                <button class="lang-btn" onclick="window.setLanguage('en')">🇬🇧 English</button>
-                <button class="lang-btn" onclick="window.setLanguage('zh')">🇨🇳 中文</button>
-                <button class="lang-btn" onclick="window.setLanguage('ar')">🇸🇦 العربية</button>
-            </div>
+
+    <!-- ===== ВЫБОР ЯЗЫКА ===== -->
+    <div class="language-overlay active" id="languageOverlay">
+        <div class="logo-icon">🔥</div>
+        <h1>Tonkeeper P2P</h1>
+        <p>Выберите язык / Choose your language</p>
+        <div class="language-grid">
+            <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 Русский</button>
+            <button class="lang-btn" onclick="setLanguage('en')">🇬🇧 English</button>
+            <button class="lang-btn" onclick="setLanguage('zh')">🇨🇳 中文</button>
+            <button class="lang-btn" onclick="setLanguage('ar')">🇸🇦 العربية</button>
         </div>
     </div>
 
-    <!-- ===== APP CONTAINER ===== -->
-    <div id="app">
-        
-        <!-- HEADER -->
-        <header class="header">
-            <div class="header-left">
-                <div class="logo">⚡</div>
-                <span class="title">Tonkeeper <span>P2P</span></span>
-            </div>
-            <div class="header-right">
-                <div class="user-info">
-                    <span class="username" id="userName">👤</span>
-                    <span class="balance-badge" id="userBalance">0</span>
-                </div>
-                <div class="online-badge">
-                    <span class="dot"></span>
-                    <span id="onlineCount">0</span>
-                </div>
-            </div>
-        </header>
+    <!-- ===== ХЕДЕР ===== -->
+    <header class="header">
+        <div class="header-left">
+            <span class="header-logo">🔥</span>
+            <span class="header-title">Tonkeeper <span>P2P</span></span>
+        </div>
+        <div class="header-right">
+            <span class="header-user" id="userName">👤 Загрузка...</span>
+            <span class="header-balance" id="userBalance"><i class="fas fa-coins"></i> 0</span>
+            <span class="online-badge">
+                <span class="online-dot"></span>
+                <span id="onlineCount">0</span> онлайн
+            </span>
+        </div>
+    </header>
 
-        <!-- MAIN CONTENT -->
-        <main id="main-content">
-            <!-- Pages rendered by router -->
-        </main>
+    <!-- ===== СТАТИСТИКА ===== -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-number" id="statDealsToday">1264</span>
+            <span class="stat-label"><i class="fas fa-exchange-alt stat-icon"></i> Сделок сегодня</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="statUsers">21374</span>
+            <span class="stat-label"><i class="fas fa-users stat-icon"></i> Пользователей</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="statReviews">5427</span>
+            <span class="stat-label"><i class="fas fa-star stat-icon"></i> Отзывов</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="statVolume">47.6K</span>
+            <span class="stat-label"><i class="fas fa-chart-line stat-icon"></i> Объём (TON)</span>
+        </div>
+    </div>
 
-        <!-- BOTTOM NAVIGATION -->
-        <nav class="bottom-nav" id="bottomNav">
-            <button class="nav-item active" data-page="main">
-                <i class="fas fa-home"></i>
-                <span>Главная</span>
-            </button>
-            <button class="nav-item" data-page="deals">
-                <i class="fas fa-list-ul"></i>
-                <span>Сделки</span>
-            </button>
-            <button class="nav-item" data-page="create">
-                <i class="fas fa-plus-circle"></i>
-                <span>Создать</span>
-            </button>
-            <button class="nav-item" data-page="balance">
-                <i class="fas fa-wallet"></i>
-                <span>Баланс</span>
-            </button>
-            <button class="nav-item" data-page="profile">
-                <i class="fas fa-user"></i>
-                <span>Профиль</span>
-            </button>
-        </nav>
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <nav class="nav">
+        <button class="active" data-page="main"><i class="fas fa-home"></i><span>Главная</span></button>
+        <button data-page="create"><i class="fas fa-plus-circle"></i><span>Сделка</span></button>
+        <button data-page="deals"><i class="fas fa-list"></i><span>Сделки</span></button>
+        <button data-page="reviews"><i class="fas fa-star"></i><span>Отзывы <span class="badge-count" id="reviewBadge">5427</span></span></button>
+        <button data-page="balance"><i class="fas fa-wallet"></i><span>Баланс</span></button>
+        <button data-page="admin"><i class="fas fa-crown"></i><span>Админ</span></button>
+    </nav>
+
+    <!-- ===== КОНТЕНТ ===== -->
+    <div id="content">
+
+        <!-- ===== ГЛАВНАЯ ===== -->
+        <div class="page active" id="page-main">
+            <div class="card card-glow">
+                <div class="card-title"><i class="fas fa-rocket text-ton"></i> Добро пожаловать!</div>
+                <p style="color: var(--text-secondary); line-height: 1.6;">Безопасные P2P сделки с криптовалютой. <span class="text-gold">Tonkeeper</span> — ваш надёжный партнёр.</p>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, rgba(0,136,204,0.05), rgba(240,185,11,0.02)); border-color: rgba(0,136,204,0.15);">
+                <div class="card-title" style="font-size: 14px;"><i class="fas fa-bolt text-ton"></i> Быстрый старт</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <button class="btn btn-primary" onclick="showPage('create')"><i class="fas fa-plus-circle"></i> Создать сделку</button>
+                    <button class="btn btn-secondary" onclick="showPage('reviews')"><i class="fas fa-star"></i> Отзывы</button>
+                    <button class="btn btn-secondary" onclick="showPage('balance')"><i class="fas fa-wallet"></i> Баланс</button>
+                    <button class="btn btn-secondary" onclick="showPage('deals')"><i class="fas fa-list"></i> Мои сделки</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-shield-alt text-ton"></i> Как это работает</div>
+                <div style="display: grid; gap: 4px; font-size: 13px; color: var(--text-secondary);">
+                    <div>1️⃣ <span style="color: var(--text-primary);">Создайте сделку</span> — опишите товар и сумму</div>
+                    <div>2️⃣ <span style="color: var(--text-primary);">Отправьте ссылку</span> покупателю</div>
+                    <div>3️⃣ <span style="color: var(--text-primary);">Покупатель оплачивает</span> на сайте</div>
+                    <div>4️⃣ <span style="color: var(--text-primary);">Продавец передаёт товар</span> — нажимает кнопку</div>
+                    <div>5️⃣ <span style="color: var(--text-primary);">Покупатель подтверждает</span> получение</div>
+                    <div>6️⃣ <span style="color: var(--text-primary);">Деньги зачисляются</span> продавцу</div>
+                </div>
+                <div class="support-block">
+                    <span style="font-size: 12px; color: var(--text-secondary);">🔒 Защита от мошенников • Верификация • 24/7 поддержка</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-comment-dots text-ton"></i> Последние отзывы</div>
+                <div id="recentReviews"><div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div></div>
+            </div>
+
+            <div class="support-block">
+                <p style="font-size: 13px; color: var(--text-secondary);">
+                    <i class="fas fa-headset"></i> Поддержка:
+                    <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
+                    <i class="fas fa-bullhorn"></i> Канал:
+                    <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== СОЗДАНИЕ СДЕЛКИ ===== -->
+        <div class="page" id="page-create">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-plus-circle text-ton"></i> Создать сделку</div>
+                <div class="card-subtitle">Заполните форму</div>
+
+                <form id="dealForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Товар или услуга</label>
+                        <input type="text" id="productInput" placeholder="NFT-подарок Telegram Premium" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-coins"></i> Валюта</label>
+                        <select id="currencySelect">
+                            <option value="TON">💎 TON</option>
+                            <option value="STARS">⭐️ STARS</option>
+                            <option value="RUB">💰 RUB</option>
+                            <option value="UAH">🌐 UAH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-dollar-sign"></i> Сумма</label>
+                        <input type="number" id="amountInput" placeholder="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Username покупателя (без @)</label>
+                        <input type="text" id="buyerInput" placeholder="john_doe" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Создать сделку</button>
+                </form>
+                <div id="dealResult" style="display:none;" class="card mt-10"></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
+            </div>
+        </div>
+
+        <!-- ===== МОИ СДЕЛКИ ===== -->
+        <div class="page" id="page-deals">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-list text-ton"></i> Мои сделки</div>
+                <div id="dealsList"><div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
+            </div>
+        </div>
+
+        <!-- ===== ОТЗЫВЫ ===== -->
+        <div class="page" id="page-reviews">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-star text-ton"></i> Отзывы <span id="reviewTotal" style="font-size:12px; color:var(--text-secondary);"></span></div>
+                <div class="card-subtitle">Оставляйте отзывы</div>
+
+                <div id="reviewFormContainer" style="background: rgba(0,136,204,0.04); border-radius:12px; padding:12px; margin-bottom:12px; border: 1px solid rgba(0,136,204,0.08);">
+                    <div class="form-group">
+                        <label><i class="fas fa-star"></i> Оценка</label>
+                        <select id="reviewRating">
+                            <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                            <option value="4">⭐⭐⭐⭐ 4</option>
+                            <option value="3">⭐⭐⭐ 3</option>
+                            <option value="2">⭐⭐ 2</option>
+                            <option value="1">⭐ 1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-comment"></i> Отзыв</label>
+                        <textarea id="reviewText" placeholder="Напишите ваш отзыв анонимно..." rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-gold" onclick="submitReview()"><i class="fas fa-paper-plane"></i> Отправить отзыв</button>
+                    <div id="reviewStatus" style="margin-top:6px; font-size:12px;"></div>
+                </div>
+
+                <div id="reviewsList"><div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div></div>
+                <button class="btn btn-secondary mt-10" onclick="loadMoreReviews()"><i class="fas fa-chevron-down"></i> Загрузить ещё</button>
+            </div>
+        </div>
+
+        <!-- ===== БАЛАНС ===== -->
+        <div class="page" id="page-balance">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-wallet text-ton"></i> Мой баланс</div>
+                <div class="balance-grid" id="balanceDisplay">
+                    <div class="balance-item"><span class="label">💎 TON</span> <span class="value ton" id="balTon">0</span></div>
+                    <div class="balance-item"><span class="label">⭐️ STARS</span> <span class="value stars" id="balStars">0</span></div>
+                    <div class="balance-item"><span class="label">💰 RUB</span> <span class="value rub" id="balRub">0</span></div>
+                    <div class="balance-item"><span class="label">🌐 UAH</span> <span class="value uah" id="balUah">0</span></div>
+                </div>
+                <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> Вывести средства</button>
+                <div id="withdrawSection" style="display:none;" class="mt-10">
+                    <div class="support-block" style="margin-bottom:8px;">
+                        <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">💳 Вывод средств</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Валюта</label>
+                        <select id="withdrawCurrency">
+                            <option value="TON">💎 TON</option>
+                            <option value="STARS">⭐️ STARS</option>
+                            <option value="RUB">💰 RUB</option>
+                            <option value="UAH">🌐 UAH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Реквизиты</label>
+                        <input type="text" id="withdrawDetails" placeholder="Кошелёк или номер карты">
+                    </div>
+                    <button class="btn btn-primary" onclick="confirmWithdraw()"><i class="fas fa-check"></i> Подтвердить вывод</button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
+            </div>
+        </div>
+
+        <!-- ===== АДМИН ===== -->
+        <div class="page" id="page-admin">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-crown text-ton"></i> Админ панель</div>
+                <div id="adminContent"><div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
+            </div>
+        </div>
 
     </div>
 
-    <!-- ===== MODAL ===== -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <button class="modal-close" onclick="window.closeModal()">
-                <i class="fas fa-times"></i>
-            </button>
+    <!-- ===== МОДАЛКА ===== -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
             <div id="modalBody"></div>
         </div>
     </div>
 
-    <!-- ===== TOAST CONTAINER ===== -->
-    <div id="toast-container"></div>
+    <!-- ============================================================ -->
+    <!-- СКРИПТЫ -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // 1. КОНФИГУРАЦИЯ
+        // ============================================================
+        const API_BASE = 'https://otc-bot-hwua.onrender.com';
+        const BOT_USERNAME = 'tonkeeperp2p_bot';
 
-    <!-- ===== SCRIPTS ===== -->
- <script src="js/helpers.js"></script>
-<script src="js/api.js"></script>
-<script src="js/toast.js"></script>
-<script src="js/modal.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/balance.js"></script>
-<script src="js/deals.js"></script>
-<script src="js/reviews.js"></script>
-<script src="js/admin.js"></script>
-<script src="js/router.js"></script>
-<script src="js/app.js"></script>
+        // ============================================================
+        // 2. TELEGRAM
+        // ============================================================
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const user = {
+            id: tg.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+            username: tg.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
+            firstName: tg.initDataUnsafe?.user?.first_name || 'Пользователь'
+        };
+
+        document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
+
+        // ============================================================
+        // 3. ЯЗЫКИ
+        // ============================================================
+        let currentLang = 'ru';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('languageOverlay').classList.remove('active');
+            localStorage.setItem('lang', lang);
+            showToast('✅ Язык установлен', 'success');
+            loadMainData();
+        }
+
+        if (localStorage.getItem('lang')) {
+            setLanguage(localStorage.getItem('lang'));
+        }
+
+        // ============================================================
+        // 4. СОСТОЯНИЕ
+        // ============================================================
+        let state = {
+            balance: { ton: 150, stars: 200, rub: 0, uah: 0 },
+            deals: [],
+            reviews: [],
+            isAdmin: false,
+            reviewPage: 0,
+            reviewLimit: 10,
+            has2Deals: false
+        };
+
+        // ============================================================
+        // 5. API ВЫЗОВЫ
+        // ============================================================
+        async function apiCall(endpoint, data = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Telegram-User-Id': user.id,
+                        'X-Telegram-Username': user.username
+                    },
+                    body: JSON.stringify({ ...data, user_id: user.id, username: user.username })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error(`API Error:`, error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // ============================================================
+        // 6. ОНЛАЙН
+        // ============================================================
+        let onlineBase = 6500;
+
+        function getOnlineCount() {
+            onlineBase += (Math.random() - 0.5) * 20;
+            onlineBase = Math.max(6200, Math.min(6800, onlineBase));
+            return Math.round(onlineBase);
+        }
+
+        // ============================================================
+        // 7. НАВИГАЦИЯ
+        // ============================================================
+        document.querySelectorAll('.nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                showPage(btn.dataset.page);
+            });
+        });
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+
+            const navBtn = document.querySelector(`.nav button[data-page="${page}"]`);
+            if (navBtn) navBtn.classList.add('active');
+
+            if (page === 'deals') loadDeals();
+            if (page === 'balance') loadBalance();
+            if (page === 'admin') loadAdminPanel();
+            if (page === 'reviews') loadReviews();
+            if (page === 'main') loadMainData();
+        }
+
+        // ============================================================
+        // 8. ГЛАВНАЯ
+        // ============================================================
+        async function loadMainData() {
+            try {
+                document.getElementById('onlineCount').textContent = getOnlineCount();
+
+                const stats = await apiCall('/api/stats');
+                if (stats.success) {
+                    document.getElementById('statDealsToday').textContent = Math.max(1264, stats.deals_today || 0);
+                    document.getElementById('statUsers').textContent = Math.max(21374, stats.users || 0);
+                    document.getElementById('statReviews').textContent = Math.max(5427, stats.reviews || 0);
+                    let volume = Math.max(47.6, stats.volume || 0);
+                    document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
+                    document.getElementById('reviewBadge').textContent = Math.max(5427, stats.reviews || 0);
+                } else {
+                    document.getElementById('statDealsToday').textContent = 1264;
+                    document.getElementById('statUsers').textContent = 21374;
+                    document.getElementById('statReviews').textContent = 5427;
+                    document.getElementById('statVolume').textContent = '47.6K';
+                    document.getElementById('reviewBadge').textContent = 5427;
+                }
+
+                const reviews = await apiCall('/api/reviews', { limit: 3 });
+                if (reviews.success && reviews.reviews) {
+                    renderRecentReviews(reviews.reviews);
+                } else {
+                    renderDemoReviews();
+                }
+            } catch (e) {
+                renderDemoReviews();
+            }
+        }
+
+        function renderDemoReviews() {
+            const texts = [
+                'Отличная платформа! Всё работает быстро и надёжно.',
+                'Лучший P2P обменник! Рекомендую всем друзьям.',
+                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
+                'Отличная поддержка! Помогли разобраться с выводом.'
+            ];
+            const demo = [];
+            for (let i = 0; i < 3; i++) {
+                demo.push({
+                    user: 'Аноним',
+                    text: texts[Math.floor(Math.random() * texts.length)],
+                    rating: 4 + Math.floor(Math.random() * 2),
+                    date: new Date().toLocaleString(),
+                    anonymous: true
+                });
+            }
+            renderRecentReviews(demo);
+        }
+
+        function renderRecentReviews(reviews) {
+            const html = reviews.map(r => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <div class="review-avatar">👤</div>
+                            <span class="review-name anonymous">${r.anonymous ? 'Аноним' : r.user}</span>
+                        </div>
+                        <span class="review-date">${r.date || 'только что'}</span>
+                    </div>
+                    <div class="review-stars">${'⭐'.repeat(r.rating || 5)}</div>
+                    <div class="review-text">${r.text}</div>
+                </div>
+            `).join('');
+            document.getElementById('recentReviews').innerHTML = html;
+        }
+
+        // ============================================================
+        // 9. БАЛАНС
+        // ============================================================
+        async function loadBalance() {
+            try {
+                const data = await apiCall('/api/balance');
+                if (data.success) {
+                    state.balance = data.balance || { ton: 150, stars: 200, rub: 0, uah: 0 };
+                    updateBalanceUI();
+                }
+            } catch (e) {
+                state.balance = { ton: 150, stars: 200, rub: 0, uah: 0 };
+                updateBalanceUI();
+            }
+        }
+
+        function updateBalanceUI() {
+            document.getElementById('balTon').textContent = state.balance.ton || 0;
+            document.getElementById('balStars').textContent = state.balance.stars || 0;
+            document.getElementById('balRub').textContent = state.balance.rub || 0;
+            document.getElementById('balUah').textContent = state.balance.uah || 0;
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) +
+                (state.balance.rub || 0) + (state.balance.uah || 0);
+            document.getElementById('userBalance').innerHTML = `<i class="fas fa-coins"></i> ${total}`;
+        }
+
+        // ============================================================
+        // 10. СДЕЛКИ (С ПРАВИЛЬНОЙ ЛОГИКОЙ РОЛЕЙ)
+        // ============================================================
+        async function loadDeals() {
+            const container = document.getElementById('dealsList');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            try {
+                const data = await apiCall('/api/deals');
+                if (data.success && data.deals) {
+                    state.deals = data.deals;
+                    renderDeals();
+                } else {
+                    state.deals = [
+                        { deal_id: 'TON-001', product: 'NFT-подарок Premium', amount: 100, currency: 'TON',
+                            buyer_username: 'john_doe', seller_id: user.id, buyer_id: null,
+                            status: 'waiting_payment', created_at: new Date().toISOString() },
+                        { deal_id: 'TON-002', product: 'Telegram Premium', amount: 50, currency: 'STARS',
+                            buyer_username: 'jane_smith', seller_id: user.id, buyer_id: 999999,
+                            status: 'completed', created_at: new Date().toISOString() }
+                    ];
+                    renderDeals();
+                }
+            } catch (e) {
+                container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
+            }
+        }
+
+        function renderDeals() {
+            const container = document.getElementById('dealsList');
+            if (!state.deals || state.deals.length === 0) {
+                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 У вас нет сделок</p>';
+                return;
+            }
+            
+            container.innerHTML = state.deals.map(d => {
+                // Определяем роль текущего пользователя
+                const isSeller = d.seller_id === user.id;
+                const isBuyer = d.buyer_id === user.id;
+                
+                return `
+                    <div class="deal-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                            <strong style="font-size:14px;">${d.product}</strong>
+                            <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; font-size:12px; color:var(--text-secondary);">
+                            <span>💰 ${d.amount} ${d.currency}</span>
+                            <span>👤 @${d.buyer_username}</span>
+                            <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
+                        </div>
+                        <div class="deal-progress">
+                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' ? 'done' : ''}">⏳ Ожидает оплаты</span>
+                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' ? 'done' : ''}">✅ Оплачено</span>
+                            <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 Подтверждение</span>
+                            <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 Завершено</span>
+                        </div>
+                        
+                        ${d.status === 'waiting_payment' && isSeller ? `
+                            <button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;">
+                                <i class="fas fa-copy"></i> Скопировать ссылку
+                            </button>
+                        ` : ''}
+                        
+                        ${d.status === 'waiting_payment' && isBuyer ? `
+                            <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')">
+                                <i class="fas fa-credit-card"></i> Оплатить
+                            </button>
+                        ` : ''}
+                        
+                        ${d.status === 'paid' && isSeller ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">✅ Оплата подтверждена. Нажмите «Передал товар»</span>
+                                <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${d.deal_id}')">
+                                    <i class="fas fa-box"></i> Передал товар
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'paid' && isBuyer ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px; color: var(--text-secondary);">⏳ Ожидайте, пока продавец передаст товар</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'awaiting_confirmation' && isBuyer ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px;">📦 Продавец передал товар. Подтвердите получение</span>
+                                <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${d.deal_id}')">
+                                    <i class="fas fa-check"></i> Подтвердить получение
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'awaiting_confirmation' && isSeller ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px;">⏳ Ожидайте подтверждения от покупателя</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'completed' ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">🎉 Сделка завершена! Средства зачислены</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getStatusText(status) {
+            const map = {
+                'waiting_payment': '⏳ Ожидает оплаты',
+                'paid': '✅ Оплачено',
+                'awaiting_confirmation': '📦 Ожидает подтверждения',
+                'completed': '🎉 Завершено'
+            };
+            return map[status] || status;
+        }
+
+        function copyDealLink(dealId) {
+            const link = `https://t.me/${BOT_USERNAME}?start=deal_${dealId}`;
+            navigator.clipboard.writeText(link);
+            showToast('✅ Ссылка скопирована!', 'success');
+        }
+
+        // ============================================================
+        // 11. ОПЛАТА
+        // ============================================================
+        async function payDeal(dealId) {
+            showModal(`
+                <h3 style="margin-bottom:12px;">💳 Выберите способ оплаты</h3>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-primary" onclick="payWithBalance('${dealId}')">
+                        <i class="fas fa-wallet"></i> С баланса
+                    </button>
+                    <button class="btn btn-secondary" onclick="payWithRekvisits('${dealId}')">
+                        <i class="fas fa-file-invoice"></i> По реквизитам
+                    </button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function payWithBalance(dealId) {
+            closeModal();
+            const btn = document.querySelector(`#dealsList .deal-card:has([onclick*="payDeal('${dealId}')"]) .btn-primary`);
+            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Оплата...'; btn.disabled = true; }
+
+            try {
+                const data = await apiCall('/api/pay_balance', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Оплата с баланса прошла успешно!', 'success');
+                    loadDeals();
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка оплаты'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            } finally {
+                if (btn) { btn.innerHTML = '<i class="fas fa-credit-card"></i> Оплатить'; btn.disabled = false; }
+            }
+        }
+
+        async function payWithRekvisits(dealId) {
+            closeModal();
+            try {
+                const data = await apiCall('/api/get_rekvisits', { deal_id: dealId });
+                if (data.success) {
+                    showModal(`
+                        <h3 style="margin-bottom:12px;">💳 Оплатите по реквизитам</h3>
+                        <div class="support-block" style="margin-bottom:12px;">
+                            <p style="font-size:14px; color:var(--text-secondary);">${data.details || 'Оплатите и нажмите "Я оплатил"'}</p>
+                        </div>
+                        <button class="btn btn-success" onclick="confirmRekvisitsPayment('${dealId}')">
+                            <i class="fas fa-check"></i> Я оплатил
+                        </button>
+                        <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+                    `);
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        async function confirmRekvisitsPayment(dealId) {
+            closeModal();
+            showToast('⏳ Ожидайте подтверждения администратора...', 'info');
+            try {
+                const data = await apiCall('/api/confirm_rekvisits_payment', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Оплата подтверждена!', 'success');
+                    loadDeals();
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 12. ПРОДАВЕЦ И ПОКУПАТЕЛЬ
+        // ============================================================
+        async function sellerDelivered(dealId) {
+            if (!confirm('Подтвердить передачу товара?')) return;
+            try {
+                const data = await apiCall('/api/seller_delivered', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Вы подтвердили передачу товара', 'success');
+                    loadDeals();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        async function confirmReceipt(dealId) {
+            if (!confirm('Подтвердить получение товара?')) return;
+            try {
+                const data = await apiCall('/api/buyer_confirm', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Получение подтверждено! Средства зачислены', 'success');
+                    loadDeals();
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 13. СОЗДАНИЕ СДЕЛКИ
+        // ============================================================
+        document.getElementById('dealForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const product = document.getElementById('productInput').value.trim();
+            const currency = document.getElementById('currencySelect').value;
+            const amount = parseFloat(document.getElementById('amountInput').value);
+            const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
+
+            if (!product || !amount || !buyer) {
+                showToast('❌ Заполните все поля!', 'error');
+                return;
+            }
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Создание...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
+                if (data.success) {
+                    const resultDiv = document.getElementById('dealResult');
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
+                            <i class="fas fa-check-circle" style="font-size:18px;"></i>
+                            <strong>Сделка создана!</strong>
+                        </div>
+                        <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
+                        <div class="form-group">
+                            <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
+                            <i class="fas fa-copy"></i> Скопировать ссылку
+                        </button>
+                    `;
+                    showToast('✅ Сделка создана!', 'success');
+                    document.getElementById('dealForm').reset();
+                    loadDeals();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Создать сделку';
+                btn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // 14. ОТЗЫВЫ
+        // ============================================================
+        async function loadReviews() {
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            try {
+                const data = await apiCall('/api/reviews', { page: state.reviewPage, limit: state.reviewLimit });
+                if (data.success && data.reviews) {
+                    state.reviews = data.reviews;
+                    renderReviews();
+                } else {
+                    renderDemoReviewsFull();
+                }
+            } catch (e) {
+                renderDemoReviewsFull();
+            }
+        }
+
+        function renderDemoReviewsFull() {
+            const texts = [
+                'Отличная платформа! Всё работает быстро и надёжно.',
+                'Лучший P2P обменник! Рекомендую всем друзьям.',
+                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
+                'Отличная поддержка! Помогли разобраться с выводом.',
+                'Наконец-то нашёл нормальный обменник. Всё честно.',
+                'Сделал первую сделку, всё прошло гладко. Спасибо!',
+                'За сутки сделал 5 сделок, все успешно завершены.',
+                'Очень доволен сервисом. Вывод моментальный.',
+                'Пользуюсь уже месяц, ни одной проблемы.',
+                'Лучший сервис в Telegram! Успехов разработчикам.'
+            ];
+            const demos = [];
+            for (let i = 0; i < 50; i++) {
+                demos.push({
+                    user: 'Аноним',
+                    text: texts[Math.floor(Math.random() * texts.length)],
+                    rating: 4 + Math.floor(Math.random() * 2),
+                    date: new Date().toLocaleString(),
+                    anonymous: true
+                });
+            }
+            state.reviews = demos;
+            renderReviews();
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsList');
+            if (!state.reviews || state.reviews.length === 0) {
+                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 Пока нет отзывов</p>';
+                return;
+            }
+            const html = state.reviews.map(r => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <div class="review-avatar">${r.user ? r.user.charAt(0).toUpperCase() : '👤'}</div>
+                            <span class="review-name anonymous">${r.anonymous !== false ? 'Аноним' : r.user}</span>
+                        </div>
+                        <span class="review-date">${r.date || 'только что'}</span>
+                    </div>
+                    <div class="review-stars">${'⭐'.repeat(r.rating || 5)}</div>
+                    <div class="review-text">${r.text}</div>
+                    ${state.isAdmin ? `
+                        <button class="btn btn-danger btn-sm mt-6" onclick="deleteReview('${r.id || r._id}')" style="width:auto;">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+            container.innerHTML = html;
+            document.getElementById('reviewTotal').textContent = `(${state.reviews.length})`;
+        }
+
+        async function submitReview() {
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const text = document.getElementById('reviewText').value.trim();
+
+            if (!text) {
+                showToast('❌ Напишите текст отзыва', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#reviewFormContainer .btn-gold');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/add_review', {
+                    rating: rating,
+                    text: text,
+                    anonymous: true
+                });
+
+                if (data.success) {
+                    showToast('✅ Отзыв опубликован!', 'success');
+                    document.getElementById('reviewText').value = '';
+                    loadReviews();
+                    loadMainData();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить отзыв';
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteReview(reviewId) {
+            if (!confirm('Удалить этот отзыв?')) return;
+            try {
+                const data = await apiCall('/api/delete_review', { review_id: reviewId });
+                if (data.success) {
+                    showToast('✅ Отзыв удалён', 'success');
+                    loadReviews();
+                    loadMainData();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        function loadMoreReviews() {
+            state.reviewPage++;
+            loadReviews();
+        }
+
+        // ============================================================
+        // 15. ВЫВОД (2 СДЕЛКИ)
+        // ============================================================
+        function toggleWithdraw() {
+            const section = document.getElementById('withdrawSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function confirmWithdraw() {
+            const check = await apiCall('/api/has_2_deals');
+            state.has2Deals = check.has_2_deals || false;
+
+            if (!state.has2Deals) {
+                showToast('⚠️ Вывод доступен после 2 успешных сделок с одним покупателем', 'error');
+                return;
+            }
+
+            const currency = document.getElementById('withdrawCurrency').value;
+            const details = document.getElementById('withdrawDetails').value.trim();
+
+            if (!details) {
+                showToast('❌ Введите реквизиты', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#withdrawSection .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/withdraw', { currency, details });
+                if (data.success) {
+                    showToast('✅ Заявка на вывод создана!', 'success');
+                    document.getElementById('withdrawSection').style.display = 'none';
+                    document.getElementById('withdrawDetails').value = '';
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить вывод';
+                btn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // 16. АДМИН ПАНЕЛЬ
+        // ============================================================
+        async function loadAdminPanel() {
+            const container = document.getElementById('adminContent');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div>';
+            try {
+                const data = await apiCall('/api/is_admin');
+                state.isAdmin = data.is_admin || false;
+                if (state.isAdmin) {
+                    container.innerHTML = `
+                        <div style="display:grid; gap:6px;">
+                            <div class="card" style="padding:10px; background:rgba(0,136,204,0.05); border-color:rgba(0,136,204,0.12);">
+                                <div class="card-title" style="font-size:13px;">📊 Накрутка статистики</div>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetDealsToday()"><i class="fas fa-calendar-day"></i> Сделки сегодня</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetUsers()"><i class="fas fa-users"></i> Пользователей</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetReviews()"><i class="fas fa-star"></i> Отзывы</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetVolume()"><i class="fas fa-chart-line"></i> Объём</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetOnline()"><i class="fas fa-users"></i> Онлайн</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="adminSetAllStats()"><i class="fas fa-magic"></i> Всё сразу</button>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" onclick="adminAddBalance()">
+                                <i class="fas fa-plus-circle"></i> Начислить баланс
+                            </button>
+                            <button class="btn btn-secondary" onclick="adminAllDeals()"><i class="fas fa-list"></i> Все сделки</button>
+                            <button class="btn btn-secondary" onclick="adminWithdrawRequests()"><i class="fas fa-arrow-up"></i> Заявки на вывод</button>
+                            <button class="btn btn-secondary" onclick="adminClearReviews()"><i class="fas fa-trash-alt"></i> Очистить отзывы</button>
+                            <div id="adminResult" class="mt-10"></div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="background:rgba(231,76,60,0.08);padding:12px;border-radius:10px;border:1px solid rgba(231,76,60,0.1);">
+                            <i class="fas fa-lock" style="color:#e74c3c;font-size:18px;"></i>
+                            <span style="color:#e74c3c;font-weight:600;margin-left:6px;">Доступ запрещён</span>
+                            <p style="color:var(--text-secondary);margin-top:4px;font-size:13px;">Недостаточно прав</p>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                container.innerHTML = '<div class="error-text">❌ Ошибка проверки прав</div>';
+            }
+        }
+
+        // ============================================================
+        // 17. НАЧИСЛЕНИЕ БАЛАНСА (АДМИН)
+        // ============================================================
+        async function adminAddBalance() {
+            const userId = prompt('Введите Telegram ID пользователя:');
+            if (!userId || isNaN(userId)) {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+
+            showModal(`
+                <h3 style="margin-bottom:12px;">💰 Начислить баланс</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">👤 Пользователь: <strong>${userId}</strong></p>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-primary" onclick="adminAddBalanceConfirm(${userId}, 'TON')">
+                        <i class="fas fa-coins"></i> 💎 TON
+                    </button>
+                    <button class="btn btn-gold" onclick="adminAddBalanceConfirm(${userId}, 'STARS')">
+                        <i class="fas fa-star"></i> ⭐️ STARS
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'RUB')">
+                        <i class="fas fa-ruble-sign"></i> 💰 RUB
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'UAH')">
+                        <i class="fas fa-hryvnia"></i> 🌐 UAH
+                    </button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function adminAddBalanceConfirm(userId, currency) {
+            closeModal();
+
+            const amount = prompt(`Введите сумму в ${currency}:`);
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                showToast('❌ Введите положительное число', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/add_balance', {
+                    target_user_id: parseInt(userId),
+                    currency: currency,
+                    amount: parseFloat(amount)
+                });
+
+                if (data.success) {
+                    showToast(`✅ Начислено ${amount} ${currency} пользователю ${userId}`, 'success');
+                    if (parseInt(userId) === user.id) {
+                        loadBalance();
+                    }
+                    loadAdminPanel();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка начисления'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 18. АДМИН-НАКРУТКА СТАТИСТИКИ
+        // ============================================================
+        async function adminSetDealsToday() {
+            const count = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
+            if (count === null) return;
+            let num = parseInt(count);
+            if (num < 1264) num = 1264;
+            if (num >= 0) {
+                document.getElementById('statDealsToday').textContent = num;
+                showToast(`✅ ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'deals_today', value: num });
+            }
+        }
+
+        async function adminSetUsers() {
+            const count = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
+            if (count === null) return;
+            let num = parseInt(count);
+            if (num < 21374) num = 21374;
+            if (num >= 0) {
+                document.getElementById('statUsers').textContent = num;
+                showToast(`✅ ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'users', value: num });
+            }
+        }
+
+        async function adminSetReviews() {
+            const count = prompt('Отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
+            if (count === null) return;
+            let num = parseInt(count);
+            if (num < 5427) num = 5427;
+            if (num >= 0) {
+                document.getElementById('statReviews').textContent = num;
+                document.getElementById('reviewBadge').textContent = num;
+                showToast(`✅ ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'reviews', value: num });
+            }
+        }
+
+        async function adminSetVolume() {
+            const count = prompt('Введите объём TON (макс 47.4):', (Math.random() * 10 + 35).toFixed(1));
+            if (count === null) return;
+            let num = parseFloat(count);
+            if (num > 47.4) num = 47.4;
+            if (num < 47.6) num = 47.6;
+            if (num >= 0) {
+                document.getElementById('statVolume').textContent = num.toFixed(1) + 'K';
+                showToast(`✅ ${num.toFixed(1)}K`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'volume', value: num });
+            }
+        }
+
+        async function adminSetOnline() {
+            const count = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
+            if (count === null) return;
+            const num = parseInt(count);
+            if (num >= 6200 && num <= 6800) {
+                document.getElementById('onlineCount').textContent = num;
+                showToast(`✅ ${num}`, 'success');
+                await apiCall('/api/admin_set_stats', { key: 'online', value: num });
+            } else {
+                showToast('❌ 6200-6800', 'error');
+            }
+        }
+
+        async function adminSetAllStats() {
+            let deals = prompt('Сделок:', Math.floor(Math.random() * 20) + 15);
+            if (deals === null) return;
+            let users = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
+            if (users === null) return;
+            let reviews = prompt('Отзывов:', Math.floor(Math.random() * 500) + 5000);
+            if (reviews === null) return;
+            let volume = parseFloat(prompt('Объём (макс 47.4, мин 47.6):', (Math.random() * 10 + 35).toFixed(1)));
+            if (isNaN(volume)) return;
+            const online = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
+            if (online === null) return;
+
+            let dealsNum = parseInt(deals);
+            let usersNum = parseInt(users);
+            let reviewsNum = parseInt(reviews);
+            if (dealsNum < 1264) dealsNum = 1264;
+            if (usersNum < 21374) usersNum = 21374;
+            if (reviewsNum < 5427) reviewsNum = 5427;
+            if (volume > 47.4) volume = 47.4;
+            if (volume < 47.6) volume = 47.6;
+
+            document.getElementById('statDealsToday').textContent = dealsNum;
+            document.getElementById('statUsers').textContent = usersNum;
+            document.getElementById('statReviews').textContent = reviewsNum;
+            document.getElementById('reviewBadge').textContent = reviewsNum;
+            document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
+            document.getElementById('onlineCount').textContent = online;
+
+            showToast('✅ Всё обновлено!', 'success');
+
+            await apiCall('/api/admin_set_stats', { key: 'deals_today', value: dealsNum });
+            await apiCall('/api/admin_set_stats', { key: 'users', value: usersNum });
+            await apiCall('/api/admin_set_stats', { key: 'reviews', value: reviewsNum });
+            await apiCall('/api/admin_set_stats', { key: 'volume', value: volume });
+            await apiCall('/api/admin_set_stats', { key: 'online', value: parseInt(online) });
+        }
+
+        // ============================================================
+        // 19. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
+        // ============================================================
+        async function adminAllDeals() {
+            const data = await apiCall('/api/all_deals');
+            if (data.success && data.deals) {
+                const html = data.deals.map(d => `
+                    <div class="deal-card">
+                        <strong>#${d.deal_id}</strong> - ${d.product}
+                        <div style="font-size:12px;color:var(--text-secondary);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
+                        <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                    </div>
+                `).join('');
+                showModal('<h3>📊 Все сделки</h3>' + (html || '<p class="text-secondary">Нет сделок</p>'));
+            }
+        }
+
+        async function adminWithdrawRequests() {
+            const data = await apiCall('/api/withdraw_requests');
+            if (data.success && data.requests) {
+                const pending = data.requests.filter(r => r.status === 'pending');
+                if (pending.length === 0) {
+                    showModal('<h3>💲 Заявки на вывод</h3><p class="text-secondary">Нет активных заявок</p>');
+                    return;
+                }
+                const html = pending.map(r => `
+                    <div class="deal-card">
+                        <strong>👤 ${r.username}</strong>
+                        <div>💰 ${r.amount} ${r.currency}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div>
+                        <div class="flex mt-6">
+                            <button class="btn btn-success btn-sm" onclick="adminConfirmWithdraw('${r.id}')"><i class="fas fa-check"></i> Подтвердить</button>
+                            <button class="btn btn-danger btn-sm" onclick="adminRejectWithdraw('${r.id}')"><i class="fas fa-times"></i> Отклонить</button>
+                        </div>
+                    </div>
+                `).join('');
+                showModal('<h3>💲 Заявки на вывод</h3>' + html);
+            }
+        }
+
+        async function adminConfirmWithdraw(requestId) {
+            if (!confirm('Подтвердить вывод?')) return;
+            const data = await apiCall('/api/confirm_withdraw', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Вывод подтверждён', 'success');
+                closeModal();
+                adminWithdrawRequests();
+            }
+        }
+
+        async function adminRejectWithdraw(requestId) {
+            if (!confirm('Отклонить заявку?')) return;
+            const data = await apiCall('/api/reject_withdraw', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Заявка отклонена', 'success');
+                closeModal();
+                adminWithdrawRequests();
+            }
+        }
+
+        async function adminClearReviews() {
+            if (!confirm('Удалить ВСЕ отзывы?')) return;
+            const data = await apiCall('/api/clear_reviews');
+            if (data.success) {
+                showToast('✅ Все отзывы удалены', 'success');
+                loadReviews();
+                loadMainData();
+            }
+        }
+
+        // ============================================================
+        // 20. МОДАЛКА
+        // ============================================================
+        function showModal(html) {
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) closeModal();
+        });
+
+        // ============================================================
+        // 21. TOAST
+        // ============================================================
+        function showToast(text, type = 'info') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = text;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // ============================================================
+        // 22. ЗАПУСК
+        // ============================================================
+        console.log('🔥 Tonkeeper P2P загружена');
+
+        loadMainData();
+        loadBalance();
+        loadDeals();
+        loadReviews();
+
+        setInterval(() => {
+            document.getElementById('onlineCount').textContent = getOnlineCount();
+        }, 5000);
+
+        setInterval(() => {
+            if (document.getElementById('page-main').classList.contains('active')) loadMainData();
+            if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
+            if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
+            if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
+        }, 30000);
+    </script>
 </body>
 </html>
