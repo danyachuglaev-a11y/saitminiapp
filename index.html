@@ -24,6 +24,7 @@
             --radius-sm: 12px;
             --success: #2ecc71;
             --danger: #e74c3c;
+            --warning: #f39c12;
         }
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -223,6 +224,7 @@
         .deal-status.paid { background: rgba(46,204,113,0.12); color: #2ecc71; }
         .deal-status.awaiting { background: rgba(52,152,219,0.12); color: #3498db; }
         .deal-status.completed { background: rgba(155,89,182,0.12); color: #9b59b6; }
+
         .deal-progress { display: flex; gap: 4px; margin: 8px 0 4px; flex-wrap: wrap; }
         .deal-progress .step { padding: 2px 10px; border-radius: 30px; font-size: 8px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-muted); }
         .deal-progress .step.done { background: rgba(46,204,113,0.1); color: #2ecc71; }
@@ -401,9 +403,10 @@
                 <div style="display: grid; gap: 4px; font-size: 13px; color: var(--text-secondary);">
                     <div>1️⃣ <span style="color: var(--text-primary);">Создайте сделку</span> — опишите товар и сумму</div>
                     <div>2️⃣ <span style="color: var(--text-primary);">Отправьте ссылку</span> покупателю</div>
-                    <div>3️⃣ <span style="color: var(--text-primary);">Покупатель выбирает</span> способ оплаты на сайте</div>
-                    <div>4️⃣ <span style="color: var(--text-primary);">Оплата проходит</span> внутри сайта</div>
-                    <div>5️⃣ <span style="color: var(--text-primary);">Подтверждение</span> и завершение сделки</div>
+                    <div>3️⃣ <span style="color: var(--text-primary);">Покупатель оплачивает</span> на сайте</div>
+                    <div>4️⃣ <span style="color: var(--text-primary);">Продавец передаёт товар</span> — нажимает кнопку</div>
+                    <div>5️⃣ <span style="color: var(--text-primary);">Покупатель подтверждает</span> получение</div>
+                    <div>6️⃣ <span style="color: var(--text-primary);">Деньги зачисляются</span> продавцу</div>
                 </div>
                 <div class="support-block">
                     <span style="font-size: 12px; color: var(--text-secondary);">🔒 Защита от мошенников • Верификация • 24/7 поддержка</span>
@@ -603,7 +606,6 @@
             isAdmin: false,
             reviewPage: 0,
             reviewLimit: 10,
-            verified: false,
             has2Deals: false
         };
 
@@ -1019,7 +1021,7 @@
         });
 
         // ============================================================
-        // 14. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
+        // 14. ОТЗЫВЫ
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1150,7 +1152,7 @@
         }
 
         // ============================================================
-        // 15. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
+        // 15. ВЫВОД (2 СДЕЛКИ)
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
@@ -1158,18 +1160,12 @@
         }
 
         async function confirmWithdraw() {
+            // Проверка 2 сделок
             const check = await apiCall('/api/has_2_deals');
             state.has2Deals = check.has_2_deals || false;
 
             if (!state.has2Deals) {
                 showToast('⚠️ Вывод доступен после 2 успешных сделок с одним покупателем', 'error');
-                return;
-            }
-
-            const verCheck = await apiCall('/api/check_verification');
-            if (!verCheck.verified) {
-                showToast('⚠️ Для вывода необходимо пройти верификацию', 'error');
-                showVerificationModal();
                 return;
             }
 
@@ -1204,70 +1200,7 @@
         }
 
         // ============================================================
-        // 16. ВЕРИФИКАЦИЯ (ПОЯВЛЯЕТСЯ ТОЛЬКО ПРИ ВЫВОДЕ)
-        // ============================================================
-        function showVerificationModal() {
-            showModal(`
-                <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
-                <p style="color:var(--text-secondary); margin-bottom:12px;">Для вывода средств необходимо пройти верификацию</p>
-                <div class="form-group">
-                    <label>📱 Номер телефона</label>
-                    <input type="text" id="phoneInputModal" placeholder="+79001234567">
-                </div>
-                <div class="form-group">
-                    <label>👤 ФИО (опционально)</label>
-                    <input type="text" id="fullNameInputModal" placeholder="Иван Иванов">
-                </div>
-                <button class="btn btn-primary" onclick="submitVerificationModal()">
-                    <i class="fas fa-check-circle"></i> Пройти верификацию
-                </button>
-                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
-            `);
-        }
-
-        async function submitVerificationModal() {
-            const phone = document.getElementById('phoneInputModal').value.trim();
-            const fullName = document.getElementById('fullNameInputModal').value.trim();
-
-            if (!phone) {
-                showToast('❌ Введите номер телефона', 'error');
-                return;
-            }
-
-            if (!phone.startsWith('+') || phone.length < 11) {
-                showToast('❌ Введите номер в формате +79001234567', 'error');
-                return;
-            }
-
-            const btn = document.querySelector('#modalBody .btn-primary');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-            btn.disabled = true;
-
-            try {
-                const data = await apiCall('/api/verify', {
-                    phone: phone,
-                    full_name: fullName,
-                    username: user.username
-                });
-
-                if (data.success) {
-                    showToast('✅ Верификация пройдена!', 'success');
-                    state.verified = true;
-                    closeModal();
-                    loadMainData();
-                } else {
-                    showToast('❌ ' + (data.error || 'Ошибка верификации'), 'error');
-                }
-            } catch (err) {
-                showToast('❌ Ошибка: ' + err.message, 'error');
-            } finally {
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> Пройти верификацию';
-                btn.disabled = false;
-            }
-        }
-
-        // ============================================================
-        // 17. АДМИН ПАНЕЛЬ
+        // 16. АДМИН ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1294,7 +1227,6 @@
                             </button>
                             <button class="btn btn-secondary" onclick="adminAllDeals()"><i class="fas fa-list"></i> Все сделки</button>
                             <button class="btn btn-secondary" onclick="adminWithdrawRequests()"><i class="fas fa-arrow-up"></i> Заявки на вывод</button>
-                            <button class="btn btn-secondary" onclick="adminManageAdmins()"><i class="fas fa-users-cog"></i> Управление админами</button>
                             <button class="btn btn-secondary" onclick="adminClearReviews()"><i class="fas fa-trash-alt"></i> Очистить отзывы</button>
                             <div id="adminResult" class="mt-10"></div>
                         </div>
@@ -1314,7 +1246,7 @@
         }
 
         // ============================================================
-        // 18. НАЧИСЛЕНИЕ БАЛАНСА (С ВЫБОРОМ ВАЛЮТЫ)
+        // 17. НАЧИСЛЕНИЕ БАЛАНСА (АДМИН)
         // ============================================================
         async function adminAddBalance() {
             const userId = prompt('Введите Telegram ID пользователя:');
@@ -1375,7 +1307,7 @@
         }
 
         // ============================================================
-        // 19. АДМИН-НАКРУТКА СТАТИСТИКИ
+        // 18. АДМИН-НАКРУТКА СТАТИСТИКИ
         // ============================================================
         async function adminSetDealsToday() {
             const count = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
@@ -1466,7 +1398,7 @@
         }
 
         // ============================================================
-        // 20. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
+        // 19. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
         // ============================================================
         async function adminAllDeals() {
             const data = await apiCall('/api/all_deals');
@@ -1525,17 +1457,6 @@
             }
         }
 
-        async function adminManageAdmins() {
-            const action = confirm('Добавить админа? (Отмена - удалить)');
-            const userId = prompt('Telegram ID:');
-            if (!userId) return;
-            const data = await apiCall('/api/manage_admin', {
-                target_user_id: parseInt(userId),
-                action: action ? 'add' : 'remove'
-            });
-            if (data.success) showToast(`✅ ${action ? 'Добавлен' : 'Удалён'} админ`, 'success');
-        }
-
         async function adminClearReviews() {
             if (!confirm('Удалить ВСЕ отзывы?')) return;
             const data = await apiCall('/api/clear_reviews');
@@ -1547,7 +1468,7 @@
         }
 
         // ============================================================
-        // 21. МОДАЛКА
+        // 20. МОДАЛКА
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1563,7 +1484,7 @@
         });
 
         // ============================================================
-        // 22. TOAST
+        // 21. TOAST
         // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
@@ -1576,7 +1497,7 @@
         }
 
         // ============================================================
-        // 23. ЗАПУСК
+        // 22. ЗАПУСК
         // ============================================================
         console.log('🔥 Tonkeeper P2P загружена');
 
