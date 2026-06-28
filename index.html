@@ -678,7 +678,6 @@
                     document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
                     document.getElementById('statUsers').textContent = stats.users || 0;
                     document.getElementById('statReviews').textContent = stats.reviews || 0;
-                    // Объём с одной цифрой после запятой
                     let volume = stats.volume || 0;
                     document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
                     document.getElementById('reviewBadge').textContent = stats.reviews || 0;
@@ -856,7 +855,7 @@
         }
 
         // ============================================================
-        // 11. ОПЛАТА (ТОЛЬКО ВЕРИФИКАЦИЯ)
+        // 11. ОПЛАТА
         // ============================================================
         async function payDeal(dealId) {
             const verCheck = await apiCall('/api/check_verification');
