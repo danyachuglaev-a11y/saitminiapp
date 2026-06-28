@@ -669,7 +669,7 @@
         }
 
         // ============================================================
-        // 8. ГЛАВНАЯ (С МИНИМУМАМИ)
+        // 8. ГЛАВНАЯ
         // ============================================================
         async function loadMainData() {
             try {
@@ -684,7 +684,6 @@
                     document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
                     document.getElementById('reviewBadge').textContent = Math.max(5427, stats.reviews || 0);
                 } else {
-                    // Если API не отвечает — показываем минимумы
                     document.getElementById('statDealsToday').textContent = 1264;
                     document.getElementById('statUsers').textContent = 21374;
                     document.getElementById('statReviews').textContent = 5427;
@@ -767,7 +766,7 @@
         }
 
         // ============================================================
-        // 10. СДЕЛКИ
+        // 10. СДЕЛКИ (С ПРАВИЛЬНОЙ ЛОГИКОЙ РОЛЕЙ)
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
@@ -780,9 +779,11 @@
                 } else {
                     state.deals = [
                         { deal_id: 'TON-001', product: 'NFT-подарок Premium', amount: 100, currency: 'TON',
-                            buyer_username: 'john_doe', status: 'waiting_payment', created_at: new Date().toISOString() },
+                            buyer_username: 'john_doe', seller_id: user.id, buyer_id: null,
+                            status: 'waiting_payment', created_at: new Date().toISOString() },
                         { deal_id: 'TON-002', product: 'Telegram Premium', amount: 50, currency: 'STARS',
-                            buyer_username: 'jane_smith', status: 'completed', created_at: new Date().toISOString() }
+                            buyer_username: 'jane_smith', seller_id: user.id, buyer_id: 999999,
+                            status: 'completed', created_at: new Date().toISOString() }
                     ];
                     renderDeals();
                 }
@@ -797,54 +798,80 @@
                 container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 У вас нет сделок</p>';
                 return;
             }
-            container.innerHTML = state.deals.map(d => `
-                <div class="deal-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
-                        <strong style="font-size:14px;">${d.product}</strong>
-                        <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
-                    </div>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; font-size:12px; color:var(--text-secondary);">
-                        <span>💰 ${d.amount} ${d.currency}</span>
-                        <span>👤 @${d.buyer_username}</span>
-                        <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
-                    </div>
-                    <div class="deal-progress">
-                        <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' ? 'done' : ''}">⏳ Ожидает оплаты</span>
-                        <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' ? 'done' : ''}">✅ Оплачено</span>
-                        <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 Подтверждение</span>
-                        <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 Завершено</span>
-                    </div>
-                    ${d.status === 'waiting_payment' ? `
-                        <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')">
-                            <i class="fas fa-credit-card"></i> Оплатить
-                        </button>
-                        <button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;">
-                            <i class="fas fa-copy"></i> Скопировать ссылку
-                        </button>
-                    ` : ''}
-                    ${d.status === 'paid' ? `
-                        <div class="support-block mt-6" style="border-color: var(--success);">
-                            <span style="font-size:12px; color: var(--success);">✅ Оплата подтверждена. Нажмите «Передал товар»</span>
-                            <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${d.deal_id}')">
-                                <i class="fas fa-box"></i> Передал товар
+            
+            container.innerHTML = state.deals.map(d => {
+                // Определяем роль текущего пользователя
+                const isSeller = d.seller_id === user.id;
+                const isBuyer = d.buyer_id === user.id;
+                
+                return `
+                    <div class="deal-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+                            <strong style="font-size:14px;">${d.product}</strong>
+                            <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; font-size:12px; color:var(--text-secondary);">
+                            <span>💰 ${d.amount} ${d.currency}</span>
+                            <span>👤 @${d.buyer_username}</span>
+                            <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
+                        </div>
+                        <div class="deal-progress">
+                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' ? 'done' : ''}">⏳ Ожидает оплаты</span>
+                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' ? 'done' : ''}">✅ Оплачено</span>
+                            <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 Подтверждение</span>
+                            <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 Завершено</span>
+                        </div>
+                        
+                        ${d.status === 'waiting_payment' && isSeller ? `
+                            <button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;">
+                                <i class="fas fa-copy"></i> Скопировать ссылку
                             </button>
-                        </div>
-                    ` : ''}
-                    ${d.status === 'awaiting_confirmation' ? `
-                        <div class="support-block mt-6">
-                            <span style="font-size:12px;">⏳ Продавец передал товар. Подтвердите получение</span>
-                            <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${d.deal_id}')">
-                                <i class="fas fa-check"></i> Подтвердить получение
+                        ` : ''}
+                        
+                        ${d.status === 'waiting_payment' && isBuyer ? `
+                            <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')">
+                                <i class="fas fa-credit-card"></i> Оплатить
                             </button>
-                        </div>
-                    ` : ''}
-                    ${d.status === 'completed' ? `
-                        <div class="support-block mt-6" style="border-color: var(--success);">
-                            <span style="font-size:12px; color: var(--success);">🎉 Сделка завершена! Средства зачислены</span>
-                        </div>
-                    ` : ''}
-                </div>
-            `).join('');
+                        ` : ''}
+                        
+                        ${d.status === 'paid' && isSeller ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">✅ Оплата подтверждена. Нажмите «Передал товар»</span>
+                                <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${d.deal_id}')">
+                                    <i class="fas fa-box"></i> Передал товар
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'paid' && isBuyer ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px; color: var(--text-secondary);">⏳ Ожидайте, пока продавец передаст товар</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'awaiting_confirmation' && isBuyer ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px;">📦 Продавец передал товар. Подтвердите получение</span>
+                                <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${d.deal_id}')">
+                                    <i class="fas fa-check"></i> Подтвердить получение
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'awaiting_confirmation' && isSeller ? `
+                            <div class="support-block mt-6">
+                                <span style="font-size:12px;">⏳ Ожидайте подтверждения от покупателя</span>
+                            </div>
+                        ` : ''}
+                        
+                        ${d.status === 'completed' ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">🎉 Сделка завершена! Средства зачислены</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         function getStatusText(status) {
