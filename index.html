@@ -43,7 +43,6 @@
         @keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(0,152,234,0.3); } 50% { box-shadow: 0 0 0 20px rgba(0,152,234,0); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin-slow { to { transform: rotate(360deg); } }
-        .animate-float { animation: float 4s ease-in-out infinite; }
 
         .language-overlay {
             position: fixed;
@@ -173,8 +172,6 @@
         .btn-danger:hover { background: rgba(231,76,60,0.2); transform: translateY(-2px); }
         .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .btn-group .btn { flex: 1; min-width: 60px; }
 
         .form-group { margin: 12px 0; }
         .form-group label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
@@ -266,10 +263,8 @@
 
         .support-block { background: rgba(0,152,234,0.04); border-radius: var(--radius-sm); padding: 14px; border-left: 3px solid var(--ton-blue); margin-top: 8px; }
         .support-block a { color: var(--ton-blue); text-decoration: none; font-weight: 600; }
-
         .loading { text-align: center; padding: 30px; color: var(--text-muted); }
         .loading i { font-size: 28px; color: var(--ton-blue); animation: spin-slow 1.2s linear infinite; display: block; margin-bottom: 12px; }
-
         .text-gold { color: var(--gold); }
         .text-ton { color: var(--ton-blue); }
         .text-muted { color: var(--text-muted); }
@@ -285,7 +280,6 @@
         .flex .btn { flex: 1; }
         .gap-6 { gap: 6px; }
         .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
-
         .verification-status {
             padding: 10px 14px;
             border-radius: var(--radius-sm);
@@ -300,7 +294,6 @@
         .verification-status.verified { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.2); color: #2ecc71; }
         .verification-status.unverified { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.2); color: #f39c12; }
         .verification-status.expired { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); color: #e74c3c; }
-        .verification-status .btn { width: auto; padding: 6px 14px; font-size: 12px; }
 
         @media (max-width: 480px) {
             body { padding: 10px; }
@@ -362,19 +355,19 @@
     <!-- ===== СТАТИСТИКА ===== -->
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-number" id="statDealsToday">0</span>
+            <span class="stat-number" id="statDealsToday">1264</span>
             <span class="stat-label" id="statLabel1"><i class="fas fa-exchange-alt stat-icon"></i> Сделок сегодня</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statUsers">0</span>
+            <span class="stat-number" id="statUsers">21374</span>
             <span class="stat-label" id="statLabel2"><i class="fas fa-users stat-icon"></i> Пользователей</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statReviews">0</span>
+            <span class="stat-number" id="statReviews">5427</span>
             <span class="stat-label" id="statLabel3"><i class="fas fa-star stat-icon"></i> Отзывов</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statVolume">0</span>
+            <span class="stat-number" id="statVolume">47.6</span>
             <span class="stat-label" id="statLabel4"><i class="fas fa-chart-line stat-icon"></i> Объём (TON)</span>
         </div>
     </div>
@@ -384,7 +377,7 @@
         <button class="active" data-page="main"><i class="fas fa-home"></i><span id="navMain">Главная</span></button>
         <button data-page="create"><i class="fas fa-plus-circle"></i><span id="navCreate">Сделка</span></button>
         <button data-page="deals"><i class="fas fa-list"></i><span id="navDeals">Сделки</span></button>
-        <button data-page="reviews"><i class="fas fa-star"></i><span id="navReviews">Отзывы <span class="badge-count" id="reviewBadge">0</span></span></button>
+        <button data-page="reviews"><i class="fas fa-star"></i><span id="navReviews">Отзывы <span class="badge-count" id="reviewBadge">5427</span></span></button>
         <button data-page="balance"><i class="fas fa-wallet"></i><span id="navBalance">Баланс</span></button>
         <button data-page="admin"><i class="fas fa-crown"></i><span id="navAdmin">Админ</span></button>
     </nav>
@@ -583,8 +576,13 @@
         const tg = window.Telegram.WebApp;
         if (tg) tg.expand();
 
+        // Получаем параметры из URL (deal_id и user_id)
+        const urlParams = new URLSearchParams(window.location.search);
+        const dealIdParam = urlParams.get('deal_id');
+        const userIdParam = urlParams.get('user_id');
+
         const user = {
-            id: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+            id: userIdParam || tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
             username: tg?.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
             firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
@@ -599,8 +597,6 @@
         const LANG_TEXT = {
             'ru': {
                 'langPrompt': 'Выберите язык',
-                'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange',
                 'onlineLabel': 'онлайн',
                 'statLabel1': 'Сделок сегодня',
                 'statLabel2': 'Пользователей',
@@ -661,10 +657,6 @@
                 'btnBackMain4': 'На главную',
                 'noDeals': 'У вас нет сделок',
                 'noReviews': 'Пока нет отзывов',
-                'dealsToday': 'Сделок сегодня',
-                'users': 'Пользователей',
-                'reviews': 'Отзывов',
-                'volume': 'Объём (TON)',
                 'paid': 'Оплачено',
                 'waiting': 'Ожидает оплаты',
                 'awaiting': 'Ожидает подтверждения',
@@ -681,8 +673,6 @@
             },
             'en': {
                 'langPrompt': 'Choose your language',
-                'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange',
                 'onlineLabel': 'online',
                 'statLabel1': 'Deals today',
                 'statLabel2': 'Users',
@@ -743,10 +733,6 @@
                 'btnBackMain4': 'Main menu',
                 'noDeals': 'You have no deals',
                 'noReviews': 'No reviews yet',
-                'dealsToday': 'Deals today',
-                'users': 'Users',
-                'reviews': 'Reviews',
-                'volume': 'Volume (TON)',
                 'paid': 'Paid',
                 'waiting': 'Waiting for payment',
                 'awaiting': 'Awaiting confirmation',
@@ -760,176 +746,11 @@
                 'verificationRequired': 'Verification required to withdraw. Please verify.',
                 'verificationPassed': 'All conditions met! You can withdraw.',
                 'sessionActive': 'Session active until: '
-            },
-            'zh': {
-                'langPrompt': '选择您的语言',
-                'headerTitle': 'P2P',
-                'headerTitleSpan': '交易所',
-                'onlineLabel': '在线',
-                'statLabel1': '今日交易',
-                'statLabel2': '用户',
-                'statLabel3': '评论',
-                'statLabel4': '交易量 (TON)',
-                'navMain': '主页',
-                'navCreate': '创建',
-                'navDeals': '交易',
-                'navReviews': '评论',
-                'navBalance': '余额',
-                'navAdmin': '管理员',
-                'welcomeTitle': '欢迎！',
-                'welcomeText': '安全的P2P加密货币交易。P2P Exchange — 您值得信赖的合作伙伴。',
-                'quickStart': '快速开始',
-                'btnCreateDeal': '创建交易',
-                'btnReviews': '评论',
-                'btnBalance': '余额',
-                'btnDeals': '我的交易',
-                'howWorks': '运作方式',
-                'step1': '1️⃣ 创建交易 — 描述商品和金额',
-                'step2': '2️⃣ 发送链接给买家',
-                'step3': '3️⃣ 买家在网站上支付',
-                'step4': '4️⃣ 卖家交付 — 点击按钮',
-                'step5': '5️⃣ 买家确认收到',
-                'step6': '6️⃣ 资金转入卖家账户',
-                'securityText': '🔒 防诈骗保护 • 验证 • 24/7支持',
-                'recentReviewsTitle': '最新评论',
-                'loadingText': '加载中...',
-                'supportLabel': '支持',
-                'channelLabel': '频道',
-                'createTitle': '创建交易',
-                'createSubtitle': '填写表格',
-                'labelProduct': '商品或服务',
-                'labelCurrency': '货币',
-                'labelAmount': '金额',
-                'labelBuyer': '买家用户名 (不含@)',
-                'btnCreate': '创建交易',
-                'btnBackMain': '主菜单',
-                'myDealsTitle': '我的交易',
-                'loadingDeals': '加载中...',
-                'btnBackMain2': '主菜单',
-                'reviewsTitle': '评论',
-                'reviewsSubtitle': '交易后留下评论',
-                'labelRating': '评分',
-                'labelReviewText': '评论',
-                'btnSubmitReview': '提交评论',
-                'loadingReviews': '加载中...',
-                'btnLoadMore': '加载更多',
-                'balanceTitle': '我的余额',
-                'btnWithdraw': '提取资金',
-                'withdrawInfo': '💳 提取资金',
-                'labelWithdrawCurrency': '货币',
-                'labelWithdrawDetails': '详情',
-                'btnConfirmWithdraw': '确认提取',
-                'btnBackMain3': '主菜单',
-                'adminTitle': '管理面板',
-                'loadingAdmin': '检查权限...',
-                'btnBackMain4': '主菜单',
-                'noDeals': '您没有交易',
-                'noReviews': '暂无评论',
-                'dealsToday': '今日交易',
-                'users': '用户',
-                'reviews': '评论',
-                'volume': '交易量 (TON)',
-                'paid': '已付款',
-                'waiting': '等待付款',
-                'awaiting': '等待确认',
-                'completed': '已完成',
-                'copyLink': '复制链接',
-                'pay': '支付',
-                'sellerDelivered': '已交付',
-                'confirmReceipt': '确认收到',
-                'balanceZero': '您的余额为0。请充值后提取。',
-                'need2Deals': '需要与同一买家完成2笔交易。您有: ',
-                'verificationRequired': '提取需要验证。请进行验证。',
-                'verificationPassed': '所有条件已满足！您可以提取资金。',
-                'sessionActive': '会话有效期至: '
-            },
-            'ar': {
-                'langPrompt': 'اختر لغتك',
-                'headerTitle': 'P2P',
-                'headerTitleSpan': 'صراف',
-                'onlineLabel': 'متصل',
-                'statLabel1': 'صفقات اليوم',
-                'statLabel2': 'مستخدمين',
-                'statLabel3': 'مراجعات',
-                'statLabel4': 'الحجم (TON)',
-                'navMain': 'الرئيسية',
-                'navCreate': 'إنشاء',
-                'navDeals': 'صفقات',
-                'navReviews': 'مراجعات',
-                'navBalance': 'الرصيد',
-                'navAdmin': 'مدير',
-                'welcomeTitle': 'مرحباً!',
-                'welcomeText': 'صفقات P2P آمنة للعملات المشفرة. P2P Exchange — شريكك الموثوق.',
-                'quickStart': 'بداية سريعة',
-                'btnCreateDeal': 'إنشاء صفقة',
-                'btnReviews': 'مراجعات',
-                'btnBalance': 'الرصيد',
-                'btnDeals': 'صفقاتي',
-                'howWorks': 'كيف يعمل',
-                'step1': '1️⃣ أنشئ صفقة — صف المنتج والمبلغ',
-                'step2': '2️⃣ أرسل الرابط للمشتري',
-                'step3': '3️⃣ المشتري يدفع على الموقع',
-                'step4': '4️⃣ البائع يسلم — يضغط الزر',
-                'step5': '5️⃣ المشتري يؤكد الاستلام',
-                'step6': '6️⃣ تضاف الأموال إلى رصيد البائع',
-                'securityText': '🔒 حماية من المحتالين • تحقق • دعم 24/7',
-                'recentReviewsTitle': 'أحدث المراجعات',
-                'loadingText': 'جار التحميل...',
-                'supportLabel': 'الدعم',
-                'channelLabel': 'القناة',
-                'createTitle': 'إنشاء صفقة',
-                'createSubtitle': 'املأ النموذج',
-                'labelProduct': 'المنتج أو الخدمة',
-                'labelCurrency': 'العملة',
-                'labelAmount': 'المبلغ',
-                'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
-                'btnCreate': 'إنشاء صفقة',
-                'btnBackMain': 'القائمة الرئيسية',
-                'myDealsTitle': 'صفقاتي',
-                'loadingDeals': 'جار التحميل...',
-                'btnBackMain2': 'القائمة الرئيسية',
-                'reviewsTitle': 'مراجعات',
-                'reviewsSubtitle': 'اترك مراجعة بعد الصفقات',
-                'labelRating': 'التقييم',
-                'labelReviewText': 'المراجعة',
-                'btnSubmitReview': 'إرسال المراجعة',
-                'loadingReviews': 'جار التحميل...',
-                'btnLoadMore': 'تحميل المزيد',
-                'balanceTitle': 'رصيدي',
-                'btnWithdraw': 'سحب الأموال',
-                'withdrawInfo': '💳 سحب الأموال',
-                'labelWithdrawCurrency': 'العملة',
-                'labelWithdrawDetails': 'التفاصيل',
-                'btnConfirmWithdraw': 'تأكيد السحب',
-                'btnBackMain3': 'القائمة الرئيسية',
-                'adminTitle': 'لوحة المدير',
-                'loadingAdmin': 'فحص الصلاحيات...',
-                'btnBackMain4': 'القائمة الرئيسية',
-                'noDeals': 'ليس لديك صفقات',
-                'noReviews': 'لا توجد مراجعات بعد',
-                'dealsToday': 'صفقات اليوم',
-                'users': 'مستخدمين',
-                'reviews': 'مراجعات',
-                'volume': 'الحجم (TON)',
-                'paid': 'مدفوع',
-                'waiting': 'انتظار الدفع',
-                'awaiting': 'انتظار التأكيد',
-                'completed': 'مكتمل',
-                'copyLink': 'نسخ الرابط',
-                'pay': 'دفع',
-                'sellerDelivered': 'تم التسليم',
-                'confirmReceipt': 'تأكيد الاستلام',
-                'balanceZero': 'رصيدك 0. يرجى الإيداع للسحب.',
-                'need2Deals': 'تحتاج صفقتين ناجحتين مع نفس المشتري. لديك: ',
-                'verificationRequired': 'السحب يحتاج التحقق. يرجى التحقق.',
-                'verificationPassed': 'جميع الشروط متوفرة! يمكنك السحب.',
-                'sessionActive': 'الجلسة نشطة حتى: '
             }
         };
 
         function applyLanguage(lang) {
             const t = LANG_TEXT[lang] || LANG_TEXT['ru'];
-            
             const elements = {
                 'langPrompt': document.getElementById('langPrompt'),
                 'onlineLabel': document.getElementById('onlineLabel'),
@@ -985,20 +806,13 @@
                 'loadingAdmin': document.getElementById('loadingAdmin'),
                 'btnBackMain4': document.getElementById('btnBackMain4')
             };
-
             for (const [key, el] of Object.entries(elements)) {
-                if (el && t[key] !== undefined) {
-                    el.textContent = t[key];
-                }
+                if (el && t[key] !== undefined) el.textContent = t[key];
             }
-
             for (let i = 1; i <= 6; i++) {
                 const el = document.getElementById('step' + i);
-                if (el && t['step' + i] !== undefined) {
-                    el.innerHTML = t['step' + i];
-                }
+                if (el && t['step' + i] !== undefined) el.innerHTML = t['step' + i];
             }
-
             const headerTitle = document.getElementById('headerTitle');
             const headerTitleSpan = document.getElementById('headerTitleSpan');
             if (headerTitle && t.headerTitle) headerTitle.textContent = t.headerTitle;
@@ -1064,13 +878,10 @@
         function showPage(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-
             const target = document.getElementById('page-' + page);
             if (target) target.classList.add('active');
-
             const navBtn = document.querySelector(`.nav button[data-page="${page}"]`);
             if (navBtn) navBtn.classList.add('active');
-
             if (page === 'deals') loadDeals();
             if (page === 'balance') loadBalance();
             if (page === 'admin') loadAdminPanel();
@@ -1090,15 +901,10 @@
                     document.getElementById('statDealsToday').textContent = stats.deals_today || 1264;
                     document.getElementById('statUsers').textContent = stats.users || 21374;
                     document.getElementById('statReviews').textContent = stats.reviews || 5427;
-                    document.getElementById('statVolume').textContent = (stats.volume || 47.6).toFixed(1) + 'K';
+                    document.getElementById('statVolume').textContent = (stats.volume || 47.6).toFixed(1);
                     document.getElementById('reviewBadge').textContent = stats.reviews || 5427;
-                } else {
-                    document.getElementById('statDealsToday').textContent = 1264;
-                    document.getElementById('statUsers').textContent = 21374;
-                    document.getElementById('statReviews').textContent = 5427;
-                    document.getElementById('statVolume').textContent = '47.6K';
-                    document.getElementById('reviewBadge').textContent = 5427;
                 }
+                // Если API не ответил, оставляем дефолтные значения (уже в HTML)
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
                 if (reviews.success && reviews.reviews) {
@@ -1107,11 +913,7 @@
                     renderDemoReviews();
                 }
             } catch (e) {
-                document.getElementById('statDealsToday').textContent = 1264;
-                document.getElementById('statUsers').textContent = 21374;
-                document.getElementById('statReviews').textContent = 5427;
-                document.getElementById('statVolume').textContent = '47.6K';
-                document.getElementById('reviewBadge').textContent = 5427;
+                console.error(e);
                 renderDemoReviews();
             }
         }
@@ -1120,25 +922,15 @@
             const texts = [
                 'Отличная платформа! Всё работает быстро и надёжно.',
                 'Лучший P2P обменник! Рекомендую всем друзьям.',
-                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
-                'Отличная поддержка! Помогли разобраться с выводом.',
-                'Наконец-то нашёл нормальный обменник. Всё честно.',
-                'Сделал первую сделку, всё прошло гладко. Спасибо!',
-                'За сутки сделал 5 сделок, все успешно завершены.',
-                'Очень доволен сервисом. Вывод моментальный.',
-                'Пользуюсь уже месяц, ни одной проблемы.',
-                'Лучший сервис в Telegram! Успехов разработчикам.'
+                'Быстро, удобно, безопасно. Буду пользоваться дальше.'
             ];
-            const demo = [];
-            for (let i = 0; i < 3; i++) {
-                demo.push({
-                    user: 'Аноним',
-                    text: texts[Math.floor(Math.random() * texts.length)],
-                    rating: 4 + Math.floor(Math.random() * 2),
-                    date: new Date().toLocaleString(),
-                    anonymous: true
-                });
-            }
+            const demo = texts.map(text => ({
+                user: 'Аноним',
+                text: text,
+                rating: 5,
+                date: new Date().toLocaleString(),
+                anonymous: true
+            }));
             renderRecentReviews(demo);
         }
 
@@ -1239,8 +1031,8 @@
             }
             
             container.innerHTML = state.deals.map(d => {
-                const isSeller = d.seller_id === user.id;
-                const isBuyer = d.buyer_id === user.id;
+                const isSeller = d.seller_id == user.id;
+                const isBuyer = d.buyer_id == user.id;
                 const isCompleted = d.status === 'completed';
                 
                 return `
@@ -1315,7 +1107,7 @@
                 <h3 style="margin-bottom:12px;">💳 ${getLangText('pay')}</h3>
                 <div style="display:grid; gap:8px;">
                     <button class="btn btn-primary" onclick="payWithBalance('${dealId}')">
-                        <i class="fas fa-wallet"></i> ${getLangText('pay')}
+                        <i class="fas fa-wallet"></i> ${getLangText('pay')} с баланса
                     </button>
                     <button class="btn btn-secondary" onclick="payWithRekvisits('${dealId}')">
                         <i class="fas fa-file-invoice"></i> По реквизитам
@@ -1327,9 +1119,8 @@
 
         async function payWithBalance(dealId) {
             closeModal();
-            const btn = document.querySelector(`#dealsList .deal-card:has([onclick*="payDeal('${dealId}')"]) .btn-primary`);
-            if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Оплата...'; btn.disabled = true; }
-
+            showToast('⏳ Обработка...', 'info');
+            
             try {
                 const data = await apiCall('/api/pay_balance', { deal_id: dealId });
                 if (data.success) {
@@ -1341,8 +1132,6 @@
                 }
             } catch (e) {
                 showToast('❌ Ошибка: ' + e.message, 'error');
-            } finally {
-                if (btn) { btn.innerHTML = '<i class="fas fa-credit-card"></i> ' + getLangText('pay'); btn.disabled = false; }
             }
         }
 
@@ -1421,7 +1210,7 @@
         }
 
         // ============================================================
-        // 12. СОЗДАНИЕ СДЕЛКИ (БЕЗ ВЫБОРА СПОСОБА ОПЛАТЫ)
+        // 12. СОЗДАНИЕ СДЕЛКИ
         // ============================================================
         document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1440,12 +1229,7 @@
             btn.disabled = true;
 
             try {
-                const data = await apiCall('/api/create_deal', { 
-                    product, 
-                    currency, 
-                    amount, 
-                    buyer_username: buyer
-                });
+                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
                     resultDiv.style.display = 'block';
@@ -1462,7 +1246,7 @@
                             <i class="fas fa-copy"></i> Скопировать ссылку
                         </button>
                         <div class="support-block mt-6">
-                            <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю. Он выберет способ оплаты на сайте.</span>
+                            <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю.</span>
                         </div>
                     `;
                     showToast('✅ Сделка создана!', 'success');
@@ -1481,7 +1265,7 @@
         });
 
         // ============================================================
-        // 13. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
+        // 13. ОТЗЫВЫ
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1515,11 +1299,6 @@
                     </div>
                     <div class="review-stars">${'⭐'.repeat(r.rating || 5)}</div>
                     <div class="review-text">${r.text}</div>
-                    ${state.isAdmin ? `
-                        <button class="btn btn-danger btn-sm mt-6" onclick="deleteReview('${r.id || r._id}')" style="width:auto;">
-                            <i class="fas fa-trash"></i> Удалить
-                        </button>
-                    ` : ''}
                 </div>
             `).join('');
             container.innerHTML = html;
@@ -1562,29 +1341,13 @@
             }
         }
 
-        async function deleteReview(reviewId) {
-            if (!confirm('Удалить этот отзыв?')) return;
-            try {
-                const data = await apiCall('/api/delete_review', { review_id: reviewId });
-                if (data.success) {
-                    showToast('✅ Отзыв удалён', 'success');
-                    loadReviews();
-                    loadMainData();
-                } else {
-                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
-                }
-            } catch (err) {
-                showToast('❌ Ошибка: ' + err.message, 'error');
-            }
-        }
-
         function loadMoreReviews() {
             state.reviewPage++;
             loadReviews();
         }
 
         // ============================================================
-        // 14. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
+        // 14. ВЫВОД
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
@@ -2060,6 +1823,14 @@
         loadBalance();
         loadDeals();
         loadReviews();
+
+        // Если есть deal_id в URL — сразу открываем сделку
+        if (dealIdParam) {
+            setTimeout(() => {
+                showPage('deals');
+                showToast('🔍 Открыта сделка #' + dealIdParam, 'info');
+            }, 500);
+        }
 
         setInterval(() => {
             document.getElementById('onlineCount').textContent = getOnlineCount();
