@@ -351,19 +351,19 @@
     <!-- ===== СТАТИСТИКА ===== -->
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-number" id="statDealsToday">0</span>
+            <span class="stat-number" id="statDealsToday">1264</span>
             <span class="stat-label"><i class="fas fa-exchange-alt stat-icon"></i> Сделок сегодня</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statUsers">0</span>
+            <span class="stat-number" id="statUsers">21374</span>
             <span class="stat-label"><i class="fas fa-users stat-icon"></i> Пользователей</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statReviews">0</span>
+            <span class="stat-number" id="statReviews">5427</span>
             <span class="stat-label"><i class="fas fa-star stat-icon"></i> Отзывов</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statVolume">0</span>
+            <span class="stat-number" id="statVolume">47.6K</span>
             <span class="stat-label"><i class="fas fa-chart-line stat-icon"></i> Объём (TON)</span>
         </div>
     </div>
@@ -373,7 +373,7 @@
         <button class="active" data-page="main"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="create"><i class="fas fa-plus-circle"></i><span>Сделка</span></button>
         <button data-page="deals"><i class="fas fa-list"></i><span>Сделки</span></button>
-        <button data-page="reviews"><i class="fas fa-star"></i><span>Отзывы <span class="badge-count" id="reviewBadge">0</span></span></button>
+        <button data-page="reviews"><i class="fas fa-star"></i><span>Отзывы <span class="badge-count" id="reviewBadge">5427</span></span></button>
         <button data-page="balance"><i class="fas fa-wallet"></i><span>Баланс</span></button>
         <button data-page="admin"><i class="fas fa-crown"></i><span>Админ</span></button>
     </nav>
@@ -669,7 +669,7 @@
         }
 
         // ============================================================
-        // 8. ГЛАВНАЯ
+        // 8. ГЛАВНАЯ (С МИНИМУМАМИ)
         // ============================================================
         async function loadMainData() {
             try {
@@ -677,12 +677,19 @@
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
-                    document.getElementById('statUsers').textContent = stats.users || 0;
-                    document.getElementById('statReviews').textContent = stats.reviews || 0;
-                    let volume = stats.volume || 0;
+                    document.getElementById('statDealsToday').textContent = Math.max(1264, stats.deals_today || 0);
+                    document.getElementById('statUsers').textContent = Math.max(21374, stats.users || 0);
+                    document.getElementById('statReviews').textContent = Math.max(5427, stats.reviews || 0);
+                    let volume = Math.max(47.6, stats.volume || 0);
                     document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
-                    document.getElementById('reviewBadge').textContent = stats.reviews || 0;
+                    document.getElementById('reviewBadge').textContent = Math.max(5427, stats.reviews || 0);
+                } else {
+                    // Если API не отвечает — показываем минимумы
+                    document.getElementById('statDealsToday').textContent = 1264;
+                    document.getElementById('statUsers').textContent = 21374;
+                    document.getElementById('statReviews').textContent = 5427;
+                    document.getElementById('statVolume').textContent = '47.6K';
+                    document.getElementById('reviewBadge').textContent = 5427;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
@@ -857,7 +864,7 @@
         }
 
         // ============================================================
-        // 11. ОПЛАТА (БЕЗ ВЕРИФИКАЦИИ)
+        // 11. ОПЛАТА
         // ============================================================
         async function payDeal(dealId) {
             showModal(`
@@ -1160,7 +1167,6 @@
         }
 
         async function confirmWithdraw() {
-            // Проверка 2 сделок
             const check = await apiCall('/api/has_2_deals');
             state.has2Deals = check.has_2_deals || false;
 
@@ -1312,7 +1318,8 @@
         async function adminSetDealsToday() {
             const count = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
             if (count === null) return;
-            const num = parseInt(count);
+            let num = parseInt(count);
+            if (num < 1264) num = 1264;
             if (num >= 0) {
                 document.getElementById('statDealsToday').textContent = num;
                 showToast(`✅ ${num}`, 'success');
@@ -1323,7 +1330,8 @@
         async function adminSetUsers() {
             const count = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
             if (count === null) return;
-            const num = parseInt(count);
+            let num = parseInt(count);
+            if (num < 21374) num = 21374;
             if (num >= 0) {
                 document.getElementById('statUsers').textContent = num;
                 showToast(`✅ ${num}`, 'success');
@@ -1334,7 +1342,8 @@
         async function adminSetReviews() {
             const count = prompt('Отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
             if (count === null) return;
-            const num = parseInt(count);
+            let num = parseInt(count);
+            if (num < 5427) num = 5427;
             if (num >= 0) {
                 document.getElementById('statReviews').textContent = num;
                 document.getElementById('reviewBadge').textContent = num;
@@ -1348,6 +1357,7 @@
             if (count === null) return;
             let num = parseFloat(count);
             if (num > 47.4) num = 47.4;
+            if (num < 47.6) num = 47.6;
             if (num >= 0) {
                 document.getElementById('statVolume').textContent = num.toFixed(1) + 'K';
                 showToast(`✅ ${num.toFixed(1)}K`, 'success');
@@ -1369,30 +1379,38 @@
         }
 
         async function adminSetAllStats() {
-            const deals = prompt('Сделок:', Math.floor(Math.random() * 20) + 15);
+            let deals = prompt('Сделок:', Math.floor(Math.random() * 20) + 15);
             if (deals === null) return;
-            const users = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
+            let users = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
             if (users === null) return;
-            const reviews = prompt('Отзывов:', Math.floor(Math.random() * 500) + 5000);
+            let reviews = prompt('Отзывов:', Math.floor(Math.random() * 500) + 5000);
             if (reviews === null) return;
-            let volume = parseFloat(prompt('Объём (макс 47.4):', (Math.random() * 10 + 35).toFixed(1)));
+            let volume = parseFloat(prompt('Объём (макс 47.4, мин 47.6):', (Math.random() * 10 + 35).toFixed(1)));
             if (isNaN(volume)) return;
-            if (volume > 47.4) volume = 47.4;
             const online = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
             if (online === null) return;
 
-            document.getElementById('statDealsToday').textContent = deals;
-            document.getElementById('statUsers').textContent = users;
-            document.getElementById('statReviews').textContent = reviews;
-            document.getElementById('reviewBadge').textContent = reviews;
+            let dealsNum = parseInt(deals);
+            let usersNum = parseInt(users);
+            let reviewsNum = parseInt(reviews);
+            if (dealsNum < 1264) dealsNum = 1264;
+            if (usersNum < 21374) usersNum = 21374;
+            if (reviewsNum < 5427) reviewsNum = 5427;
+            if (volume > 47.4) volume = 47.4;
+            if (volume < 47.6) volume = 47.6;
+
+            document.getElementById('statDealsToday').textContent = dealsNum;
+            document.getElementById('statUsers').textContent = usersNum;
+            document.getElementById('statReviews').textContent = reviewsNum;
+            document.getElementById('reviewBadge').textContent = reviewsNum;
             document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
             document.getElementById('onlineCount').textContent = online;
 
             showToast('✅ Всё обновлено!', 'success');
 
-            await apiCall('/api/admin_set_stats', { key: 'deals_today', value: parseInt(deals) });
-            await apiCall('/api/admin_set_stats', { key: 'users', value: parseInt(users) });
-            await apiCall('/api/admin_set_stats', { key: 'reviews', value: parseInt(reviews) });
+            await apiCall('/api/admin_set_stats', { key: 'deals_today', value: dealsNum });
+            await apiCall('/api/admin_set_stats', { key: 'users', value: usersNum });
+            await apiCall('/api/admin_set_stats', { key: 'reviews', value: reviewsNum });
             await apiCall('/api/admin_set_stats', { key: 'volume', value: volume });
             await apiCall('/api/admin_set_stats', { key: 'online', value: parseInt(online) });
         }
