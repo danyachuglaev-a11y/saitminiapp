@@ -467,13 +467,6 @@
                         <label><i class="fas fa-user"></i> <span id="labelBuyer">Username покупателя (без @)</span></label>
                         <input type="text" id="buyerInput" placeholder="john_doe" required>
                     </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-credit-card"></i> <span id="labelPaymentMethod">Способ оплаты</span></label>
-                        <select id="paymentMethodSelect">
-                            <option value="balance">💰 С баланса</option>
-                            <option value="rekvisits">💳 По реквизитам</option>
-                        </select>
-                    </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> <span id="btnCreate">Создать сделку</span></button>
                 </form>
                 <div id="dealResult" style="display:none;" class="card mt-10"></div>
@@ -644,7 +637,6 @@
                 'labelCurrency': 'Валюта',
                 'labelAmount': 'Сумма',
                 'labelBuyer': 'Username покупателя (без @)',
-                'labelPaymentMethod': 'Способ оплаты',
                 'btnCreate': 'Создать сделку',
                 'btnBackMain': 'На главную',
                 'myDealsTitle': 'Мои сделки',
@@ -727,7 +719,6 @@
                 'labelCurrency': 'Currency',
                 'labelAmount': 'Amount',
                 'labelBuyer': 'Buyer username (without @)',
-                'labelPaymentMethod': 'Payment method',
                 'btnCreate': 'Create deal',
                 'btnBackMain': 'Main menu',
                 'myDealsTitle': 'My deals',
@@ -810,7 +801,6 @@
                 'labelCurrency': '货币',
                 'labelAmount': '金额',
                 'labelBuyer': '买家用户名 (不含@)',
-                'labelPaymentMethod': '支付方式',
                 'btnCreate': '创建交易',
                 'btnBackMain': '主菜单',
                 'myDealsTitle': '我的交易',
@@ -893,7 +883,6 @@
                 'labelCurrency': 'العملة',
                 'labelAmount': 'المبلغ',
                 'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
-                'labelPaymentMethod': 'طريقة الدفع',
                 'btnCreate': 'إنشاء صفقة',
                 'btnBackMain': 'القائمة الرئيسية',
                 'myDealsTitle': 'صفقاتي',
@@ -973,7 +962,6 @@
                 'labelCurrency': document.getElementById('labelCurrency'),
                 'labelAmount': document.getElementById('labelAmount'),
                 'labelBuyer': document.getElementById('labelBuyer'),
-                'labelPaymentMethod': document.getElementById('labelPaymentMethod'),
                 'btnCreate': document.getElementById('btnCreate'),
                 'btnBackMain': document.getElementById('btnBackMain'),
                 'myDealsTitle': document.getElementById('myDealsTitle'),
@@ -1091,7 +1079,7 @@
         }
 
         // ============================================================
-        // 7. ГЛАВНАЯ С ДЕМО-ЗНАЧЕНИЯМИ
+        // 7. ГЛАВНАЯ
         // ============================================================
         async function loadMainData() {
             try {
@@ -1433,7 +1421,7 @@
         }
 
         // ============================================================
-        // 12. СОЗДАНИЕ СДЕЛКИ (ВСЯ ЛОГИКА НА САЙТЕ)
+        // 12. СОЗДАНИЕ СДЕЛКИ (БЕЗ ВЫБОРА СПОСОБА ОПЛАТЫ)
         // ============================================================
         document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1441,7 +1429,6 @@
             const currency = document.getElementById('currencySelect').value;
             const amount = parseFloat(document.getElementById('amountInput').value);
             const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
-            const paymentMethod = document.getElementById('paymentMethodSelect').value;
 
             if (!product || !amount || !buyer) {
                 showToast('❌ Заполните все поля!', 'error');
@@ -1457,8 +1444,7 @@
                     product, 
                     currency, 
                     amount, 
-                    buyer_username: buyer,
-                    payment_method: paymentMethod
+                    buyer_username: buyer
                 });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
@@ -1475,11 +1461,9 @@
                         <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
                             <i class="fas fa-copy"></i> Скопировать ссылку
                         </button>
-                        ${data.status === 'paid' ? `
-                            <div class="support-block mt-6" style="border-color: var(--success);">
-                                <span style="font-size:12px; color: var(--success);">✅ Оплата с баланса прошла автоматически!</span>
-                            </div>
-                        ` : ''}
+                        <div class="support-block mt-6">
+                            <span style="font-size:12px; color:var(--text-secondary);">📋 Отправьте ссылку покупателю. Он выберет способ оплаты на сайте.</span>
+                        </div>
                     `;
                     showToast('✅ Сделка создана!', 'success');
                     document.getElementById('dealForm').reset();
