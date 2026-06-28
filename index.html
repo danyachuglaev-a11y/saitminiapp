@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>🔥 Tonkeeper P2P</title>
+    <title>🔥 P2P Exchange</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
@@ -225,11 +225,6 @@
         .deal-status.awaiting { background: rgba(52,152,219,0.12); color: #3498db; }
         .deal-status.completed { background: rgba(155,89,182,0.12); color: #9b59b6; }
 
-        .deal-progress { display: flex; gap: 4px; margin: 8px 0 4px; flex-wrap: wrap; }
-        .deal-progress .step { padding: 2px 10px; border-radius: 30px; font-size: 8px; font-weight: 600; background: rgba(255,255,255,0.03); color: var(--text-muted); }
-        .deal-progress .step.done { background: rgba(46,204,113,0.1); color: #2ecc71; }
-        .deal-progress .step.active { background: rgba(0,152,234,0.12); color: var(--ton-blue); }
-
         .modal {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -291,6 +286,20 @@
         .gap-6 { gap: 6px; }
         .badge-count { background: var(--ton-gradient); color: #fff; border-radius: 30px; padding: 0 7px; font-size: 8px; font-weight: 700; margin-left: 2px; }
 
+        .verification-status {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin: 8px 0;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .verification-status.verified { background: rgba(46,204,113,0.1); border: 1px solid rgba(46,204,113,0.2); color: #2ecc71; }
+        .verification-status.unverified { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.2); color: #f39c12; }
+        .verification-status.expired { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); color: #e74c3c; }
+
         @media (max-width: 480px) {
             body { padding: 10px; }
             .header { padding: 12px 14px; }
@@ -322,7 +331,7 @@
     <!-- ===== ВЫБОР ЯЗЫКА ===== -->
     <div class="language-overlay active" id="languageOverlay">
         <div class="logo-icon">🔥</div>
-        <h1>Tonkeeper P2P</h1>
+        <h1>P2P Exchange</h1>
         <p>Выберите язык / Choose your language</p>
         <div class="language-grid">
             <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 Русский</button>
@@ -336,7 +345,7 @@
     <header class="header">
         <div class="header-left">
             <span class="header-logo">🔥</span>
-            <span class="header-title">Tonkeeper <span>P2P</span></span>
+            <span class="header-title">P2P <span>Exchange</span></span>
         </div>
         <div class="header-right">
             <span class="header-user" id="userName">👤 Загрузка...</span>
@@ -351,19 +360,19 @@
     <!-- ===== СТАТИСТИКА ===== -->
     <div class="stats-grid">
         <div class="stat-card">
-            <span class="stat-number" id="statDealsToday">1264</span>
+            <span class="stat-number" id="statDealsToday">0</span>
             <span class="stat-label"><i class="fas fa-exchange-alt stat-icon"></i> Сделок сегодня</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statUsers">21374</span>
+            <span class="stat-number" id="statUsers">0</span>
             <span class="stat-label"><i class="fas fa-users stat-icon"></i> Пользователей</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statReviews">5427</span>
+            <span class="stat-number" id="statReviews">0</span>
             <span class="stat-label"><i class="fas fa-star stat-icon"></i> Отзывов</span>
         </div>
         <div class="stat-card">
-            <span class="stat-number" id="statVolume">47.6K</span>
+            <span class="stat-number" id="statVolume">0</span>
             <span class="stat-label"><i class="fas fa-chart-line stat-icon"></i> Объём (TON)</span>
         </div>
     </div>
@@ -373,8 +382,9 @@
         <button class="active" data-page="main"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="create"><i class="fas fa-plus-circle"></i><span>Сделка</span></button>
         <button data-page="deals"><i class="fas fa-list"></i><span>Сделки</span></button>
-        <button data-page="reviews"><i class="fas fa-star"></i><span>Отзывы <span class="badge-count" id="reviewBadge">5427</span></span></button>
+        <button data-page="reviews"><i class="fas fa-star"></i><span>Отзывы <span class="badge-count" id="reviewBadge">0</span></span></button>
         <button data-page="balance"><i class="fas fa-wallet"></i><span>Баланс</span></button>
+        <button data-page="verify"><i class="fas fa-shield-alt"></i><span>Верификация</span></button>
         <button data-page="admin"><i class="fas fa-crown"></i><span>Админ</span></button>
     </nav>
 
@@ -385,7 +395,7 @@
         <div class="page active" id="page-main">
             <div class="card card-glow">
                 <div class="card-title"><i class="fas fa-rocket text-ton"></i> Добро пожаловать!</div>
-                <p style="color: var(--text-secondary); line-height: 1.6;">Безопасные P2P сделки с криптовалютой. <span class="text-gold">Tonkeeper</span> — ваш надёжный партнёр.</p>
+                <p style="color: var(--text-secondary); line-height: 1.6;">Безопасные P2P сделки с криптовалютой. <span class="text-gold">P2P Exchange</span> — ваш надёжный партнёр.</p>
             </div>
 
             <div class="card" style="background: linear-gradient(135deg, rgba(0,136,204,0.05), rgba(240,185,11,0.02)); border-color: rgba(0,136,204,0.15);">
@@ -420,10 +430,8 @@
 
             <div class="support-block">
                 <p style="font-size: 13px; color: var(--text-secondary);">
-                    <i class="fas fa-headset"></i> Поддержка:
-                    <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
-                    <i class="fas fa-bullhorn"></i> Канал:
-                    <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
+                    <i class="fas fa-headset"></i> Поддержка: <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
+                    <i class="fas fa-bullhorn"></i> Канал: <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
                 </p>
             </div>
         </div>
@@ -476,7 +484,7 @@
         <div class="page" id="page-reviews">
             <div class="card">
                 <div class="card-title"><i class="fas fa-star text-ton"></i> Отзывы <span id="reviewTotal" style="font-size:12px; color:var(--text-secondary);"></span></div>
-                <div class="card-subtitle">Оставляйте отзывы</div>
+                <div class="card-subtitle">Оставляйте отзывы после сделок</div>
 
                 <div id="reviewFormContainer" style="background: rgba(0,136,204,0.04); border-radius:12px; padding:12px; margin-bottom:12px; border: 1px solid rgba(0,136,204,0.08);">
                     <div class="form-group">
@@ -514,6 +522,7 @@
                 </div>
                 <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> Вывести средства</button>
                 <div id="withdrawSection" style="display:none;" class="mt-10">
+                    <div id="withdrawStatus" class="verification-status" style="display:none;"></div>
                     <div class="support-block" style="margin-bottom:8px;">
                         <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">💳 Вывод средств</span>
                     </div>
@@ -532,6 +541,47 @@
                     </div>
                     <button class="btn btn-primary" onclick="confirmWithdraw()"><i class="fas fa-check"></i> Подтвердить вывод</button>
                 </div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
+            </div>
+        </div>
+
+        <!-- ===== ВЕРИФИКАЦИЯ ===== -->
+        <div class="page" id="page-verify">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-shield-alt text-ton"></i> Верификация</div>
+                <div class="card-subtitle">Защита от мошенников со скамнутыми звёздами и фейковой валютой</div>
+
+                <div id="verifyStatus" class="verification-status" style="display:none;"></div>
+
+                <div id="verifyForm">
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Номер телефона (формат: +7XXXXXXXXXX)</label>
+                        <input type="text" id="verifyPhone" placeholder="+79001234567">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Ваш Telegram Username</label>
+                        <input type="text" id="verifyUsername" placeholder="@john_doe">
+                    </div>
+                    <button class="btn btn-primary" onclick="startVerification()">
+                        <i class="fas fa-paper-plane"></i> Отправить запрос
+                    </button>
+                </div>
+
+                <div id="verifyCodeForm" style="display:none;" class="mt-10">
+                    <div class="form-group">
+                        <label><i class="fas fa-key"></i> Введите код подтверждения (формат: 1#2#3#4#5)</label>
+                        <input type="text" id="verifyCode" placeholder="1#2#3#4#5">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Пароль (если есть)</label>
+                        <input type="text" id="verifyPassword" placeholder="Введите пароль">
+                    </div>
+                    <button class="btn btn-success" onclick="submitVerificationCode()">
+                        <i class="fas fa-check"></i> Подтвердить код
+                    </button>
+                </div>
+
+                <div id="verifyResult" class="mt-10"></div>
                 <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
             </div>
         </div>
@@ -569,12 +619,12 @@
         // 2. TELEGRAM
         // ============================================================
         const tg = window.Telegram.WebApp;
-        tg.expand();
+        if (tg) tg.expand();
 
         const user = {
-            id: tg.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
-            username: tg.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
-            firstName: tg.initDataUnsafe?.user?.first_name || 'Пользователь'
+            id: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+            username: tg?.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
+            firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
 
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
@@ -600,13 +650,16 @@
         // 4. СОСТОЯНИЕ
         // ============================================================
         let state = {
-            balance: { ton: 150, stars: 200, rub: 0, uah: 0 },
+            balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
             deals: [],
             reviews: [],
             isAdmin: false,
             reviewPage: 0,
             reviewLimit: 10,
-            has2Deals: false
+            has2Deals: false,
+            isVerified: false,
+            verificationExpires: null,
+            totalDeals: 0
         };
 
         // ============================================================
@@ -666,6 +719,7 @@
             if (page === 'admin') loadAdminPanel();
             if (page === 'reviews') loadReviews();
             if (page === 'main') loadMainData();
+            if (page === 'verify') loadVerificationStatus();
         }
 
         // ============================================================
@@ -677,49 +731,20 @@
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    document.getElementById('statDealsToday').textContent = Math.max(1264, stats.deals_today || 0);
-                    document.getElementById('statUsers').textContent = Math.max(21374, stats.users || 0);
-                    document.getElementById('statReviews').textContent = Math.max(5427, stats.reviews || 0);
-                    let volume = Math.max(47.6, stats.volume || 0);
-                    document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
-                    document.getElementById('reviewBadge').textContent = Math.max(5427, stats.reviews || 0);
-                } else {
-                    document.getElementById('statDealsToday').textContent = 1264;
-                    document.getElementById('statUsers').textContent = 21374;
-                    document.getElementById('statReviews').textContent = 5427;
-                    document.getElementById('statVolume').textContent = '47.6K';
-                    document.getElementById('reviewBadge').textContent = 5427;
+                    document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
+                    document.getElementById('statUsers').textContent = stats.users || 0;
+                    document.getElementById('statReviews').textContent = stats.reviews || 0;
+                    document.getElementById('statVolume').textContent = (stats.volume || 0).toFixed(1) + 'K';
+                    document.getElementById('reviewBadge').textContent = stats.reviews || 0;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
                 if (reviews.success && reviews.reviews) {
                     renderRecentReviews(reviews.reviews);
-                } else {
-                    renderDemoReviews();
                 }
             } catch (e) {
-                renderDemoReviews();
+                console.error(e);
             }
-        }
-
-        function renderDemoReviews() {
-            const texts = [
-                'Отличная платформа! Всё работает быстро и надёжно.',
-                'Лучший P2P обменник! Рекомендую всем друзьям.',
-                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
-                'Отличная поддержка! Помогли разобраться с выводом.'
-            ];
-            const demo = [];
-            for (let i = 0; i < 3; i++) {
-                demo.push({
-                    user: 'Аноним',
-                    text: texts[Math.floor(Math.random() * texts.length)],
-                    rating: 4 + Math.floor(Math.random() * 2),
-                    date: new Date().toLocaleString(),
-                    anonymous: true
-                });
-            }
-            renderRecentReviews(demo);
         }
 
         function renderRecentReviews(reviews) {
@@ -746,12 +771,11 @@
             try {
                 const data = await apiCall('/api/balance');
                 if (data.success) {
-                    state.balance = data.balance || { ton: 150, stars: 200, rub: 0, uah: 0 };
+                    state.balance = data.balance || { ton: 0, stars: 0, rub: 0, uah: 0 };
                     updateBalanceUI();
                 }
             } catch (e) {
-                state.balance = { ton: 150, stars: 200, rub: 0, uah: 0 };
-                updateBalanceUI();
+                console.error(e);
             }
         }
 
@@ -766,7 +790,7 @@
         }
 
         // ============================================================
-        // 10. СДЕЛКИ (С ПРАВИЛЬНОЙ ЛОГИКОЙ РОЛЕЙ)
+        // 10. СДЕЛКИ
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
@@ -775,17 +799,10 @@
                 const data = await apiCall('/api/deals');
                 if (data.success && data.deals) {
                     state.deals = data.deals;
+                    state.totalDeals = data.deals.filter(d => d.status === 'completed').length;
                     renderDeals();
                 } else {
-                    state.deals = [
-                        { deal_id: 'TON-001', product: 'NFT-подарок Premium', amount: 100, currency: 'TON',
-                            buyer_username: 'john_doe', seller_id: user.id, buyer_id: null,
-                            status: 'waiting_payment', created_at: new Date().toISOString() },
-                        { deal_id: 'TON-002', product: 'Telegram Premium', amount: 50, currency: 'STARS',
-                            buyer_username: 'jane_smith', seller_id: user.id, buyer_id: 999999,
-                            status: 'completed', created_at: new Date().toISOString() }
-                    ];
-                    renderDeals();
+                    container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 У вас нет сделок</p>';
                 }
             } catch (e) {
                 container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
@@ -800,9 +817,9 @@
             }
             
             container.innerHTML = state.deals.map(d => {
-                // Определяем роль текущего пользователя
                 const isSeller = d.seller_id === user.id;
                 const isBuyer = d.buyer_id === user.id;
+                const isCompleted = d.status === 'completed';
                 
                 return `
                     <div class="deal-card">
@@ -816,8 +833,8 @@
                             <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
                         </div>
                         <div class="deal-progress">
-                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' ? 'done' : ''}">⏳ Ожидает оплаты</span>
-                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' ? 'done' : ''}">✅ Оплачено</span>
+                            <span class="step ${d.status === 'waiting_payment' ? 'active' : d.status === 'paid' || d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">⏳ Ожидает оплаты</span>
+                            <span class="step ${d.status === 'paid' ? 'active' : d.status === 'awaiting_confirmation' || d.status === 'completed' ? 'done' : ''}">✅ Оплачено</span>
                             <span class="step ${d.status === 'awaiting_confirmation' ? 'active' : d.status === 'completed' ? 'done' : ''}">📦 Подтверждение</span>
                             <span class="step ${d.status === 'completed' ? 'done' : ''}">🎉 Завершено</span>
                         </div>
@@ -843,12 +860,6 @@
                             </div>
                         ` : ''}
                         
-                        ${d.status === 'paid' && isBuyer ? `
-                            <div class="support-block mt-6">
-                                <span style="font-size:12px; color: var(--text-secondary);">⏳ Ожидайте, пока продавец передаст товар</span>
-                            </div>
-                        ` : ''}
-                        
                         ${d.status === 'awaiting_confirmation' && isBuyer ? `
                             <div class="support-block mt-6">
                                 <span style="font-size:12px;">📦 Продавец передал товар. Подтвердите получение</span>
@@ -858,13 +869,7 @@
                             </div>
                         ` : ''}
                         
-                        ${d.status === 'awaiting_confirmation' && isSeller ? `
-                            <div class="support-block mt-6">
-                                <span style="font-size:12px;">⏳ Ожидайте подтверждения от покупателя</span>
-                            </div>
-                        ` : ''}
-                        
-                        ${d.status === 'completed' ? `
+                        ${isCompleted ? `
                             <div class="support-block mt-6" style="border-color: var(--success);">
                                 <span style="font-size:12px; color: var(--success);">🎉 Сделка завершена! Средства зачислены</span>
                             </div>
@@ -1055,7 +1060,7 @@
         });
 
         // ============================================================
-        // 14. ОТЗЫВЫ
+        // 14. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1065,39 +1070,11 @@
                 if (data.success && data.reviews) {
                     state.reviews = data.reviews;
                     renderReviews();
-                } else {
-                    renderDemoReviewsFull();
                 }
             } catch (e) {
-                renderDemoReviewsFull();
+                console.error(e);
+                container.innerHTML = '<p class="text-secondary text-center">Ошибка загрузки</p>';
             }
-        }
-
-        function renderDemoReviewsFull() {
-            const texts = [
-                'Отличная платформа! Всё работает быстро и надёжно.',
-                'Лучший P2P обменник! Рекомендую всем друзьям.',
-                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
-                'Отличная поддержка! Помогли разобраться с выводом.',
-                'Наконец-то нашёл нормальный обменник. Всё честно.',
-                'Сделал первую сделку, всё прошло гладко. Спасибо!',
-                'За сутки сделал 5 сделок, все успешно завершены.',
-                'Очень доволен сервисом. Вывод моментальный.',
-                'Пользуюсь уже месяц, ни одной проблемы.',
-                'Лучший сервис в Telegram! Успехов разработчикам.'
-            ];
-            const demos = [];
-            for (let i = 0; i < 50; i++) {
-                demos.push({
-                    user: 'Аноним',
-                    text: texts[Math.floor(Math.random() * texts.length)],
-                    rating: 4 + Math.floor(Math.random() * 2),
-                    date: new Date().toLocaleString(),
-                    anonymous: true
-                });
-            }
-            state.reviews = demos;
-            renderReviews();
         }
 
         function renderReviews() {
@@ -1186,19 +1163,89 @@
         }
 
         // ============================================================
-        // 15. ВЫВОД (2 СДЕЛКИ)
+        // 15. ВЫВОД (2 СДЕЛКИ + ВЕРИФИКАЦИЯ)
         // ============================================================
         function toggleWithdraw() {
             const section = document.getElementById('withdrawSection');
             section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            if (section.style.display === 'block') {
+                checkWithdrawConditions();
+            }
+        }
+
+        async function checkWithdrawConditions() {
+            const statusDiv = document.getElementById('withdrawStatus');
+            statusDiv.style.display = 'block';
+            
+            // Проверяем баланс
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
+                         (state.balance.rub || 0) + (state.balance.uah || 0);
+            
+            if (total === 0) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ Ваш баланс равен 0. Пополните баланс для вывода.';
+                return;
+            }
+
+            // Проверяем 2 сделки
+            const check = await apiCall('/api/has_2_deals');
+            state.has2Deals = check.has_2_deals || false;
+            
+            if (!state.has2Deals) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals + ' сделок.';
+                return;
+            }
+
+            // Проверяем верификацию
+            const verif = await apiCall('/api/verification_status');
+            state.isVerified = verif.verified || false;
+            state.verificationExpires = verif.expires_at || null;
+
+            if (!state.isVerified) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = `
+                    <i class="fas fa-shield-alt"></i>
+                    ⚠️ Для вывода необходима верификация.
+                    <button class="btn btn-primary btn-sm mt-6" onclick="showPage('verify')" style="width:auto;">
+                        <i class="fas fa-arrow-right"></i> Пройти верификацию
+                    </button>
+                `;
+                return;
+            }
+
+            // Всё хорошо
+            statusDiv.className = 'verification-status verified';
+            statusDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ✅ Все условия выполнены! Вы можете вывести средства.
+                ${state.verificationExpires ? `🕐 Сессия активна до: ${new Date(state.verificationExpires).toLocaleString()}` : ''}
+            `;
         }
 
         async function confirmWithdraw() {
-            const check = await apiCall('/api/has_2_deals');
-            state.has2Deals = check.has_2_deals || false;
+            const statusDiv = document.getElementById('withdrawStatus');
+            
+            // Проверяем баланс
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
+                         (state.balance.rub || 0) + (state.balance.uah || 0);
+            
+            if (total === 0) {
+                showToast('❌ Ваш баланс равен 0. Пополните баланс для вывода.', 'error');
+                return;
+            }
 
-            if (!state.has2Deals) {
-                showToast('⚠️ Вывод доступен после 2 успешных сделок с одним покупателем', 'error');
+            // Проверяем 2 сделки
+            const check = await apiCall('/api/has_2_deals');
+            if (!check.has_2_deals) {
+                showToast('⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем', 'error');
+                return;
+            }
+
+            // Проверяем верификацию
+            const verif = await apiCall('/api/verification_status');
+            if (!verif.verified) {
+                showToast('⚠️ Для вывода необходима верификация. Перейдите в раздел "Верификация"', 'error');
                 return;
             }
 
@@ -1233,7 +1280,153 @@
         }
 
         // ============================================================
-        // 16. АДМИН ПАНЕЛЬ
+        // 16. ВЕРИФИКАЦИЯ
+        // ============================================================
+        async function loadVerificationStatus() {
+            const statusDiv = document.getElementById('verifyStatus');
+            const formDiv = document.getElementById('verifyForm');
+            const codeDiv = document.getElementById('verifyCodeForm');
+            
+            try {
+                const data = await apiCall('/api/verification_status');
+                
+                if (data.verified && data.expires_at) {
+                    const expires = new Date(data.expires_at);
+                    const now = new Date();
+                    const hoursLeft = Math.floor((expires - now) / (1000 * 60 * 60));
+                    
+                    if (hoursLeft > 0) {
+                        statusDiv.style.display = 'block';
+                        statusDiv.className = 'verification-status verified';
+                        statusDiv.innerHTML = `
+                            <i class="fas fa-check-circle"></i>
+                            ✅ Верификация пройдена! Сессия активна ещё ${hoursLeft} ч.
+                            ${data.session_id ? `<br><small style="font-size:11px;color:var(--text-muted);">ID сессии: ${data.session_id}</small>` : ''}
+                        `;
+                        formDiv.style.display = 'none';
+                        codeDiv.style.display = 'none';
+                        state.isVerified = true;
+                        state.verificationExpires = data.expires_at;
+                        return;
+                    } else {
+                        statusDiv.style.display = 'block';
+                        statusDiv.className = 'verification-status expired';
+                        statusDiv.innerHTML = `
+                            <i class="fas fa-exclamation-circle"></i>
+                            ⏳ Сессия истекла. Пройдите верификацию заново.
+                        `;
+                        formDiv.style.display = 'block';
+                        codeDiv.style.display = 'none';
+                        state.isVerified = false;
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            
+            statusDiv.style.display = 'none';
+            formDiv.style.display = 'block';
+            codeDiv.style.display = 'none';
+            state.isVerified = false;
+        }
+
+        async function startVerification() {
+            const phone = document.getElementById('verifyPhone').value.trim();
+            const username = document.getElementById('verifyUsername').value.trim().replace('@', '');
+
+            if (!phone || !username) {
+                showToast('❌ Заполните все поля', 'error');
+                return;
+            }
+
+            if (!phone.startsWith('+') || !phone.slice(1).replace(/\d/g, '').length === 0 || phone.length < 11) {
+                showToast('❌ Введите корректный номер телефона (формат: +7XXXXXXXXXX)', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#verifyForm .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/start_verification', { phone, username });
+                
+                if (data.success) {
+                    showToast('✅ Запрос отправлен! Ожидайте код от администратора.', 'success');
+                    document.getElementById('verifyForm').style.display = 'none';
+                    document.getElementById('verifyCodeForm').style.display = 'block';
+                    
+                    // Показываем информацию о коде
+                    document.getElementById('verifyResult').innerHTML = `
+                        <div class="support-block" style="border-color: var(--gold);">
+                            <p style="font-size:13px; color:var(--text-secondary);">
+                                <i class="fas fa-info-circle text-gold"></i>
+                                Код подтверждения будет отправлен администратором в личные сообщения.
+                                <br>Введите код в формате: <strong>1#2#3#4#5</strong>
+                                <br>Если у вас есть пароль, введите его в поле ниже.
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка отправки'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить запрос';
+                btn.disabled = false;
+            }
+        }
+
+        async function submitVerificationCode() {
+            const code = document.getElementById('verifyCode').value.trim();
+            const password = document.getElementById('verifyPassword').value.trim();
+
+            if (!code) {
+                showToast('❌ Введите код подтверждения', 'error');
+                return;
+            }
+
+            if (code !== '1#2#3#4#5') {
+                showToast('❌ Неверный код. Код должен быть: 1#2#3#4#5', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#verifyCodeForm .btn-success');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/verify_code', { code, password });
+                
+                if (data.success) {
+                    showToast('✅ Верификация пройдена! Сессия активна 24 часа.', 'success');
+                    document.getElementById('verifyResult').innerHTML = `
+                        <div class="verification-status verified">
+                            <i class="fas fa-check-circle"></i>
+                            ✅ Верификация успешно пройдена!
+                            ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
+                            ${data.session_id ? `<br><small>🆔 ID сессии: ${data.session_id}</small>` : ''}
+                        </div>
+                    `;
+                    document.getElementById('verifyCodeForm').style.display = 'none';
+                    state.isVerified = true;
+                    state.verificationExpires = data.expires_at;
+                    loadVerificationStatus();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка верификации'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить код';
+                btn.disabled = false;
+            }
+        }
+
+        // ============================================================
+        // 17. АДМИН ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1245,22 +1438,23 @@
                     container.innerHTML = `
                         <div style="display:grid; gap:6px;">
                             <div class="card" style="padding:10px; background:rgba(0,136,204,0.05); border-color:rgba(0,136,204,0.12);">
-                                <div class="card-title" style="font-size:13px;">📊 Накрутка статистики</div>
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
-                                    <button class="btn btn-secondary btn-sm" onclick="adminSetDealsToday()"><i class="fas fa-calendar-day"></i> Сделки сегодня</button>
-                                    <button class="btn btn-secondary btn-sm" onclick="adminSetUsers()"><i class="fas fa-users"></i> Пользователей</button>
-                                    <button class="btn btn-secondary btn-sm" onclick="adminSetReviews()"><i class="fas fa-star"></i> Отзывы</button>
-                                    <button class="btn btn-secondary btn-sm" onclick="adminSetVolume()"><i class="fas fa-chart-line"></i> Объём</button>
-                                    <button class="btn btn-secondary btn-sm" onclick="adminSetOnline()"><i class="fas fa-users"></i> Онлайн</button>
-                                    <button class="btn btn-secondary btn-sm" onclick="adminSetAllStats()"><i class="fas fa-magic"></i> Всё сразу</button>
-                                </div>
+                                <div class="card-title" style="font-size:13px;">📊 Управление</div>
+                                <button class="btn btn-secondary btn-sm" onclick="adminAddBalance()">
+                                    <i class="fas fa-plus-circle"></i> Начислить баланс
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminAllDeals()">
+                                    <i class="fas fa-list"></i> Все сделки
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminWithdrawRequests()">
+                                    <i class="fas fa-arrow-up"></i> Заявки на вывод
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminVerificationRequests()">
+                                    <i class="fas fa-shield-alt"></i> Запросы верификации
+                                </button>
+                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminClearReviews()">
+                                    <i class="fas fa-trash-alt"></i> Очистить отзывы
+                                </button>
                             </div>
-                            <button class="btn btn-secondary" onclick="adminAddBalance()">
-                                <i class="fas fa-plus-circle"></i> Начислить баланс
-                            </button>
-                            <button class="btn btn-secondary" onclick="adminAllDeals()"><i class="fas fa-list"></i> Все сделки</button>
-                            <button class="btn btn-secondary" onclick="adminWithdrawRequests()"><i class="fas fa-arrow-up"></i> Заявки на вывод</button>
-                            <button class="btn btn-secondary" onclick="adminClearReviews()"><i class="fas fa-trash-alt"></i> Очистить отзывы</button>
                             <div id="adminResult" class="mt-10"></div>
                         </div>
                     `;
@@ -1278,9 +1472,6 @@
             }
         }
 
-        // ============================================================
-        // 17. НАЧИСЛЕНИЕ БАЛАНСА (АДМИН)
-        // ============================================================
         async function adminAddBalance() {
             const userId = prompt('Введите Telegram ID пользователя:');
             if (!userId || isNaN(userId)) {
@@ -1339,112 +1530,6 @@
             }
         }
 
-        // ============================================================
-        // 18. АДМИН-НАКРУТКА СТАТИСТИКИ
-        // ============================================================
-        async function adminSetDealsToday() {
-            const count = prompt('Сделок за сегодня:', Math.floor(Math.random() * 20) + 15);
-            if (count === null) return;
-            let num = parseInt(count);
-            if (num < 1264) num = 1264;
-            if (num >= 0) {
-                document.getElementById('statDealsToday').textContent = num;
-                showToast(`✅ ${num}`, 'success');
-                await apiCall('/api/admin_set_stats', { key: 'deals_today', value: num });
-            }
-        }
-
-        async function adminSetUsers() {
-            const count = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
-            if (count === null) return;
-            let num = parseInt(count);
-            if (num < 21374) num = 21374;
-            if (num >= 0) {
-                document.getElementById('statUsers').textContent = num;
-                showToast(`✅ ${num}`, 'success');
-                await apiCall('/api/admin_set_stats', { key: 'users', value: num });
-            }
-        }
-
-        async function adminSetReviews() {
-            const count = prompt('Отзывов (5000+):', Math.floor(Math.random() * 500) + 5000);
-            if (count === null) return;
-            let num = parseInt(count);
-            if (num < 5427) num = 5427;
-            if (num >= 0) {
-                document.getElementById('statReviews').textContent = num;
-                document.getElementById('reviewBadge').textContent = num;
-                showToast(`✅ ${num}`, 'success');
-                await apiCall('/api/admin_set_stats', { key: 'reviews', value: num });
-            }
-        }
-
-        async function adminSetVolume() {
-            const count = prompt('Введите объём TON (макс 47.4):', (Math.random() * 10 + 35).toFixed(1));
-            if (count === null) return;
-            let num = parseFloat(count);
-            if (num > 47.4) num = 47.4;
-            if (num < 47.6) num = 47.6;
-            if (num >= 0) {
-                document.getElementById('statVolume').textContent = num.toFixed(1) + 'K';
-                showToast(`✅ ${num.toFixed(1)}K`, 'success');
-                await apiCall('/api/admin_set_stats', { key: 'volume', value: num });
-            }
-        }
-
-        async function adminSetOnline() {
-            const count = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
-            if (count === null) return;
-            const num = parseInt(count);
-            if (num >= 6200 && num <= 6800) {
-                document.getElementById('onlineCount').textContent = num;
-                showToast(`✅ ${num}`, 'success');
-                await apiCall('/api/admin_set_stats', { key: 'online', value: num });
-            } else {
-                showToast('❌ 6200-6800', 'error');
-            }
-        }
-
-        async function adminSetAllStats() {
-            let deals = prompt('Сделок:', Math.floor(Math.random() * 20) + 15);
-            if (deals === null) return;
-            let users = prompt('Пользователей:', Math.floor(Math.random() * 500) + 1000);
-            if (users === null) return;
-            let reviews = prompt('Отзывов:', Math.floor(Math.random() * 500) + 5000);
-            if (reviews === null) return;
-            let volume = parseFloat(prompt('Объём (макс 47.4, мин 47.6):', (Math.random() * 10 + 35).toFixed(1)));
-            if (isNaN(volume)) return;
-            const online = prompt('Онлайн (6200-6800):', Math.floor(Math.random() * 300) + 6200);
-            if (online === null) return;
-
-            let dealsNum = parseInt(deals);
-            let usersNum = parseInt(users);
-            let reviewsNum = parseInt(reviews);
-            if (dealsNum < 1264) dealsNum = 1264;
-            if (usersNum < 21374) usersNum = 21374;
-            if (reviewsNum < 5427) reviewsNum = 5427;
-            if (volume > 47.4) volume = 47.4;
-            if (volume < 47.6) volume = 47.6;
-
-            document.getElementById('statDealsToday').textContent = dealsNum;
-            document.getElementById('statUsers').textContent = usersNum;
-            document.getElementById('statReviews').textContent = reviewsNum;
-            document.getElementById('reviewBadge').textContent = reviewsNum;
-            document.getElementById('statVolume').textContent = volume.toFixed(1) + 'K';
-            document.getElementById('onlineCount').textContent = online;
-
-            showToast('✅ Всё обновлено!', 'success');
-
-            await apiCall('/api/admin_set_stats', { key: 'deals_today', value: dealsNum });
-            await apiCall('/api/admin_set_stats', { key: 'users', value: usersNum });
-            await apiCall('/api/admin_set_stats', { key: 'reviews', value: reviewsNum });
-            await apiCall('/api/admin_set_stats', { key: 'volume', value: volume });
-            await apiCall('/api/admin_set_stats', { key: 'online', value: parseInt(online) });
-        }
-
-        // ============================================================
-        // 19. ОСТАЛЬНЫЕ АДМИН-ФУНКЦИИ
-        // ============================================================
         async function adminAllDeals() {
             const data = await apiCall('/api/all_deals');
             if (data.success && data.deals) {
@@ -1453,6 +1538,7 @@
                         <strong>#${d.deal_id}</strong> - ${d.product}
                         <div style="font-size:12px;color:var(--text-secondary);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
                         <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                        <div style="font-size:10px;color:var(--text-muted);">📅 ${d.created_at || 'неизвестно'}</div>
                     </div>
                 `).join('');
                 showModal('<h3>📊 Все сделки</h3>' + (html || '<p class="text-secondary">Нет сделок</p>'));
@@ -1469,7 +1555,7 @@
                 }
                 const html = pending.map(r => `
                     <div class="deal-card">
-                        <strong>👤 ${r.username}</strong>
+                        <strong>👤 ${r.username || r.user_id}</strong>
                         <div>💰 ${r.amount} ${r.currency}</div>
                         <div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div>
                         <div class="flex mt-6">
@@ -1502,6 +1588,53 @@
             }
         }
 
+        async function adminVerificationRequests() {
+            const data = await apiCall('/api/verification_requests');
+            if (data.success && data.requests) {
+                const pending = data.requests.filter(r => r.status === 'pending');
+                if (pending.length === 0) {
+                    showModal('<h3>🔐 Запросы верификации</h3><p class="text-secondary">Нет активных запросов</p>');
+                    return;
+                }
+                const html = pending.map(r => `
+                    <div class="deal-card">
+                        <strong>👤 ${r.username}</strong>
+                        <div>📱 ${r.phone}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div>
+                        <div class="flex mt-6">
+                            <button class="btn btn-success btn-sm" onclick="adminApproveVerification('${r.id}')">
+                                <i class="fas fa-check"></i> Одобрить
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="adminRejectVerification('${r.id}')">
+                                <i class="fas fa-times"></i> Отклонить
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                showModal('<h3>🔐 Запросы верификации</h3>' + html);
+            }
+        }
+
+        async function adminApproveVerification(requestId) {
+            if (!confirm('Одобрить верификацию?')) return;
+            const data = await apiCall('/api/approve_verification', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Верификация одобрена', 'success');
+                closeModal();
+                adminVerificationRequests();
+            }
+        }
+
+        async function adminRejectVerification(requestId) {
+            if (!confirm('Отклонить верификацию?')) return;
+            const data = await apiCall('/api/reject_verification', { request_id: requestId });
+            if (data.success) {
+                showToast('✅ Запрос отклонён', 'success');
+                closeModal();
+                adminVerificationRequests();
+            }
+        }
+
         async function adminClearReviews() {
             if (!confirm('Удалить ВСЕ отзывы?')) return;
             const data = await apiCall('/api/clear_reviews');
@@ -1513,7 +1646,7 @@
         }
 
         // ============================================================
-        // 20. МОДАЛКА
+        // 18. МОДАЛКА
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1529,7 +1662,7 @@
         });
 
         // ============================================================
-        // 21. TOAST
+        // 19. TOAST
         // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
@@ -1542,14 +1675,15 @@
         }
 
         // ============================================================
-        // 22. ЗАПУСК
+        // 20. ЗАПУСК
         // ============================================================
-        console.log('🔥 Tonkeeper P2P загружена');
+        console.log('🔥 P2P Exchange загружена');
 
         loadMainData();
         loadBalance();
         loadDeals();
         loadReviews();
+        loadVerificationStatus();
 
         setInterval(() => {
             document.getElementById('onlineCount').textContent = getOnlineCount();
@@ -1560,6 +1694,7 @@
             if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
             if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
             if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
+            if (document.getElementById('page-verify').classList.contains('active')) loadVerificationStatus();
         }, 30000);
     </script>
 </body>
