@@ -1,210 +1,105 @@
 // ============================================================
-// API — ВСЕ ЗАПРОСЫ К БОТУ
+// APP — ГЛАВНЫЙ ФАЙЛ ЗАПУСКА
 // ============================================================
 
-const API_BASE = 'https://otc-bot-hwua.onrender.com';
-const BOT_USERNAME = 'tonkeeperp2p_bot';
-
-// Текущий пользователь из Telegram
-const user = {
-    id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
-    username: window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
-    firstName: window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name || 'Пользователь'
-};
-
 /**
- * Базовый API вызов
+ * Инициализация приложения
  */
-async function apiCall(endpoint, data = {}) {
-    try {
-        const response = await fetch(`${API_BASE}${endpoint}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Telegram-User-Id': user.id,
-                'X-Telegram-Username': user.username
-            },
-            body: JSON.stringify({ ...data, user_id: user.id, username: user.username })
+async function initApp() {
+    console.log('⚡ Tonkeeper P2P v2.0');
+    console.log('👤 Пользователь:', user);
+
+    // Проверка языка
+    const savedLang = localStorage.getItem('lang');
+    if (savedLang) {
+        document.getElementById('languageOverlay').classList.remove('active');
+        window.currentLang = savedLang;
+    } else {
+        document.getElementById('languageOverlay').classList.add('active');
+    }
+
+    // Проверка админа
+    const adminData = await checkAdmin();
+    window.isAdmin = adminData.is_admin || false;
+    console.log('👑 Админ:', window.isAdmin);
+
+    // Навигация по кнопкам
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const page = btn.dataset.page;
+            if (page === 'admin' && !window.isAdmin) {
+                navigateTo('profile');
+                return;
+            }
+            navigateTo(page);
         });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
-    } catch (error) {
-        console.error(`API Error (${endpoint}):`, error);
-        return { success: false, error: error.message };
+    });
+
+    // Загружаем главную страницу
+    navigateTo('main');
+
+    // Автообновление
+    setInterval(() => {
+        if (currentPage === 'main') {
+            document.getElementById('onlineCount').textContent = Math.floor(6200 + Math.random() * 600);
+        }
+    }, 10000);
+
+    // Обработка свайпов (Telegram)
+    if (window.Telegram?.WebApp) {
+        try {
+            window.Telegram.WebApp.expand();
+            window.Telegram.WebApp.enableClosingConfirmation();
+        } catch (e) {
+            console.log('Telegram WebApp не поддерживается');
+        }
     }
 }
 
 /**
- * Получить баланс
+ * Установка языка
  */
-async function getBalance() {
-    return apiCall('/api/balance');
+function setLanguage(lang) {
+    localStorage.setItem('lang', lang);
+    window.currentLang = lang;
+    document.getElementById('languageOverlay').classList.remove('active');
+    showToast('✅ Язык установлен', 'success');
+    if (currentPage === 'main') renderMain();
 }
 
 /**
- * Получить статистику
+ * Страница профиля (заглушка)
  */
-async function getStats() {
-    return apiCall('/api/stats');
+async function renderProfile() {
+    mainContent.innerHTML = `
+        <div style="padding:4px 0 12px 0;">
+            <h1 style="font-size:24px; font-weight:900; letter-spacing:-0.5px;">
+                👤 Профиль
+            </h1>
+        </div>
+        <div class="card" style="text-align:center; padding:40px 20px;">
+            <div style="width:80px; height:80px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:700; color:#fff; margin:0 auto 12px;">
+                ${user.firstName.charAt(0).toUpperCase()}
+            </div>
+            <h3 style="font-size:20px; font-weight:700;">${user.firstName}</h3>
+            <p style="color:var(--text-secondary);">@${user.username}</p>
+            <p style="color:var(--text-muted); font-size:12px; margin-top:8px;">ID: ${user.id}</p>
+            <div style="margin-top:16px; display:flex; gap:10px; justify-content:center;">
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('balance')" style="width:auto; padding:8px 16px;">
+                    <i class="fas fa-wallet"></i> Баланс
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="navigateTo('deals')" style="width:auto; padding:8px 16px;">
+                    <i class="fas fa-list"></i> Сделки
+                </button>
+            </div>
+        </div>
+        <div style="height:20px;"></div>
+    `;
 }
 
-/**
- * Получить онлайн
- */
-async function getOnline() {
-    return apiCall('/api/online');
-}
+// Глобальные функции
+window.setLanguage = setLanguage;
+window.renderProfile = renderProfile;
 
-/**
- * Получить сделки пользователя
- */
-async function getUserDeals() {
-    return apiCall('/api/deals');
-}
-
-/**
- * Создать сделку
- */
-async function createDeal(data) {
-    return apiCall('/api/create_deal', data);
-}
-
-/**
- * Оплатить с баланса
- */
-async function payWithBalance(dealId) {
-    return apiCall('/api/pay_balance', { deal_id: dealId });
-}
-
-/**
- * Подтвердить оплату по реквизитам
- */
-async function confirmRekvisitsPayment(dealId) {
-    return apiCall('/api/confirm_rekvisits_payment', { deal_id: dealId });
-}
-
-/**
- * Получить реквизиты для оплаты
- */
-async function getRekvisits(dealId) {
-    return apiCall('/api/get_rekvisits', { deal_id: dealId });
-}
-
-/**
- * Продавец передал товар
- */
-async function sellerDelivered(dealId) {
-    return apiCall('/api/seller_delivered', { deal_id: dealId });
-}
-
-/**
- * Покупатель подтвердил получение
- */
-async function buyerConfirm(dealId) {
-    return apiCall('/api/buyer_confirm', { deal_id: dealId });
-}
-
-/**
- * Проверка 2 сделок
- */
-async function has2Deals() {
-    return apiCall('/api/has_2_deals');
-}
-
-/**
- * Проверка админа
- */
-async function checkAdmin() {
-    return apiCall('/api/is_admin');
-}
-
-/**
- * Запрос на вывод
- */
-async function withdrawRequest(data) {
-    return apiCall('/api/withdraw', data);
-}
-
-/**
- * Заявки на вывод (админ)
- */
-async function getWithdrawRequests() {
-    return apiCall('/api/withdraw_requests');
-}
-
-/**
- * Подтвердить вывод (админ)
- */
-async function confirmWithdraw(requestId) {
-    return apiCall('/api/confirm_withdraw', { request_id: requestId });
-}
-
-/**
- * Отклонить вывод (админ)
- */
-async function rejectWithdraw(requestId) {
-    return apiCall('/api/reject_withdraw', { request_id: requestId });
-}
-
-/**
- * Все сделки (админ)
- */
-async function getAllDeals() {
-    return apiCall('/api/all_deals');
-}
-
-/**
- * Начислить баланс (админ)
- */
-async function addBalance(data) {
-    return apiCall('/api/add_balance', data);
-}
-
-/**
- * Накрутить статистику (админ)
- */
-async function setStats(data) {
-    return apiCall('/api/admin_set_stats', data);
-}
-
-/**
- * Отзывы
- */
-async function getReviews(limit = 10, page = 0) {
-    return apiCall('/api/reviews', { limit, page });
-}
-
-/**
- * Добавить отзыв
- */
-async function addReview(data) {
-    return apiCall('/api/add_review', data);
-}
-
-/**
- * Удалить отзыв (админ)
- */
-async function deleteReview(reviewId) {
-    return apiCall('/api/delete_review', { review_id: reviewId });
-}
-
-/**
- * Очистить отзывы (админ)
- */
-async function clearReviews() {
-    return apiCall('/api/clear_reviews');
-}
-
-/**
- * Проверить верификацию
- */
-async function checkVerification() {
-    return apiCall('/api/check_verification');
-}
-
-/**
- * Пройти верификацию
- */
-async function verifyUser(data) {
-    return apiCall('/api/verify', data);
-}
+// Запуск приложения
+document.addEventListener('DOMContentLoaded', initApp);
