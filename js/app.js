@@ -7,7 +7,10 @@
  */
 async function initApp() {
     console.log('⚡ Tonkeeper P2P v2.0');
-    console.log('👤 Пользователь:', user);
+    
+    // Используем глобального user из api.js
+    const currentUser = window.user || { firstName: 'Пользователь', username: 'user' };
+    console.log('👤 Пользователь:', currentUser);
 
     // Проверка языка
     const savedLang = localStorage.getItem('lang');
@@ -18,16 +21,20 @@ async function initApp() {
         document.getElementById('languageOverlay').classList.add('active');
     }
 
-    // Проверка админа — используем глобальную переменную из admin.js
-    const adminData = await checkAdmin();
-    window.isAdmin = adminData.is_admin || false;
-    console.log('👑 Админ:', window.isAdmin);
+    // Проверка админа
+    try {
+        const adminData = await checkAdmin();
+        window.isAdmin = adminData.is_admin || false;
+        console.log('👑 Админ:', window.isAdmin);
+    } catch (e) {
+        window.isAdmin = false;
+        console.log('👑 Админ: false (ошибка)');
+    }
 
     // Навигация по кнопкам
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.addEventListener('click', () => {
             const page = btn.dataset.page;
-            // Если админка и не админ — перенаправляем на профиль
             if (page === 'admin' && !window.isAdmin) {
                 navigateTo('profile');
                 return;
@@ -48,8 +55,12 @@ async function initApp() {
 
     // Обработка свайпов (Telegram)
     if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.expand();
-        window.Telegram.WebApp.enableClosingConfirmation();
+        try {
+            window.Telegram.WebApp.expand();
+            window.Telegram.WebApp.enableClosingConfirmation();
+        } catch (e) {
+            console.log('Telegram WebApp не поддерживается');
+        }
     }
 }
 
@@ -68,6 +79,8 @@ function setLanguage(lang) {
  * Страница профиля (заглушка)
  */
 async function renderProfile() {
+    const currentUser = window.user || { firstName: 'Пользователь', username: 'user', id: '0' };
+    
     mainContent.innerHTML = `
         <div style="padding:4px 0 12px 0;">
             <h1 style="font-size:24px; font-weight:900; letter-spacing:-0.5px;">
@@ -76,11 +89,11 @@ async function renderProfile() {
         </div>
         <div class="card" style="text-align:center; padding:40px 20px;">
             <div style="width:80px; height:80px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; font-size:36px; font-weight:700; color:#fff; margin:0 auto 12px;">
-                ${user.firstName.charAt(0).toUpperCase()}
+                ${currentUser.firstName.charAt(0).toUpperCase()}
             </div>
-            <h3 style="font-size:20px; font-weight:700;">${user.firstName}</h3>
-            <p style="color:var(--text-secondary);">@${user.username}</p>
-            <p style="color:var(--text-muted); font-size:12px; margin-top:8px;">ID: ${user.id}</p>
+            <h3 style="font-size:20px; font-weight:700;">${currentUser.firstName}</h3>
+            <p style="color:var(--text-secondary);">@${currentUser.username}</p>
+            <p style="color:var(--text-muted); font-size:12px; margin-top:8px;">ID: ${currentUser.id}</p>
             <div style="margin-top:16px; display:flex; gap:10px; justify-content:center;">
                 <button class="btn btn-secondary btn-sm" onclick="navigateTo('balance')" style="width:auto; padding:8px 16px;">
                     <i class="fas fa-wallet"></i> Баланс
