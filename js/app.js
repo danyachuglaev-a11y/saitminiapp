@@ -18,16 +18,17 @@ async function initApp() {
         document.getElementById('languageOverlay').classList.add('active');
     }
 
-    // Проверка админа
-    isAdmin = await checkAdminStatus();
-    console.log('👑 Админ:', isAdmin);
+    // Проверка админа — используем глобальную переменную из admin.js
+    const adminData = await checkAdmin();
+    window.isAdmin = adminData.is_admin || false;
+    console.log('👑 Админ:', window.isAdmin);
 
     // Навигация по кнопкам
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.addEventListener('click', () => {
             const page = btn.dataset.page;
             // Если админка и не админ — перенаправляем на профиль
-            if (page === 'admin' && !isAdmin) {
+            if (page === 'admin' && !window.isAdmin) {
                 navigateTo('profile');
                 return;
             }
@@ -60,7 +61,6 @@ function setLanguage(lang) {
     window.currentLang = lang;
     document.getElementById('languageOverlay').classList.remove('active');
     showToast('✅ Язык установлен', 'success');
-    // Перезагружаем данные
     if (currentPage === 'main') renderMain();
 }
 
