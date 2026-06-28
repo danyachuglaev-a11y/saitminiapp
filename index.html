@@ -473,7 +473,7 @@
         <div class="page" id="page-reviews">
             <div class="card">
                 <div class="card-title"><i class="fas fa-star text-ton"></i> Отзывы <span id="reviewTotal" style="font-size:12px; color:var(--text-secondary);"></span></div>
-                <div class="card-subtitle">Оставляйте отзывы после верификации</div>
+                <div class="card-subtitle">Оставляйте отзывы</div>
 
                 <div id="reviewFormContainer" style="background: rgba(0,136,204,0.04); border-radius:12px; padding:12px; margin-bottom:12px; border: 1px solid rgba(0,136,204,0.08);">
                     <div class="form-group">
@@ -855,16 +855,9 @@
         }
 
         // ============================================================
-        // 11. ОПЛАТА
+        // 11. ОПЛАТА (БЕЗ ВЕРИФИКАЦИИ)
         // ============================================================
         async function payDeal(dealId) {
-            const verCheck = await apiCall('/api/check_verification');
-            if (!verCheck.verified) {
-                showToast('⚠️ Сначала пройдите верификацию!', 'error');
-                showVerificationModal();
-                return;
-            }
-
             showModal(`
                 <h3 style="margin-bottom:12px;">💳 Выберите способ оплаты</h3>
                 <div style="display:grid; gap:8px;">
@@ -1026,7 +1019,7 @@
         });
 
         // ============================================================
-        // 14. ОТЗЫВЫ (РАБОТАЕТ)
+        // 14. ОТЗЫВЫ (БЕЗ ВЕРИФИКАЦИИ)
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
@@ -1105,14 +1098,6 @@
 
             if (!text) {
                 showToast('❌ Напишите текст отзыва', 'error');
-                return;
-            }
-
-            // Проверяем верификацию
-            const verCheck = await apiCall('/api/check_verification');
-            if (!verCheck.verified) {
-                showToast('⚠️ Сначала пройдите верификацию!', 'error');
-                showVerificationModal();
                 return;
             }
 
@@ -1219,7 +1204,7 @@
         }
 
         // ============================================================
-        // 16. ВЕРИФИКАЦИЯ (ПОЯВЛЯЕТСЯ ТОЛЬКО ПРИ НЕОБХОДИМОСТИ)
+        // 16. ВЕРИФИКАЦИЯ (ПОЯВЛЯЕТСЯ ТОЛЬКО ПРИ ВЫВОДЕ)
         // ============================================================
         function showVerificationModal() {
             showModal(`
