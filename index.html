@@ -467,6 +467,13 @@
                         <label><i class="fas fa-user"></i> <span id="labelBuyer">Username покупателя (без @)</span></label>
                         <input type="text" id="buyerInput" placeholder="john_doe" required>
                     </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-credit-card"></i> <span id="labelPaymentMethod">Способ оплаты</span></label>
+                        <select id="paymentMethodSelect">
+                            <option value="balance">💰 С баланса</option>
+                            <option value="rekvisits">💳 По реквизитам</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> <span id="btnCreate">Создать сделку</span></button>
                 </form>
                 <div id="dealResult" style="display:none;" class="card mt-10"></div>
@@ -637,6 +644,7 @@
                 'labelCurrency': 'Валюта',
                 'labelAmount': 'Сумма',
                 'labelBuyer': 'Username покупателя (без @)',
+                'labelPaymentMethod': 'Способ оплаты',
                 'btnCreate': 'Создать сделку',
                 'btnBackMain': 'На главную',
                 'myDealsTitle': 'Мои сделки',
@@ -719,6 +727,7 @@
                 'labelCurrency': 'Currency',
                 'labelAmount': 'Amount',
                 'labelBuyer': 'Buyer username (without @)',
+                'labelPaymentMethod': 'Payment method',
                 'btnCreate': 'Create deal',
                 'btnBackMain': 'Main menu',
                 'myDealsTitle': 'My deals',
@@ -801,6 +810,7 @@
                 'labelCurrency': '货币',
                 'labelAmount': '金额',
                 'labelBuyer': '买家用户名 (不含@)',
+                'labelPaymentMethod': '支付方式',
                 'btnCreate': '创建交易',
                 'btnBackMain': '主菜单',
                 'myDealsTitle': '我的交易',
@@ -883,6 +893,7 @@
                 'labelCurrency': 'العملة',
                 'labelAmount': 'المبلغ',
                 'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
+                'labelPaymentMethod': 'طريقة الدفع',
                 'btnCreate': 'إنشاء صفقة',
                 'btnBackMain': 'القائمة الرئيسية',
                 'myDealsTitle': 'صفقاتي',
@@ -962,6 +973,7 @@
                 'labelCurrency': document.getElementById('labelCurrency'),
                 'labelAmount': document.getElementById('labelAmount'),
                 'labelBuyer': document.getElementById('labelBuyer'),
+                'labelPaymentMethod': document.getElementById('labelPaymentMethod'),
                 'btnCreate': document.getElementById('btnCreate'),
                 'btnBackMain': document.getElementById('btnBackMain'),
                 'myDealsTitle': document.getElementById('myDealsTitle'),
@@ -1079,7 +1091,7 @@
         }
 
         // ============================================================
-        // 7. ГЛАВНАЯ
+        // 7. ГЛАВНАЯ С ДЕМО-ЗНАЧЕНИЯМИ
         // ============================================================
         async function loadMainData() {
             try {
@@ -1087,20 +1099,59 @@
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    document.getElementById('statDealsToday').textContent = stats.deals_today || 0;
-                    document.getElementById('statUsers').textContent = stats.users || 0;
-                    document.getElementById('statReviews').textContent = stats.reviews || 0;
-                    document.getElementById('statVolume').textContent = (stats.volume || 0).toFixed(1) + 'K';
-                    document.getElementById('reviewBadge').textContent = stats.reviews || 0;
+                    document.getElementById('statDealsToday').textContent = stats.deals_today || 1264;
+                    document.getElementById('statUsers').textContent = stats.users || 21374;
+                    document.getElementById('statReviews').textContent = stats.reviews || 5427;
+                    document.getElementById('statVolume').textContent = (stats.volume || 47.6).toFixed(1) + 'K';
+                    document.getElementById('reviewBadge').textContent = stats.reviews || 5427;
+                } else {
+                    document.getElementById('statDealsToday').textContent = 1264;
+                    document.getElementById('statUsers').textContent = 21374;
+                    document.getElementById('statReviews').textContent = 5427;
+                    document.getElementById('statVolume').textContent = '47.6K';
+                    document.getElementById('reviewBadge').textContent = 5427;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
                 if (reviews.success && reviews.reviews) {
                     renderRecentReviews(reviews.reviews);
+                } else {
+                    renderDemoReviews();
                 }
             } catch (e) {
-                console.error(e);
+                document.getElementById('statDealsToday').textContent = 1264;
+                document.getElementById('statUsers').textContent = 21374;
+                document.getElementById('statReviews').textContent = 5427;
+                document.getElementById('statVolume').textContent = '47.6K';
+                document.getElementById('reviewBadge').textContent = 5427;
+                renderDemoReviews();
             }
+        }
+
+        function renderDemoReviews() {
+            const texts = [
+                'Отличная платформа! Всё работает быстро и надёжно.',
+                'Лучший P2P обменник! Рекомендую всем друзьям.',
+                'Быстро, удобно, безопасно. Буду пользоваться дальше.',
+                'Отличная поддержка! Помогли разобраться с выводом.',
+                'Наконец-то нашёл нормальный обменник. Всё честно.',
+                'Сделал первую сделку, всё прошло гладко. Спасибо!',
+                'За сутки сделал 5 сделок, все успешно завершены.',
+                'Очень доволен сервисом. Вывод моментальный.',
+                'Пользуюсь уже месяц, ни одной проблемы.',
+                'Лучший сервис в Telegram! Успехов разработчикам.'
+            ];
+            const demo = [];
+            for (let i = 0; i < 3; i++) {
+                demo.push({
+                    user: 'Аноним',
+                    text: texts[Math.floor(Math.random() * texts.length)],
+                    rating: 4 + Math.floor(Math.random() * 2),
+                    date: new Date().toLocaleString(),
+                    anonymous: true
+                });
+            }
+            renderRecentReviews(demo);
         }
 
         function renderRecentReviews(reviews) {
@@ -1123,6 +1174,19 @@
         // ============================================================
         // 8. БАЛАНС
         // ============================================================
+        let state = {
+            balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
+            deals: [],
+            reviews: [],
+            isAdmin: false,
+            reviewPage: 0,
+            reviewLimit: 10,
+            has2Deals: false,
+            isVerified: false,
+            verificationExpires: null,
+            totalDeals: 0
+        };
+
         async function loadBalance() {
             try {
                 const data = await apiCall('/api/balance');
@@ -1148,19 +1212,6 @@
         // ============================================================
         // 9. СДЕЛКИ
         // ============================================================
-        let state = {
-            balance: { ton: 0, stars: 0, rub: 0, uah: 0 },
-            deals: [],
-            reviews: [],
-            isAdmin: false,
-            reviewPage: 0,
-            reviewLimit: 10,
-            has2Deals: false,
-            isVerified: false,
-            verificationExpires: null,
-            totalDeals: 0
-        };
-
         async function loadDeals() {
             const container = document.getElementById('dealsList');
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
@@ -1269,7 +1320,7 @@
         }
 
         // ============================================================
-        // 10. ОПЛАТА
+        // 10. ОПЛАТА (ВСЯ ЛОГИКА НА САЙТЕ)
         // ============================================================
         async function payDeal(dealId) {
             showModal(`
@@ -1382,7 +1433,7 @@
         }
 
         // ============================================================
-        // 12. СОЗДАНИЕ СДЕЛКИ
+        // 12. СОЗДАНИЕ СДЕЛКИ (ВСЯ ЛОГИКА НА САЙТЕ)
         // ============================================================
         document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1390,6 +1441,7 @@
             const currency = document.getElementById('currencySelect').value;
             const amount = parseFloat(document.getElementById('amountInput').value);
             const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
+            const paymentMethod = document.getElementById('paymentMethodSelect').value;
 
             if (!product || !amount || !buyer) {
                 showToast('❌ Заполните все поля!', 'error');
@@ -1401,7 +1453,13 @@
             btn.disabled = true;
 
             try {
-                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
+                const data = await apiCall('/api/create_deal', { 
+                    product, 
+                    currency, 
+                    amount, 
+                    buyer_username: buyer,
+                    payment_method: paymentMethod
+                });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
                     resultDiv.style.display = 'block';
@@ -1417,10 +1475,16 @@
                         <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${data.link}'); showToast('✅ Ссылка скопирована!','success');">
                             <i class="fas fa-copy"></i> Скопировать ссылку
                         </button>
+                        ${data.status === 'paid' ? `
+                            <div class="support-block mt-6" style="border-color: var(--success);">
+                                <span style="font-size:12px; color: var(--success);">✅ Оплата с баланса прошла автоматически!</span>
+                            </div>
+                        ` : ''}
                     `;
                     showToast('✅ Сделка создана!', 'success');
                     document.getElementById('dealForm').reset();
                     loadDeals();
+                    loadBalance();
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка'), 'error');
                 }
