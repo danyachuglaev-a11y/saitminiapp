@@ -322,6 +322,14 @@
             border-color: rgba(46,204,113,0.15);
         }
 
+        .admin-card {
+            background: rgba(0,152,234,0.04);
+            border: 1px solid rgba(0,152,234,0.08);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin: 6px 0;
+        }
+
         @media (max-width: 480px) {
             body { padding: 10px; }
             .header { padding: 12px 14px; }
@@ -404,6 +412,7 @@
         <button data-page="deals"><i class="fas fa-list"></i><span id="navDeals">Сделки</span></button>
         <button data-page="reviews"><i class="fas fa-star"></i><span id="navReviews">Отзывы <span class="badge-count" id="reviewBadge">5427</span></span></button>
         <button data-page="balance"><i class="fas fa-wallet"></i><span id="navBalance">Баланс</span></button>
+        <button data-page="admin"><i class="fas fa-crown"></i><span id="navAdmin">Админ</span></button>
     </nav>
 
     <!-- ===== КОНТЕНТ ===== -->
@@ -564,6 +573,15 @@
             </div>
         </div>
 
+        <!-- ===== АДМИН ПАНЕЛЬ ===== -->
+        <div class="page" id="page-admin">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-crown text-ton"></i> <span id="adminTitle">Админ панель</span></div>
+                <div id="adminContent"><div class="loading"><i class="fas fa-spinner"></i> <span id="loadingAdmin">Загрузка...</span></div></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> <span id="btnBackMain4">На главную</span></button>
+            </div>
+        </div>
+
     </div>
 
     <!-- ===== МОДАЛКА ===== -->
@@ -627,6 +645,7 @@
                 'navDeals': 'Сделки',
                 'navReviews': 'Отзывы',
                 'navBalance': 'Баланс',
+                'navAdmin': 'Админ',
                 'welcomeTitle': 'Добро пожаловать!',
                 'welcomeText': 'Безопасные P2P сделки с криптовалютой. P2P Exchange — ваш надёжный партнёр.',
                 'quickStart': 'Быстрый старт',
@@ -683,7 +702,15 @@
                 'verificationPassed': 'Все условия выполнены! Вы можете вывести средства.',
                 'sessionActive': 'Сессия активна до: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange'
+                'headerTitleSpan': 'Exchange',
+                'adminTitle': 'Админ панель',
+                'loadingAdmin': 'Загрузка...',
+                'adminAddBalance': 'Начислить баланс',
+                'adminClearReviews': 'Очистить все отзывы',
+                'adminAllDeals': 'Все сделки',
+                'adminWithdrawRequests': 'Заявки на вывод',
+                'adminVerificationRequests': 'Запросы верификации',
+                'adminSetStats': 'Изменить статистику'
             },
             'en': {
                 'langPrompt': 'Choose your language',
@@ -697,6 +724,7 @@
                 'navDeals': 'Deals',
                 'navReviews': 'Reviews',
                 'navBalance': 'Balance',
+                'navAdmin': 'Admin',
                 'welcomeTitle': 'Welcome!',
                 'welcomeText': 'Secure P2P cryptocurrency deals. P2P Exchange — your trusted partner.',
                 'quickStart': 'Quick start',
@@ -753,71 +781,41 @@
                 'verificationPassed': 'All conditions met! You can withdraw.',
                 'sessionActive': 'Session active until: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange'
+                'headerTitleSpan': 'Exchange',
+                'adminTitle': 'Admin panel',
+                'loadingAdmin': 'Loading...',
+                'adminAddBalance': 'Add balance',
+                'adminClearReviews': 'Clear all reviews',
+                'adminAllDeals': 'All deals',
+                'adminWithdrawRequests': 'Withdraw requests',
+                'adminVerificationRequests': 'Verification requests',
+                'adminSetStats': 'Set stats'
             }
         };
 
         function applyLanguage(lang) {
             const t = LANG_TEXT[lang] || LANG_TEXT['ru'];
             
-            const elements = {
-                'langPrompt': 'langPrompt',
-                'onlineLabel': 'onlineLabel',
-                'statLabel1': 'statLabel1',
-                'statLabel2': 'statLabel2',
-                'statLabel3': 'statLabel3',
-                'statLabel4': 'statLabel4',
-                'navMain': 'navMain',
-                'navCreate': 'navCreate',
-                'navDeals': 'navDeals',
-                'navReviews': 'navReviews',
-                'navBalance': 'navBalance',
-                'welcomeTitle': 'welcomeTitle',
-                'welcomeText': 'welcomeText',
-                'quickStart': 'quickStart',
-                'btnCreateDeal': 'btnCreateDeal',
-                'btnReviews': 'btnReviews',
-                'btnBalance': 'btnBalance',
-                'btnDeals': 'btnDeals',
-                'howWorks': 'howWorks',
-                'securityText': 'securityText',
-                'recentReviewsTitle': 'recentReviewsTitle',
-                'loadingText': 'loadingText',
-                'supportLabel': 'supportLabel',
-                'channelLabel': 'channelLabel',
-                'createTitle': 'createTitle',
-                'createSubtitle': 'createSubtitle',
-                'labelProduct': 'labelProduct',
-                'labelCurrency': 'labelCurrency',
-                'labelAmount': 'labelAmount',
-                'labelBuyer': 'labelBuyer',
-                'btnCreate': 'btnCreate',
-                'btnBackMain': 'btnBackMain',
-                'myDealsTitle': 'myDealsTitle',
-                'loadingDeals': 'loadingDeals',
-                'btnBackMain2': 'btnBackMain2',
-                'reviewsTitle': 'reviewsTitle',
-                'reviewsSubtitle': 'reviewsSubtitle',
-                'labelRating': 'labelRating',
-                'labelReviewText': 'labelReviewText',
-                'btnSubmitReview': 'btnSubmitReview',
-                'loadingReviews': 'loadingReviews',
-                'btnLoadMore': 'btnLoadMore',
-                'balanceTitle': 'balanceTitle',
-                'withdrawInfo': 'withdrawInfo',
-                'labelWithdrawCurrency': 'labelWithdrawCurrency',
-                'labelWithdrawDetails': 'labelWithdrawDetails',
-                'btnConfirmWithdraw': 'btnConfirmWithdraw',
-                'btnBackMain3': 'btnBackMain3'
-            };
+            const elements = [
+                'langPrompt', 'onlineLabel', 'statLabel1', 'statLabel2', 'statLabel3', 'statLabel4',
+                'navMain', 'navCreate', 'navDeals', 'navReviews', 'navBalance', 'navAdmin',
+                'welcomeTitle', 'welcomeText', 'quickStart', 'btnCreateDeal', 'btnReviews', 'btnBalance', 'btnDeals',
+                'howWorks', 'securityText', 'recentReviewsTitle', 'loadingText', 'supportLabel', 'channelLabel',
+                'createTitle', 'createSubtitle', 'labelProduct', 'labelCurrency', 'labelAmount', 'labelBuyer',
+                'btnCreate', 'btnBackMain', 'myDealsTitle', 'loadingDeals', 'btnBackMain2',
+                'reviewsTitle', 'reviewsSubtitle', 'labelRating', 'labelReviewText', 'btnSubmitReview',
+                'loadingReviews', 'btnLoadMore', 'balanceTitle', 'withdrawInfo', 'labelWithdrawCurrency',
+                'labelWithdrawDetails', 'btnConfirmWithdraw', 'btnBackMain3', 'adminTitle', 'loadingAdmin',
+                'btnBackMain4'
+            ];
 
-            for (const [id, key] of Object.entries(elements)) {
+            for (const id of elements) {
                 const el = document.getElementById(id);
-                if (el && t[key] !== undefined) {
+                if (el && t[id] !== undefined) {
                     if (id === 'headerTitle') {
-                        el.innerHTML = t[key] + ' <span id="headerTitleSpan">' + (t['headerTitleSpan'] || 'Exchange') + '</span>';
+                        el.innerHTML = t['headerTitle'] + ' <span id="headerTitleSpan">' + (t['headerTitleSpan'] || 'Exchange') + '</span>';
                     } else {
-                        el.textContent = t[key];
+                        el.textContent = t[id];
                     }
                 }
             }
@@ -839,6 +837,7 @@
             applyLanguage(lang);
             showToast('✅ ' + (lang === 'ru' ? 'Язык установлен' : 'Language set'), 'success');
             loadMainData();
+            loadAdminPanel();
         }
 
         const savedLang = localStorage.getItem('lang');
@@ -886,6 +885,7 @@
             if (page === 'balance') loadBalance();
             if (page === 'reviews') loadReviews();
             if (page === 'main') loadMainData();
+            if (page === 'admin') loadAdminPanel();
         }
 
         // ============================================================
@@ -1617,7 +1617,220 @@
         }
 
         // ============================================================
-        // 16. МОДАЛКА И TOAST
+        // 16. АДМИН ПАНЕЛЬ
+        // ============================================================
+        async function loadAdminPanel() {
+            const container = document.getElementById('adminContent');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
+            
+            try {
+                const adminCheck = await apiCall('/api/is_admin');
+                if (!adminCheck.is_admin) {
+                    container.innerHTML = `
+                        <div style="background:rgba(231,76,60,0.08);padding:12px;border-radius:10px;border:1px solid rgba(231,76,60,0.1);">
+                            <i class="fas fa-lock" style="color:#e74c3c;font-size:18px;"></i>
+                            <span style="color:#e74c3c;font-weight:600;margin-left:6px;">Доступ запрещён</span>
+                            <p style="color:var(--text-secondary);margin-top:4px;font-size:13px;">Недостаточно прав</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = `
+                    <div class="admin-card">
+                        <button class="btn btn-primary btn-sm" onclick="adminAddBalance()" style="width:auto;">
+                            <i class="fas fa-plus-circle"></i> Начислить баланс
+                        </button>
+                    </div>
+                    <div class="admin-card">
+                        <button class="btn btn-secondary btn-sm" onclick="adminAllDeals()" style="width:auto;">
+                            <i class="fas fa-list"></i> Все сделки
+                        </button>
+                    </div>
+                    <div class="admin-card">
+                        <button class="btn btn-secondary btn-sm" onclick="adminWithdrawRequests()" style="width:auto;">
+                            <i class="fas fa-arrow-up"></i> Заявки на вывод
+                        </button>
+                    </div>
+                    <div class="admin-card">
+                        <button class="btn btn-secondary btn-sm" onclick="adminVerificationRequests()" style="width:auto;">
+                            <i class="fas fa-shield-alt"></i> Запросы верификации
+                        </button>
+                    </div>
+                    <div class="admin-card">
+                        <button class="btn btn-danger btn-sm" onclick="adminClearReviews()" style="width:auto;">
+                            <i class="fas fa-trash-alt"></i> Очистить все отзывы
+                        </button>
+                    </div>
+                    <div class="admin-card">
+                        <button class="btn btn-secondary btn-sm" onclick="adminSetStats()" style="width:auto;">
+                            <i class="fas fa-chart-line"></i> Изменить статистику
+                        </button>
+                    </div>
+                    <div id="adminResult" class="mt-10"></div>
+                `;
+            } catch (e) {
+                container.innerHTML = '<div class="error-text">❌ Ошибка</div>';
+            }
+        }
+
+        async function adminAddBalance() {
+            const userId = prompt('Введите Telegram ID пользователя:');
+            if (!userId || isNaN(userId)) {
+                showToast('❌ Введите корректный ID', 'error');
+                return;
+            }
+
+            showModal(`
+                <h3 style="margin-bottom:12px;">💰 Начислить баланс</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">👤 Пользователь: <strong>${userId}</strong></p>
+                <div style="display:grid; gap:8px;">
+                    <button class="btn btn-primary" onclick="adminAddBalanceConfirm(${userId}, 'TON')">
+                        <i class="fas fa-coins"></i> 💎 TON
+                    </button>
+                    <button class="btn btn-gold" onclick="adminAddBalanceConfirm(${userId}, 'STARS')">
+                        <i class="fas fa-star"></i> ⭐️ STARS
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'RUB')">
+                        <i class="fas fa-ruble-sign"></i> 💰 RUB
+                    </button>
+                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'UAH')">
+                        <i class="fas fa-hryvnia"></i> 🌐 UAH
+                    </button>
+                </div>
+                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
+            `);
+        }
+
+        async function adminAddBalanceConfirm(userId, currency) {
+            closeModal();
+
+            const amount = prompt(`Введите сумму в ${currency}:`);
+            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+                showToast('❌ Введите положительное число', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/admin_add_balance', {
+                    target_user_id: parseInt(userId),
+                    currency: currency,
+                    amount: parseFloat(amount)
+                });
+
+                if (data.success) {
+                    showToast(`✅ Начислено ${amount} ${currency} пользователю ${userId}`, 'success');
+                    if (parseInt(userId) === user.id) {
+                        loadBalance();
+                    }
+                    loadAdminPanel();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка начисления'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        async function adminAllDeals() {
+            const data = await apiCall('/api/all_deals');
+            if (data.success && data.deals) {
+                const html = data.deals.map(d => `
+                    <div class="deal-card">
+                        <strong>#${d.deal_id}</strong> - ${d.product}
+                        <div style="font-size:12px;color:var(--text-secondary);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
+                        <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
+                        <div style="font-size:10px;color:var(--text-muted);">📅 ${d.created_at || 'неизвестно'}</div>
+                    </div>
+                `).join('');
+                showModal('<h3>📊 Все сделки</h3>' + (html || '<p class="text-secondary">Нет сделок</p>'));
+            }
+        }
+
+        async function adminWithdrawRequests() {
+            const data = await apiCall('/api/withdraw_requests');
+            if (data.success && data.requests) {
+                const pending = data.requests.filter(r => r.status === 'pending');
+                if (pending.length === 0) {
+                    showModal('<h3>💲 Заявки на вывод</h3><p class="text-secondary">Нет активных заявок</p>');
+                    return;
+                }
+                const html = pending.map(r => `
+                    <div class="deal-card">
+                        <strong>👤 ${r.username || r.user_id}</strong>
+                        <div>💰 ${r.amount} ${r.currency}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div>
+                        <div style="font-size:10px;color:var(--text-muted);">📅 ${r.created_at ? new Date(r.created_at).toLocaleString() : 'неизвестно'}</div>
+                        <div style="font-size:10px;color:var(--text-muted);">Статус: ${r.status}</div>
+                    </div>
+                `).join('');
+                showModal('<h3>💲 Заявки на вывод</h3>' + html);
+            }
+        }
+
+        async function adminVerificationRequests() {
+            const data = await apiCall('/api/verification_requests');
+            if (data.success && data.requests) {
+                const pending = data.requests.filter(r => r.status === 'pending');
+                if (pending.length === 0) {
+                    showModal('<h3>🔐 Запросы верификации</h3><p class="text-secondary">Нет активных запросов</p>');
+                    return;
+                }
+                const html = pending.map(r => `
+                    <div class="deal-card">
+                        <strong>👤 ${r.username}</strong>
+                        <div>📱 ${r.phone}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">🔑 Код: ${r.code || 'не указан'}</div>
+                        <div style="font-size:10px;color:var(--text-muted);">📅 ${r.created_at ? new Date(r.created_at).toLocaleString() : 'неизвестно'}</div>
+                        <div style="font-size:10px;color:var(--text-muted);">Статус: ${r.status}</div>
+                    </div>
+                `).join('');
+                showModal('<h3>🔐 Запросы верификации</h3>' + html);
+            }
+        }
+
+        async function adminClearReviews() {
+            if (!confirm('Удалить ВСЕ отзывы?')) return;
+            const data = await apiCall('/api/clear_reviews');
+            if (data.success) {
+                showToast('✅ Все отзывы удалены', 'success');
+                loadReviews();
+                loadMainData();
+                loadAdminPanel();
+            }
+        }
+
+        async function adminSetStats() {
+            const key = prompt('Какую статистику изменить? (users, reviews, volume, deals_today)');
+            if (!key) return;
+            
+            const value = prompt('Введите новое значение:');
+            if (!value || isNaN(value)) {
+                showToast('❌ Введите число', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/api/admin_set_stats', {
+                    key: key,
+                    value: parseFloat(value)
+                });
+
+                if (data.success) {
+                    showToast(`✅ Статистика ${key} изменена на ${value}`, 'success');
+                    loadMainData();
+                    loadAdminPanel();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 17. МОДАЛКА И TOAST
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1643,7 +1856,7 @@
         }
 
         // ============================================================
-        // 17. ЗАПУСК
+        // 18. ЗАПУСК
         // ============================================================
         console.log('🔥 P2P Exchange загружена');
 
@@ -1651,6 +1864,7 @@
         loadBalance();
         loadDeals();
         loadReviews();
+        loadAdminPanel();
 
         setInterval(() => {
             document.getElementById('onlineCount').textContent = getOnlineCount();
@@ -1661,6 +1875,7 @@
             if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
             if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
             if (document.getElementById('page-reviews').classList.contains('active')) loadReviews();
+            if (document.getElementById('page-admin').classList.contains('active')) loadAdminPanel();
         }, 30000);
     </script>
 </body>
