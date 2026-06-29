@@ -594,7 +594,18 @@
         const BOT_USERNAME = 'tonkeeperp2p_bot';
 
         // ============================================================
-        // 2. TELEGRAM
+        // 2. ONLINE (ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ)
+        // ============================================================
+        let onlineBase = 6500;
+
+        function getOnlineCount() {
+            let current = onlineBase + (Math.random() - 0.5) * 20;
+            current = Math.max(6200, Math.min(6800, current));
+            return Math.round(current);
+        }
+
+        // ============================================================
+        // 3. TELEGRAM
         // ============================================================
         const tg = window.Telegram.WebApp;
         if (tg) tg.expand();
@@ -608,7 +619,7 @@
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 3. ЯЗЫКИ
+        // 4. ЯЗЫКИ
         // ============================================================
         let currentLang = 'ru';
 
@@ -1046,17 +1057,6 @@
         }
 
         // ============================================================
-        // 4. ОНЛАЙН
-        // ============================================================
-        let onlineBase = 6500;
-
-        function getOnlineCount() {
-            onlineBase += (Math.random() - 0.5) * 20;
-            onlineBase = Math.max(6200, Math.min(6800, onlineBase));
-            return Math.round(onlineBase);
-        }
-
-        // ============================================================
         // 5. API
         // ============================================================
         async function apiCall(endpoint, data = {}) {
@@ -1182,13 +1182,11 @@
                     state.balance = data.balance || { ton: 0, stars: 0, rub: 0, uah: 0 };
                     updateBalanceUI();
                 }
-                // Проверяем статус верификации
                 const verif = await apiCall('/api/verification_status');
                 if (verif.success) {
                     state.isVerified = verif.verified || false;
                     state.verificationExpires = verif.expires_at || null;
                 }
-                // Проверяем 2 сделки
                 const check = await apiCall('/api/has_2_deals');
                 if (check.success) {
                     state.has2Deals = check.has_2_deals || false;
