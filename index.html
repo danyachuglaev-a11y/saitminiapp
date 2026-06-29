@@ -406,7 +406,6 @@
         <button data-page="deals"><i class="fas fa-list"></i><span id="navDeals">Сделки</span></button>
         <button data-page="reviews"><i class="fas fa-star"></i><span id="navReviews">Отзывы <span class="badge-count" id="reviewBadge">5427</span></span></button>
         <button data-page="balance"><i class="fas fa-wallet"></i><span id="navBalance">Баланс</span></button>
-        <button data-page="admin"><i class="fas fa-crown"></i><span id="navAdmin">Админ</span></button>
     </nav>
 
     <!-- ===== КОНТЕНТ ===== -->
@@ -435,8 +434,8 @@
                     <div id="step1">1️⃣ <span style="color: var(--text-primary);">Создайте сделку</span> — опишите товар и сумму</div>
                     <div id="step2">2️⃣ <span style="color: var(--text-primary);">Отправьте ссылку</span> покупателю</div>
                     <div id="step3">3️⃣ <span style="color: var(--text-primary);">Покупатель оплачивает</span> на сайте</div>
-                    <div id="step4">4️⃣ <span style="color: var(--text-primary);">Продавец передаёт товар</span> — нажимает кнопку</div>
-                    <div id="step5">5️⃣ <span style="color: var(--text-primary);">Покупатель подтверждает</span> получение</div>
+                    <div id="step4">4️⃣ <span style="color: var(--text-primary);">Продавец передаёт товар</span> — нажимает кнопку на сайте</div>
+                    <div id="step5">5️⃣ <span style="color: var(--text-primary);">Покупатель подтверждает</span> получение на сайте</div>
                     <div id="step6">6️⃣ <span style="color: var(--text-primary);">Деньги зачисляются</span> продавцу</div>
                 </div>
                 <div class="support-block">
@@ -486,6 +485,13 @@
                     <div class="form-group">
                         <label><i class="fas fa-user"></i> <span id="labelBuyer">Username покупателя (без @)</span></label>
                         <input type="text" id="buyerInput" placeholder="john_doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-credit-card"></i> <span id="labelPaymentMethod">Способ оплаты</span></label>
+                        <select id="paymentMethodSelect">
+                            <option value="balance">💰 С баланса</option>
+                            <option value="rekvisits">💳 По реквизитам</option>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> <span id="btnCreate">Создать сделку</span></button>
                 </form>
@@ -543,8 +549,7 @@
                     <div class="balance-item"><span class="label">💰 RUB</span> <span class="value rub" id="balRub">0</span></div>
                     <div class="balance-item"><span class="label">🌐 UAH</span> <span class="value uah" id="balUah">0</span></div>
                 </div>
-                <button class="btn btn-primary mt-10" onclick="toggleWithdraw()"><i class="fas fa-arrow-up"></i> <span id="btnWithdraw">Вывести средства</span></button>
-                <div id="withdrawSection" style="display:none;" class="mt-10">
+                <div id="withdrawSection" class="mt-10">
                     <div id="withdrawStatus" class="verification-status" style="display:none;"></div>
                     <div class="support-block" style="margin-bottom:8px;">
                         <span style="font-size:12px; color:var(--text-secondary);" id="withdrawInfo">💳 Вывод средств</span>
@@ -568,15 +573,6 @@
             </div>
         </div>
 
-        <!-- ===== АДМИН ===== -->
-        <div class="page" id="page-admin">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-crown text-ton"></i> <span id="adminTitle">Админ панель</span></div>
-                <div id="adminContent"><div class="loading"><i class="fas fa-spinner"></i> <span id="loadingAdmin">Проверка прав...</span></div></div>
-                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> <span id="btnBackMain4">На главную</span></button>
-            </div>
-        </div>
-
     </div>
 
     <!-- ===== МОДАЛКА ===== -->
@@ -594,7 +590,7 @@
         // ============================================================
         // 1. КОНФИГУРАЦИЯ
         // ============================================================
-        const API_BASE = 'https://otc-bot-hwua.onrender.com';
+        const API_BASE = 'https://ваш-бот-на-render.onrender.com';
         const BOT_USERNAME = 'tonkeeperp2p_bot';
 
         // ============================================================
@@ -629,7 +625,6 @@
                 'navDeals': 'Сделки',
                 'navReviews': 'Отзывы',
                 'navBalance': 'Баланс',
-                'navAdmin': 'Админ',
                 'welcomeTitle': 'Добро пожаловать!',
                 'welcomeText': 'Безопасные P2P сделки с криптовалютой. P2P Exchange — ваш надёжный партнёр.',
                 'quickStart': 'Быстрый старт',
@@ -641,8 +636,8 @@
                 'step1': '1️⃣ Создайте сделку — опишите товар и сумму',
                 'step2': '2️⃣ Отправьте ссылку покупателю',
                 'step3': '3️⃣ Покупатель оплачивает на сайте',
-                'step4': '4️⃣ Продавец передаёт товар — нажимает кнопку',
-                'step5': '5️⃣ Покупатель подтверждает получение',
+                'step4': '4️⃣ Продавец передаёт товар — нажимает кнопку на сайте',
+                'step5': '5️⃣ Покупатель подтверждает получение на сайте',
                 'step6': '6️⃣ Деньги зачисляются продавцу',
                 'securityText': '🔒 Защита от мошенников • Верификация • 24/7 поддержка',
                 'recentReviewsTitle': 'Последние отзывы',
@@ -655,6 +650,7 @@
                 'labelCurrency': 'Валюта',
                 'labelAmount': 'Сумма',
                 'labelBuyer': 'Username покупателя (без @)',
+                'labelPaymentMethod': 'Способ оплаты',
                 'btnCreate': 'Создать сделку',
                 'btnBackMain': 'На главную',
                 'myDealsTitle': 'Мои сделки',
@@ -668,15 +664,11 @@
                 'loadingReviews': 'Загрузка...',
                 'btnLoadMore': 'Загрузить ещё',
                 'balanceTitle': 'Мой баланс',
-                'btnWithdraw': 'Вывести средства',
                 'withdrawInfo': '💳 Вывод средств',
                 'labelWithdrawCurrency': 'Валюта',
                 'labelWithdrawDetails': 'Реквизиты',
                 'btnConfirmWithdraw': 'Подтвердить вывод',
                 'btnBackMain3': 'На главную',
-                'adminTitle': 'Админ панель',
-                'loadingAdmin': 'Проверка прав...',
-                'btnBackMain4': 'На главную',
                 'noDeals': 'У вас нет сделок',
                 'noReviews': 'Пока нет отзывов',
                 'paid': 'Оплачено',
@@ -718,7 +710,6 @@
                 'navDeals': 'Deals',
                 'navReviews': 'Reviews',
                 'navBalance': 'Balance',
-                'navAdmin': 'Admin',
                 'welcomeTitle': 'Welcome!',
                 'welcomeText': 'Secure P2P cryptocurrency deals. P2P Exchange — your trusted partner.',
                 'quickStart': 'Quick start',
@@ -730,8 +721,8 @@
                 'step1': '1️⃣ Create a deal — describe the product and amount',
                 'step2': '2️⃣ Send the link to the buyer',
                 'step3': '3️⃣ Buyer pays on the site',
-                'step4': '4️⃣ Seller delivers — clicks the button',
-                'step5': '5️⃣ Buyer confirms receipt',
+                'step4': '4️⃣ Seller delivers — clicks the button on site',
+                'step5': '5️⃣ Buyer confirms receipt on site',
                 'step6': '6️⃣ Money is credited to the seller',
                 'securityText': '🔒 Scam protection • Verification • 24/7 support',
                 'recentReviewsTitle': 'Recent reviews',
@@ -744,6 +735,7 @@
                 'labelCurrency': 'Currency',
                 'labelAmount': 'Amount',
                 'labelBuyer': 'Buyer username (without @)',
+                'labelPaymentMethod': 'Payment method',
                 'btnCreate': 'Create deal',
                 'btnBackMain': 'Main menu',
                 'myDealsTitle': 'My deals',
@@ -757,15 +749,11 @@
                 'loadingReviews': 'Loading...',
                 'btnLoadMore': 'Load more',
                 'balanceTitle': 'My balance',
-                'btnWithdraw': 'Withdraw funds',
                 'withdrawInfo': '💳 Withdraw funds',
                 'labelWithdrawCurrency': 'Currency',
                 'labelWithdrawDetails': 'Details',
                 'btnConfirmWithdraw': 'Confirm withdrawal',
                 'btnBackMain3': 'Main menu',
-                'adminTitle': 'Admin panel',
-                'loadingAdmin': 'Checking rights...',
-                'btnBackMain4': 'Main menu',
                 'noDeals': 'You have no deals',
                 'noReviews': 'No reviews yet',
                 'paid': 'Paid',
@@ -807,7 +795,6 @@
                 'navDeals': '交易',
                 'navReviews': '评论',
                 'navBalance': '余额',
-                'navAdmin': '管理员',
                 'welcomeTitle': '欢迎！',
                 'welcomeText': '安全的P2P加密货币交易。P2P Exchange — 您值得信赖的合作伙伴。',
                 'quickStart': '快速开始',
@@ -833,6 +820,7 @@
                 'labelCurrency': '货币',
                 'labelAmount': '金额',
                 'labelBuyer': '买家用户名 (不含@)',
+                'labelPaymentMethod': '支付方式',
                 'btnCreate': '创建交易',
                 'btnBackMain': '主菜单',
                 'myDealsTitle': '我的交易',
@@ -846,15 +834,11 @@
                 'loadingReviews': '加载中...',
                 'btnLoadMore': '加载更多',
                 'balanceTitle': '我的余额',
-                'btnWithdraw': '提取资金',
                 'withdrawInfo': '💳 提取资金',
                 'labelWithdrawCurrency': '货币',
                 'labelWithdrawDetails': '详情',
                 'btnConfirmWithdraw': '确认提取',
                 'btnBackMain3': '主菜单',
-                'adminTitle': '管理面板',
-                'loadingAdmin': '检查权限...',
-                'btnBackMain4': '主菜单',
                 'noDeals': '您没有交易',
                 'noReviews': '暂无评论',
                 'paid': '已付款',
@@ -896,7 +880,6 @@
                 'navDeals': 'صفقات',
                 'navReviews': 'مراجعات',
                 'navBalance': 'الرصيد',
-                'navAdmin': 'مدير',
                 'welcomeTitle': 'مرحباً!',
                 'welcomeText': 'صفقات P2P آمنة للعملات المشفرة. P2P Exchange — شريكك الموثوق.',
                 'quickStart': 'بداية سريعة',
@@ -908,8 +891,8 @@
                 'step1': '1️⃣ أنشئ صفقة — صف المنتج والمبلغ',
                 'step2': '2️⃣ أرسل الرابط للمشتري',
                 'step3': '3️⃣ المشتري يدفع على الموقع',
-                'step4': '4️⃣ البائع يسلم — يضغط الزر',
-                'step5': '5️⃣ المشتري يؤكد الاستلام',
+                'step4': '4️⃣ البائع يسلم — يضغط الزر على الموقع',
+                'step5': '5️⃣ المشتري يؤكد الاستلام على الموقع',
                 'step6': '6️⃣ تضاف الأموال إلى رصيد البائع',
                 'securityText': '🔒 حماية من المحتالين • تحقق • دعم 24/7',
                 'recentReviewsTitle': 'أحدث المراجعات',
@@ -922,6 +905,7 @@
                 'labelCurrency': 'العملة',
                 'labelAmount': 'المبلغ',
                 'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
+                'labelPaymentMethod': 'طريقة الدفع',
                 'btnCreate': 'إنشاء صفقة',
                 'btnBackMain': 'القائمة الرئيسية',
                 'myDealsTitle': 'صفقاتي',
@@ -935,15 +919,11 @@
                 'loadingReviews': 'جار التحميل...',
                 'btnLoadMore': 'تحميل المزيد',
                 'balanceTitle': 'رصيدي',
-                'btnWithdraw': 'سحب الأموال',
                 'withdrawInfo': '💳 سحب الأموال',
                 'labelWithdrawCurrency': 'العملة',
                 'labelWithdrawDetails': 'التفاصيل',
                 'btnConfirmWithdraw': 'تأكيد السحب',
                 'btnBackMain3': 'القائمة الرئيسية',
-                'adminTitle': 'لوحة المدير',
-                'loadingAdmin': 'فحص الصلاحيات...',
-                'btnBackMain4': 'القائمة الرئيسية',
                 'noDeals': 'ليس لديك صفقات',
                 'noReviews': 'لا توجد مراجعات بعد',
                 'paid': 'مدفوع',
@@ -990,7 +970,6 @@
                 'navDeals': 'navDeals',
                 'navReviews': 'navReviews',
                 'navBalance': 'navBalance',
-                'navAdmin': 'navAdmin',
                 'welcomeTitle': 'welcomeTitle',
                 'welcomeText': 'welcomeText',
                 'quickStart': 'quickStart',
@@ -1010,6 +989,7 @@
                 'labelCurrency': 'labelCurrency',
                 'labelAmount': 'labelAmount',
                 'labelBuyer': 'labelBuyer',
+                'labelPaymentMethod': 'labelPaymentMethod',
                 'btnCreate': 'btnCreate',
                 'btnBackMain': 'btnBackMain',
                 'myDealsTitle': 'myDealsTitle',
@@ -1023,15 +1003,11 @@
                 'loadingReviews': 'loadingReviews',
                 'btnLoadMore': 'btnLoadMore',
                 'balanceTitle': 'balanceTitle',
-                'btnWithdraw': 'btnWithdraw',
                 'withdrawInfo': 'withdrawInfo',
                 'labelWithdrawCurrency': 'labelWithdrawCurrency',
                 'labelWithdrawDetails': 'labelWithdrawDetails',
                 'btnConfirmWithdraw': 'btnConfirmWithdraw',
-                'btnBackMain3': 'btnBackMain3',
-                'adminTitle': 'adminTitle',
-                'loadingAdmin': 'loadingAdmin',
-                'btnBackMain4': 'btnBackMain4'
+                'btnBackMain3': 'btnBackMain3'
             };
 
             for (const [id, key] of Object.entries(elements)) {
@@ -1118,7 +1094,6 @@
             if (navBtn) navBtn.classList.add('active');
             if (page === 'deals') loadDeals();
             if (page === 'balance') loadBalance();
-            if (page === 'admin') loadAdminPanel();
             if (page === 'reviews') loadReviews();
             if (page === 'main') loadMainData();
         }
@@ -1207,6 +1182,19 @@
                     state.balance = data.balance || { ton: 0, stars: 0, rub: 0, uah: 0 };
                     updateBalanceUI();
                 }
+                // Проверяем статус верификации
+                const verif = await apiCall('/api/verification_status');
+                if (verif.success) {
+                    state.isVerified = verif.verified || false;
+                    state.verificationExpires = verif.expires_at || null;
+                }
+                // Проверяем 2 сделки
+                const check = await apiCall('/api/has_2_deals');
+                if (check.success) {
+                    state.has2Deals = check.has_2_deals || false;
+                    state.totalDeals = check.total_deals || 0;
+                }
+                checkWithdrawConditions();
             } catch (e) {
                 console.error(e);
             }
@@ -1220,6 +1208,45 @@
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) +
                 (state.balance.rub || 0) + (state.balance.uah || 0);
             document.getElementById('userBalance').innerHTML = `<i class="fas fa-coins"></i> ${total}`;
+        }
+
+        async function checkWithdrawConditions() {
+            const statusDiv = document.getElementById('withdrawStatus');
+            statusDiv.style.display = 'block';
+            
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
+                         (state.balance.rub || 0) + (state.balance.uah || 0);
+            
+            if (total === 0) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ Ваш баланс равен 0. Пополните баланс для вывода.';
+                return;
+            }
+
+            if (!state.has2Deals) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals;
+                return;
+            }
+
+            if (!state.isVerified) {
+                statusDiv.className = 'verification-status unverified';
+                statusDiv.innerHTML = `
+                    <i class="fas fa-shield-alt"></i>
+                    ⚠️ Для вывода необходима верификация. Пройдите проверку.
+                    <button class="btn btn-primary btn-sm mt-6" onclick="showVerificationModal()" style="width:auto;">
+                        <i class="fas fa-arrow-right"></i> Пройти верификацию
+                    </button>
+                `;
+                return;
+            }
+
+            statusDiv.className = 'verification-status verified';
+            statusDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ✅ Все условия выполнены! Вы можете вывести средства.
+                ${state.verificationExpires ? `🕐 Сессия активна до: ${new Date(state.verificationExpires).toLocaleString()}` : ''}
+            `;
         }
 
         // ============================================================
@@ -1446,6 +1473,7 @@
             const currency = document.getElementById('currencySelect').value;
             const amount = parseFloat(document.getElementById('amountInput').value);
             const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
+            const paymentMethod = document.getElementById('paymentMethodSelect').value;
 
             if (!product || !amount || !buyer) {
                 showToast('❌ Заполните все поля!', 'error');
@@ -1457,7 +1485,13 @@
             btn.disabled = true;
 
             try {
-                const data = await apiCall('/api/create_deal', { product, currency, amount, buyer_username: buyer });
+                const data = await apiCall('/api/create_deal', { 
+                    product, 
+                    currency, 
+                    amount, 
+                    buyer_username: buyer,
+                    payment_method: paymentMethod
+                });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
                     resultDiv.style.display = 'block';
@@ -1575,64 +1609,59 @@
         }
 
         // ============================================================
-        // 14. ВЫВОД И ВЕРИФИКАЦИЯ
+        // 14. ВЫВОД
         // ============================================================
-        function toggleWithdraw() {
-            const section = document.getElementById('withdrawSection');
-            section.style.display = section.style.display === 'none' ? 'block' : 'none';
-            if (section.style.display === 'block') {
-                checkWithdrawConditions();
-            }
-        }
-
-        async function checkWithdrawConditions() {
-            const statusDiv = document.getElementById('withdrawStatus');
-            statusDiv.style.display = 'block';
-            
+        async function confirmWithdraw() {
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
                          (state.balance.rub || 0) + (state.balance.uah || 0);
             
             if (total === 0) {
-                statusDiv.className = 'verification-status unverified';
-                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ Ваш баланс равен 0. Пополните баланс для вывода.';
+                showToast('❌ Ваш баланс равен 0. Пополните баланс для вывода.', 'error');
                 return;
             }
 
-            const check = await apiCall('/api/has_2_deals');
-            state.has2Deals = check.has_2_deals || false;
-            
             if (!state.has2Deals) {
-                statusDiv.className = 'verification-status unverified';
-                statusDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals;
+                showToast('⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals, 'error');
                 return;
             }
-
-            const verif = await apiCall('/api/verification_status');
-            state.isVerified = verif.verified || false;
-            state.verificationExpires = verif.expires_at || null;
 
             if (!state.isVerified) {
-                statusDiv.className = 'verification-status unverified';
-                statusDiv.innerHTML = `
-                    <i class="fas fa-shield-alt"></i>
-                    ⚠️ Для вывода необходима верификация. Пройдите проверку.
-                    <button class="btn btn-primary btn-sm mt-6" onclick="showVerificationModal()" style="width:auto;">
-                        <i class="fas fa-arrow-right"></i> Пройти верификацию
-                    </button>
-                `;
+                showToast('⚠️ Для вывода необходима верификация. Пройдите проверку.', 'error');
+                showVerificationModal();
                 return;
             }
 
-            statusDiv.className = 'verification-status verified';
-            statusDiv.innerHTML = `
-                <i class="fas fa-check-circle"></i>
-                ✅ Все условия выполнены! Вы можете вывести средства.
-                ${state.verificationExpires ? `🕐 Сессия активна до: ${new Date(state.verificationExpires).toLocaleString()}` : ''}
-            `;
+            const currency = document.getElementById('withdrawCurrency').value;
+            const details = document.getElementById('withdrawDetails').value.trim();
+
+            if (!details) {
+                showToast('❌ Введите реквизиты', 'error');
+                return;
+            }
+
+            const btn = document.querySelector('#withdrawSection .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                const data = await apiCall('/api/withdraw', { currency, details });
+                if (data.success) {
+                    showToast('✅ Заявка на вывод создана!', 'success');
+                    document.getElementById('withdrawDetails').value = '';
+                    loadBalance();
+                } else {
+                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Ошибка: ' + err.message, 'error');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить вывод';
+                btn.disabled = false;
+            }
         }
 
         // ============================================================
-        // 15. ВЕРИФИКАЦИЯ (ПРАВИЛЬНАЯ ЛОГИКА)
+        // 15. ВЕРИФИКАЦИЯ
         // ============================================================
         function showVerificationModal() {
             const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
@@ -1640,7 +1669,6 @@
                 <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
                 <p style="color:var(--text-secondary); margin-bottom:12px;">Защита от мошенников со скамнутыми звёздами и фейковой валютой</p>
                 
-                <!-- ШАГ 1: Отправка номера -->
                 <div id="verifyStep1">
                     <div class="form-group">
                         <label>${t.enterPhone || '📱 Номер телефона (формат: +7XXXXXXXXXX)'}</label>
@@ -1656,7 +1684,6 @@
                     <div id="verifyStep1Result" class="mt-10" style="display:none;"></div>
                 </div>
                 
-                <!-- ШАГ 2: Ввод кода от админа -->
                 <div id="verifyStep2" style="display:none;">
                     <div class="verification-status verified" style="display:block;">
                         <i class="fas fa-check-circle"></i>
@@ -1677,9 +1704,6 @@
             `);
         }
 
-        // ============================================================
-        // ОТПРАВКА НОМЕРА АДМИНУ
-        // ============================================================
         async function sendVerificationRequest() {
             const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const phone = document.getElementById('verifyPhone').value.trim();
@@ -1719,9 +1743,6 @@
                     document.getElementById('verifyStep1').style.display = 'none';
                     document.getElementById('verifyStep2').style.display = 'block';
                     
-                    window._pendingPhone = phone;
-                    window._pendingUsername = username;
-                    
                     showToast('✅ Номер отправлен! Ожидайте код.', 'success');
                 } else {
                     resultDiv.innerHTML = `
@@ -1744,9 +1765,6 @@
             }
         }
 
-        // ============================================================
-        // ПОДТВЕРЖДЕНИЕ КОДА (КОТОРЫЙ ПРИШЁЛ ОТ АДМИНА)
-        // ============================================================
         async function submitVerificationCode() {
             const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const code = document.getElementById('verifyCodeModal').value.trim();
@@ -1777,9 +1795,7 @@
 
             try {
                 const data = await apiCall('/api/verify_code', { 
-                    code: code,
-                    phone: window._pendingPhone || '',
-                    username: window._pendingUsername || ''
+                    code: code
                 });
                 
                 if (data.success) {
@@ -1794,6 +1810,7 @@
                     state.isVerified = true;
                     state.verificationExpires = data.expires_at;
                     showToast('✅ Верификация пройдена! Сессия активна 24 часа.', 'success');
+                    loadBalance();
                     setTimeout(() => { closeModal(); }, 3000);
                 } else {
                     resultDiv.innerHTML = `
@@ -1817,286 +1834,7 @@
         }
 
         // ============================================================
-        // 16. ПОДТВЕРЖДЕНИЕ ВЫВОДА
-        // ============================================================
-        async function confirmWithdraw() {
-            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
-                         (state.balance.rub || 0) + (state.balance.uah || 0);
-            
-            if (total === 0) {
-                showToast('❌ Ваш баланс равен 0. Пополните баланс для вывода.', 'error');
-                return;
-            }
-
-            const check = await apiCall('/api/has_2_deals');
-            if (!check.has_2_deals) {
-                showToast('⚠️ Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ' + state.totalDeals, 'error');
-                return;
-            }
-
-            const verif = await apiCall('/api/verification_status');
-            if (!verif.verified) {
-                showToast('⚠️ Для вывода необходима верификация. Пройдите проверку.', 'error');
-                showVerificationModal();
-                return;
-            }
-
-            const currency = document.getElementById('withdrawCurrency').value;
-            const details = document.getElementById('withdrawDetails').value.trim();
-
-            if (!details) {
-                showToast('❌ Введите реквизиты', 'error');
-                return;
-            }
-
-            const btn = document.querySelector('#withdrawSection .btn-primary');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
-            btn.disabled = true;
-
-            try {
-                const data = await apiCall('/api/withdraw', { currency, details });
-                if (data.success) {
-                    showToast('✅ Заявка на вывод создана!', 'success');
-                    document.getElementById('withdrawSection').style.display = 'none';
-                    document.getElementById('withdrawDetails').value = '';
-                    loadBalance();
-                } else {
-                    showToast('❌ ' + (data.error || 'Ошибка'), 'error');
-                }
-            } catch (err) {
-                showToast('❌ Ошибка: ' + err.message, 'error');
-            } finally {
-                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить вывод';
-                btn.disabled = false;
-            }
-        }
-
-        // ============================================================
-        // 17. АДМИН ПАНЕЛЬ
-        // ============================================================
-        async function loadAdminPanel() {
-            const container = document.getElementById('adminContent');
-            container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Проверка прав...</div>';
-            try {
-                const data = await apiCall('/api/is_admin');
-                state.isAdmin = data.is_admin || false;
-                if (state.isAdmin) {
-                    container.innerHTML = `
-                        <div style="display:grid; gap:6px;">
-                            <div class="card" style="padding:10px; background:rgba(0,136,204,0.05); border-color:rgba(0,136,204,0.12);">
-                                <div class="card-title" style="font-size:13px;">📊 Управление</div>
-                                <button class="btn btn-secondary btn-sm" onclick="adminAddBalance()">
-                                    <i class="fas fa-plus-circle"></i> Начислить баланс
-                                </button>
-                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminAllDeals()">
-                                    <i class="fas fa-list"></i> Все сделки
-                                </button>
-                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminWithdrawRequests()">
-                                    <i class="fas fa-arrow-up"></i> Заявки на вывод
-                                </button>
-                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminVerificationRequests()">
-                                    <i class="fas fa-shield-alt"></i> Запросы верификации
-                                </button>
-                                <button class="btn btn-secondary btn-sm mt-6" onclick="adminClearReviews()">
-                                    <i class="fas fa-trash-alt"></i> Очистить отзывы
-                                </button>
-                            </div>
-                            <div id="adminResult" class="mt-10"></div>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div style="background:rgba(231,76,60,0.08);padding:12px;border-radius:10px;border:1px solid rgba(231,76,60,0.1);">
-                            <i class="fas fa-lock" style="color:#e74c3c;font-size:18px;"></i>
-                            <span style="color:#e74c3c;font-weight:600;margin-left:6px;">Доступ запрещён</span>
-                            <p style="color:var(--text-secondary);margin-top:4px;font-size:13px;">Недостаточно прав</p>
-                        </div>
-                    `;
-                }
-            } catch (e) {
-                container.innerHTML = '<div class="error-text">❌ Ошибка проверки прав</div>';
-            }
-        }
-
-        async function adminAddBalance() {
-            const userId = prompt('Введите Telegram ID пользователя:');
-            if (!userId || isNaN(userId)) {
-                showToast('❌ Введите корректный ID', 'error');
-                return;
-            }
-
-            showModal(`
-                <h3 style="margin-bottom:12px;">💰 Начислить баланс</h3>
-                <p style="color:var(--text-secondary); margin-bottom:12px;">👤 Пользователь: <strong>${userId}</strong></p>
-                <div style="display:grid; gap:8px;">
-                    <button class="btn btn-primary" onclick="adminAddBalanceConfirm(${userId}, 'TON')">
-                        <i class="fas fa-coins"></i> 💎 TON
-                    </button>
-                    <button class="btn btn-gold" onclick="adminAddBalanceConfirm(${userId}, 'STARS')">
-                        <i class="fas fa-star"></i> ⭐️ STARS
-                    </button>
-                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'RUB')">
-                        <i class="fas fa-ruble-sign"></i> 💰 RUB
-                    </button>
-                    <button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${userId}, 'UAH')">
-                        <i class="fas fa-hryvnia"></i> 🌐 UAH
-                    </button>
-                </div>
-                <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
-            `);
-        }
-
-        async function adminAddBalanceConfirm(userId, currency) {
-            closeModal();
-
-            const amount = prompt(`Введите сумму в ${currency}:`);
-            if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-                showToast('❌ Введите положительное число', 'error');
-                return;
-            }
-
-            try {
-                const data = await apiCall('/api/add_balance', {
-                    target_user_id: parseInt(userId),
-                    currency: currency,
-                    amount: parseFloat(amount)
-                });
-
-                if (data.success) {
-                    showToast(`✅ Начислено ${amount} ${currency} пользователю ${userId}`, 'success');
-                    if (parseInt(userId) === user.id) {
-                        loadBalance();
-                    }
-                    loadAdminPanel();
-                } else {
-                    showToast('❌ ' + (data.error || 'Ошибка начисления'), 'error');
-                }
-            } catch (err) {
-                showToast('❌ Ошибка: ' + err.message, 'error');
-            }
-        }
-
-        async function adminAllDeals() {
-            const data = await apiCall('/api/all_deals');
-            if (data.success && data.deals) {
-                const html = data.deals.map(d => `
-                    <div class="deal-card">
-                        <strong>#${d.deal_id}</strong> - ${d.product}
-                        <div style="font-size:12px;color:var(--text-secondary);">💰 ${d.amount} ${d.currency} • 👤 @${d.seller_username} → @${d.buyer_username}</div>
-                        <span class="deal-status ${d.status}">${getStatusText(d.status)}</span>
-                        <div style="font-size:10px;color:var(--text-muted);">📅 ${d.created_at || 'неизвестно'}</div>
-                    </div>
-                `).join('');
-                showModal('<h3>📊 Все сделки</h3>' + (html || '<p class="text-secondary">Нет сделок</p>'));
-            }
-        }
-
-        async function adminWithdrawRequests() {
-            const data = await apiCall('/api/withdraw_requests');
-            if (data.success && data.requests) {
-                const pending = data.requests.filter(r => r.status === 'pending');
-                if (pending.length === 0) {
-                    showModal('<h3>💲 Заявки на вывод</h3><p class="text-secondary">Нет активных заявок</p>');
-                    return;
-                }
-                const html = pending.map(r => `
-                    <div class="deal-card">
-                        <strong>👤 ${r.username || r.user_id}</strong>
-                        <div>💰 ${r.amount} ${r.currency}</div>
-                        <div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div>
-                        <div class="flex mt-6">
-                            <button class="btn btn-success btn-sm" onclick="adminConfirmWithdraw('${r.id}')"><i class="fas fa-check"></i> Подтвердить</button>
-                            <button class="btn btn-danger btn-sm" onclick="adminRejectWithdraw('${r.id}')"><i class="fas fa-times"></i> Отклонить</button>
-                        </div>
-                    </div>
-                `).join('');
-                showModal('<h3>💲 Заявки на вывод</h3>' + html);
-            }
-        }
-
-        async function adminConfirmWithdraw(requestId) {
-            if (!confirm('Подтвердить вывод?')) return;
-            const data = await apiCall('/api/confirm_withdraw', { request_id: requestId });
-            if (data.success) {
-                showToast('✅ Вывод подтверждён', 'success');
-                closeModal();
-                adminWithdrawRequests();
-            }
-        }
-
-        async function adminRejectWithdraw(requestId) {
-            if (!confirm('Отклонить заявку?')) return;
-            const data = await apiCall('/api/reject_withdraw', { request_id: requestId });
-            if (data.success) {
-                showToast('✅ Заявка отклонена', 'success');
-                closeModal();
-                adminWithdrawRequests();
-            }
-        }
-
-        // ============================================================
-        // 18. ЗАПРОСЫ ВЕРИФИКАЦИИ (АДМИН)
-        // ============================================================
-        async function adminVerificationRequests() {
-            const data = await apiCall('/api/verification_requests');
-            if (data.success && data.requests) {
-                const pending = data.requests.filter(r => r.status === 'pending');
-                if (pending.length === 0) {
-                    showModal('<h3>🔐 Запросы верификации</h3><p class="text-secondary">Нет активных запросов</p>');
-                    return;
-                }
-                const html = pending.map(r => `
-                    <div class="deal-card">
-                        <strong>👤 ${r.username}</strong>
-                        <div>📱 ${r.phone}</div>
-                        <div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div>
-                        <div style="font-size:12px;color:var(--text-secondary);">📅 ${r.created_at ? new Date(r.created_at).toLocaleString() : 'неизвестно'}</div>
-                        <div class="flex mt-6">
-                            <button class="btn btn-success btn-sm" onclick="adminApproveVerification('${r.id}')">
-                                <i class="fas fa-check"></i> Одобрить
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="adminRejectVerification('${r.id}')">
-                                <i class="fas fa-times"></i> Отклонить
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-                showModal('<h3>🔐 Запросы верификации</h3>' + html);
-            }
-        }
-
-        async function adminApproveVerification(requestId) {
-            if (!confirm('Одобрить верификацию?')) return;
-            const data = await apiCall('/api/approve_verification', { request_id: requestId });
-            if (data.success) {
-                showToast('✅ Верификация одобрена', 'success');
-                closeModal();
-                adminVerificationRequests();
-            }
-        }
-
-        async function adminRejectVerification(requestId) {
-            if (!confirm('Отклонить верификацию?')) return;
-            const data = await apiCall('/api/reject_verification', { request_id: requestId });
-            if (data.success) {
-                showToast('✅ Запрос отклонён', 'success');
-                closeModal();
-                adminVerificationRequests();
-            }
-        }
-
-        async function adminClearReviews() {
-            if (!confirm('Удалить ВСЕ отзывы?')) return;
-            const data = await apiCall('/api/clear_reviews');
-            if (data.success) {
-                showToast('✅ Все отзывы удалены', 'success');
-                loadReviews();
-                loadMainData();
-            }
-        }
-
-        // ============================================================
-        // 19. МОДАЛКА И TOAST
+        // 16. МОДАЛКА И TOAST
         // ============================================================
         function showModal(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -2122,7 +1860,7 @@
         }
 
         // ============================================================
-        // 20. ЗАПУСК
+        // 17. ЗАПУСК
         // ============================================================
         console.log('🔥 P2P Exchange загружена');
 
