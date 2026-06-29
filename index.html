@@ -628,7 +628,7 @@
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 4. ЯЗЫКИ (ТОЛЬКО РУССКИЙ И АНГЛИЙСКИЙ)
+        // 4. ЯЗЫКИ
         // ============================================================
         let currentLang = 'ru';
 
@@ -704,13 +704,7 @@
                 'headerTitle': 'P2P',
                 'headerTitleSpan': 'Exchange',
                 'adminTitle': 'Админ панель',
-                'loadingAdmin': 'Загрузка...',
-                'adminAddBalance': 'Начислить баланс',
-                'adminClearReviews': 'Очистить все отзывы',
-                'adminAllDeals': 'Все сделки',
-                'adminWithdrawRequests': 'Заявки на вывод',
-                'adminVerificationRequests': 'Запросы верификации',
-                'adminSetStats': 'Изменить статистику'
+                'loadingAdmin': 'Загрузка...'
             },
             'en': {
                 'langPrompt': 'Choose your language',
@@ -783,13 +777,7 @@
                 'headerTitle': 'P2P',
                 'headerTitleSpan': 'Exchange',
                 'adminTitle': 'Admin panel',
-                'loadingAdmin': 'Loading...',
-                'adminAddBalance': 'Add balance',
-                'adminClearReviews': 'Clear all reviews',
-                'adminAllDeals': 'All deals',
-                'adminWithdrawRequests': 'Withdraw requests',
-                'adminVerificationRequests': 'Verification requests',
-                'adminSetStats': 'Set stats'
+                'loadingAdmin': 'Loading...'
             }
         };
 
@@ -897,11 +885,16 @@
 
                 const stats = await apiCall('/api/stats');
                 if (stats.success) {
-                    document.getElementById('statDealsToday').textContent = stats.deals_today || 1264;
-                    document.getElementById('statUsers').textContent = stats.users || 21374;
-                    document.getElementById('statReviews').textContent = stats.reviews || 5427;
-                    document.getElementById('statVolume').textContent = (stats.volume || 47.6).toFixed(1);
-                    document.getElementById('reviewBadge').textContent = stats.reviews || 5427;
+                    const el = document.getElementById('statDealsToday');
+                    if (el) el.textContent = stats.deals_today || 1264;
+                    const el2 = document.getElementById('statUsers');
+                    if (el2) el2.textContent = stats.users || 21374;
+                    const el3 = document.getElementById('statReviews');
+                    if (el3) el3.textContent = stats.reviews || 5427;
+                    const el4 = document.getElementById('statVolume');
+                    if (el4) el4.textContent = (stats.volume || 47.6).toFixed(1);
+                    const el5 = document.getElementById('reviewBadge');
+                    if (el5) el5.textContent = stats.reviews || 5427;
                 }
 
                 const reviews = await apiCall('/api/reviews', { limit: 3 });
@@ -933,6 +926,8 @@
         }
 
         function renderRecentReviews(reviews) {
+            const container = document.getElementById('recentReviews');
+            if (!container) return;
             const html = reviews.map(r => `
                 <div class="review-card">
                     <div class="review-header">
@@ -946,7 +941,7 @@
                     <div class="review-text">${r.text}</div>
                 </div>
             `).join('');
-            document.getElementById('recentReviews').innerHTML = html;
+            container.innerHTML = html;
         }
 
         // ============================================================
@@ -989,17 +984,23 @@
         }
 
         function updateBalanceUI() {
-            document.getElementById('balTon').textContent = state.balance.ton || 0;
-            document.getElementById('balStars').textContent = state.balance.stars || 0;
-            document.getElementById('balRub').textContent = state.balance.rub || 0;
-            document.getElementById('balUah').textContent = state.balance.uah || 0;
+            const el1 = document.getElementById('balTon');
+            if (el1) el1.textContent = state.balance.ton || 0;
+            const el2 = document.getElementById('balStars');
+            if (el2) el2.textContent = state.balance.stars || 0;
+            const el3 = document.getElementById('balRub');
+            if (el3) el3.textContent = state.balance.rub || 0;
+            const el4 = document.getElementById('balUah');
+            if (el4) el4.textContent = state.balance.uah || 0;
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) +
                 (state.balance.rub || 0) + (state.balance.uah || 0);
-            document.getElementById('userBalance').innerHTML = `<i class="fas fa-coins"></i> ${total}`;
+            const el5 = document.getElementById('userBalance');
+            if (el5) el5.innerHTML = `<i class="fas fa-coins"></i> ${total}`;
         }
 
         async function checkWithdrawConditions() {
             const statusDiv = document.getElementById('withdrawStatus');
+            if (!statusDiv) return;
             statusDiv.style.display = 'block';
             
             const total = (state.balance.ton || 0) + (state.balance.stars || 0) + 
@@ -1042,6 +1043,7 @@
         // ============================================================
         async function loadDeals() {
             const container = document.getElementById('dealsList');
+            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
             try {
                 const data = await apiCall('/api/deals');
@@ -1069,6 +1071,7 @@
 
         function renderDeals() {
             const container = document.getElementById('dealsList');
+            if (!container) return;
             if (!state.deals || state.deals.length === 0) {
                 container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 У вас нет сделок</p>';
                 return;
@@ -1317,6 +1320,7 @@
         // ============================================================
         async function loadReviews() {
             const container = document.getElementById('reviewsList');
+            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
             try {
                 const data = await apiCall('/api/reviews', { page: state.reviewPage, limit: state.reviewLimit });
@@ -1332,6 +1336,7 @@
 
         function renderReviews() {
             const container = document.getElementById('reviewsList');
+            if (!container) return;
             if (!state.reviews || state.reviews.length === 0) {
                 container.innerHTML = '<p class="text-center text-secondary" style="padding:15px;">📭 Пока нет отзывов</p>';
                 return;
@@ -1350,7 +1355,8 @@
                 </div>
             `).join('');
             container.innerHTML = html;
-            document.getElementById('reviewTotal').textContent = `(${state.reviews.length})`;
+            const total = document.getElementById('reviewTotal');
+            if (total) total.textContent = `(${state.reviews.length})`;
         }
 
         async function submitReview() {
@@ -1621,6 +1627,7 @@
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
+            if (!container) return;
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Загрузка...</div>';
             
             try {
@@ -1833,12 +1840,16 @@
         // 17. МОДАЛКА И TOAST
         // ============================================================
         function showModal(html) {
-            document.getElementById('modalBody').innerHTML = html;
-            document.getElementById('modal').classList.add('active');
+            const modalBody = document.getElementById('modalBody');
+            if (!modalBody) return;
+            modalBody.innerHTML = html;
+            const modal = document.getElementById('modal');
+            if (modal) modal.classList.add('active');
         }
 
         function closeModal() {
-            document.getElementById('modal').classList.remove('active');
+            const modal = document.getElementById('modal');
+            if (modal) modal.classList.remove('active');
         }
 
         document.getElementById('modal').addEventListener('click', (e) => {
