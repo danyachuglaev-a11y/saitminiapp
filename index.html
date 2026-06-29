@@ -364,8 +364,8 @@
         <h1>P2P Exchange</h1>
         <p id="langPrompt">Выберите язык / Choose your language</p>
         <div class="language-grid">
-            <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 Русский</button>
-            <button class="lang-btn" onclick="setLanguage('en')">🇬🇧 English</button>
+            <button class="lang-btn" onclick="window.setLanguage('ru')">🇷🇺 Русский</button>
+            <button class="lang-btn" onclick="window.setLanguage('en')">🇬🇧 English</button>
         </div>
     </div>
 
@@ -842,7 +842,7 @@
             currentLang = lang;
         }
 
-        function setLanguage(lang) {
+        window.setLanguage = function(lang) {
             const overlay = document.getElementById('languageOverlay');
             if (overlay) overlay.classList.remove('active');
             localStorage.setItem('lang', lang);
@@ -850,11 +850,14 @@
             showToast('✅ ' + (lang === 'ru' ? 'Язык установлен' : 'Language set'), 'success');
             loadMainData();
             loadAdminPanel();
-        }
+        };
 
         const savedLang = localStorage.getItem('lang');
         if (savedLang && LANG_TEXT[savedLang]) {
-            setLanguage(savedLang);
+            window.setLanguage(savedLang);
+        } else {
+            // Показываем выбор языка
+            document.getElementById('languageOverlay').classList.add('active');
         }
 
         // ============================================================
@@ -1556,7 +1559,7 @@
                     resultDiv.innerHTML = `
                         <div style="color:#2ecc71; padding:8px; background:rgba(46,204,113,0.05); border-radius:8px; border:1px solid rgba(46,204,113,0.1);">
                             ${t.waitForCode || '✅ Номер отправлен! Ожидайте код от администратора.'}
-                            <br><small style="color:var(--text-secondary);">📱 ${phone[:2]}****${phone.slice(-4)}</small>
+                            <br><small style="color:var(--text-secondary);">📱 ${phone.slice(0,2)}****${phone.slice(-4)}</small>
                         </div>
                     `;
                     
@@ -1910,11 +1913,14 @@
         // ============================================================
         console.log('🔥 P2P Exchange загружена');
 
-        loadMainData();
-        loadBalance();
-        loadDeals();
-        loadReviews();
-        loadAdminPanel();
+        // Если язык уже выбран — загружаем данные
+        if (localStorage.getItem('lang')) {
+            loadMainData();
+            loadBalance();
+            loadDeals();
+            loadReviews();
+            loadAdminPanel();
+        }
 
         setInterval(() => {
             document.getElementById('onlineCount').textContent = getOnlineCount();
