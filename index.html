@@ -618,7 +618,7 @@
             <div class="support-block">
                 <p style="font-size: 13px; color: var(--text-secondary);">
                     <i class="fas fa-headset"></i> <span id="supportLabel">Поддержка</span>:
-                    <a href="https://t.me/p2psupbot" target="_blank">@p2psupbot</a> &nbsp;|&nbsp;
+                    <a href="https://t.me/p2ptonsupportbot" target="_blank">@p2ptonsupportbot</a> &nbsp;|&nbsp;
                     <i class="fas fa-bullhorn"></i> <span id="channelLabel">Канал</span>:
                     <a href="https://t.me/tonkeeper_news" target="_blank">tonkeeper_news</a>
                 </p>
@@ -2358,6 +2358,88 @@
         };
         setInterval(() => premiumApplyStats(premiumGetStats()), 15000);
         setTimeout(() => premiumApplyStats(premiumGetStats()), 300);
+
+
+
+        // ============================================================
+        // PROFILE DISPLAY SETTINGS (LOCAL ADMIN PREVIEW)
+        // ============================================================
+        function getProfileDisplaySettings() {
+            try {
+                return JSON.parse(localStorage.getItem('p2p_profile_display_settings') || '{}');
+            } catch(e) { return {}; }
+        }
+        function saveProfileDisplaySettings(data) {
+            localStorage.setItem('p2p_profile_display_settings', JSON.stringify({ ...getProfileDisplaySettings(), ...data, saved_at: Date.now() }));
+        }
+        function adminProfileDisplaySettings() {
+            const s = getProfileDisplaySettings();
+            showModal(`
+                <h3 style="margin-bottom:12px;">👤 Настройка профиля</h3>
+                <div class="form-group">
+                    <label>Имя в профиле</label>
+                    <input id="profileEditName" value="${s.name || (user.firstName || 'Пользователь')}">
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input id="profileEditUsername" value="${s.username || (user.username || 'username')}">
+                </div>
+                <div class="form-group">
+                    <label>Завершённых сделок</label>
+                    <input id="profileEditDeals" type="number" min="0" value="${s.completedDeals ?? 0}">
+                </div>
+                <div class="form-group">
+                    <label>Рейтинг</label>
+                    <input id="profileEditRating" type="number" min="1" max="5" step="0.1" value="${s.rating || '5.0'}">
+                </div>
+                <div class="form-group">
+                    <label>Баланс/оборот в профиле</label>
+                    <input id="profileEditBalance" type="number" min="0" step="0.01" value="${s.balanceMini ?? 0}">
+                </div>
+                <button class="btn btn-primary" onclick="saveProfileDisplayFromModal()"><i class="fas fa-save"></i> Сохранить</button>
+                <button class="btn btn-secondary mt-10" onclick="resetProfileDisplaySettings()"><i class="fas fa-rotate-left"></i> Сбросить</button>
+            `);
+        }
+        function saveProfileDisplayFromModal() {
+            saveProfileDisplaySettings({
+                name: document.getElementById('profileEditName')?.value?.trim() || '',
+                username: (document.getElementById('profileEditUsername')?.value || '').trim().replace('@',''),
+                completedDeals: Math.max(0, parseInt(document.getElementById('profileEditDeals')?.value || '0', 10)),
+                rating: Math.min(5, Math.max(1, parseFloat(document.getElementById('profileEditRating')?.value || '5'))).toFixed(1),
+                balanceMini: Math.max(0, parseFloat(document.getElementById('profileEditBalance')?.value || '0'))
+            });
+            closeModal();
+            showToast('✅ Профиль сохранён', 'success');
+            loadProfile();
+        }
+        function resetProfileDisplaySettings() {
+            localStorage.removeItem('p2p_profile_display_settings');
+            closeModal();
+            showToast('✅ Профиль сброшен', 'success');
+            loadProfile();
+        }
+        const originalLoadProfileForDisplaySettings = loadProfile;
+        loadProfile = async function() {
+            await originalLoadProfileForDisplaySettings();
+            const s = getProfileDisplaySettings();
+            if (!Object.keys(s).length) return;
+            if (s.name) document.getElementById('profileName').textContent = s.name;
+            if (s.username) document.getElementById('profileUsername').textContent = '@' + s.username.replace('@','');
+            if (s.completedDeals !== undefined) document.getElementById('profileDeals').textContent = Number(s.completedDeals).toLocaleString('ru-RU');
+            if (s.rating) document.getElementById('profileRating').textContent = String(s.rating);
+            if (s.balanceMini !== undefined) document.getElementById('profileBalanceMini').textContent = Number(s.balanceMini).toLocaleString('ru-RU');
+        };
+        const originalLoadAdminPanelForProfileSettings = loadAdminPanel;
+        loadAdminPanel = async function() {
+            await originalLoadAdminPanelForProfileSettings();
+            const container = document.getElementById('adminContent');
+            if (!container || container.textContent.includes('Доступ запрещён')) return;
+            const extra = document.createElement('div');
+            extra.className = 'admin-card';
+            extra.innerHTML = `<button class="btn btn-primary btn-sm" onclick="adminProfileDisplaySettings()" style="width:auto;"><i class="fas fa-user-gear"></i> Настроить профиль</button>`;
+            const result = document.getElementById('adminResult');
+            if (result) container.insertBefore(extra, result); else container.appendChild(extra);
+        };
 
         // ============================================================
         // 18. ЗАПУСК
