@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ===== ROOT ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #07141a;
             --bg-secondary: #0b202a;
@@ -48,20 +48,10 @@
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--aqua); border-radius: 10px; }
 
-        /* ===== SUMMER SCENE ===== */
         .summer-scene { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-        .summer-scene .sun {
-            position: absolute; top: 20px; right: 40px; width: 120px; height: 120px;
-            border-radius: 50%; background: radial-gradient(circle, #ffd93d, #f9a825 60%, transparent 75%);
-            box-shadow: 0 0 120px rgba(255, 217, 61, 0.15);
-            animation: sunSpin 30s linear infinite; opacity: 0.3;
-        }
+        .summer-scene .sun { position: absolute; top: 20px; right: 40px; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, #ffd93d, #f9a825 60%, transparent 75%); box-shadow: 0 0 120px rgba(255, 217, 61, 0.15); animation: sunSpin 30s linear infinite; opacity: 0.3; }
         @keyframes sunSpin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.05); } 100% { transform: rotate(360deg) scale(1); } }
-        .summer-scene .wave {
-            position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
-            background: repeating-linear-gradient(90deg, transparent, rgba(0, 229, 200, 0.02) 30px, transparent 60px);
-            animation: waveMove 12s ease-in-out infinite; opacity: 0.3;
-        }
+        .summer-scene .wave { position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: repeating-linear-gradient(90deg, transparent, rgba(0, 229, 200, 0.02) 30px, transparent 60px); animation: waveMove 12s ease-in-out infinite; opacity: 0.3; }
         .summer-scene .wave:nth-child(2) { bottom: 20px; height: 80px; animation-delay: -4s; opacity: 0.2; }
         .summer-scene .wave:nth-child(3) { bottom: 0px; height: 100px; animation-delay: -8s; opacity: 0.15; }
         @keyframes waveMove { 0% { transform: translateX(-40px) scaleY(1); } 50% { transform: translateX(40px) scaleY(1.1); } 100% { transform: translateX(-40px) scaleY(1); } }
@@ -75,7 +65,6 @@
         .summer-scene .bird:nth-child(8) { top: 25%; left: -15%; animation-duration: 28s; animation-delay: -8s; }
         @keyframes birdFly { 0% { transform: translateX(0) translateY(0); } 25% { transform: translateX(25vw) translateY(-20px); } 50% { transform: translateX(50vw) translateY(10px); } 75% { transform: translateX(75vw) translateY(-15px); } 100% { transform: translateX(110vw) translateY(0); } }
 
-        /* ===== ANIMATIONS ===== */
         @keyframes popIn { 0% { opacity: 0; transform: scale(0.96) translateY(12px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes slideFade { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 20px rgba(0, 229, 200, 0.05); } 50% { box-shadow: 0 0 60px rgba(0, 229, 200, 0.12); } }
@@ -84,7 +73,6 @@
         @keyframes spinSlow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes typingBounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
 
-        /* ===== GLASS ===== */
         .glass {
             background: var(--bg-card);
             backdrop-filter: blur(24px);
@@ -95,7 +83,6 @@
         }
         .glass:hover { border-color: rgba(0, 229, 200, 0.12); }
 
-        /* ===== HEADER ===== */
         .header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 14px 20px; border-radius: var(--radius); margin-bottom: 16px;
@@ -109,7 +96,6 @@
         .online-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 229, 200, 0.06); padding: 4px 14px; border-radius: 30px; font-size: 11px; font-weight: 600; color: var(--aqua); border: 1px solid rgba(0, 229, 200, 0.08); }
         .online-dot { width: 7px; height: 7px; background: var(--aqua); border-radius: 50%; display: inline-block; animation: pulseGlow 1.8s ease-in-out infinite; }
 
-        /* ===== STATS ===== */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; z-index: 2; position: relative; }
         .stat-card { padding: 14px 10px; border-radius: var(--radius-sm); text-align: center; background: var(--bg-card); backdrop-filter: blur(12px); border: 1px solid var(--border-color); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); animation: slideFade 0.5s ease backwards; }
         .stat-card:nth-child(1) { animation-delay: 0.05s; }
@@ -119,7 +105,6 @@
         .stat-number { font-size: 26px; font-weight: 900; background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; transition: all 0.3s; }
         .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
 
-        /* ===== NAV ===== */
         .nav {
             display: flex; gap: 6px; background: var(--bg-card); backdrop-filter: blur(20px);
             padding: 8px; border-radius: var(--radius); border: 1px solid var(--border-color);
@@ -141,24 +126,20 @@
         .nav button.active i { color: #07141a; }
         .nav button.active::after { width: 60%; }
 
-        /* ===== PAGES ===== */
         .page { display: none; animation: slideFade 0.5s ease; position: relative; z-index: 2; }
         .page.active { display: block; }
 
-        /* ===== CARDS ===== */
         .card { background: var(--bg-card); backdrop-filter: blur(16px); border-radius: var(--radius); padding: 20px; margin: 10px 0; border: 1px solid var(--border-color); box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12); transition: all 0.4s ease; animation: slideFade 0.5s ease backwards; }
         .card:hover { border-color: rgba(0, 229, 200, 0.12); transform: translateY(-2px); }
         .card-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
         .card-title i { color: var(--aqua); font-size: 22px; text-shadow: 0 0 30px rgba(0, 229, 200, 0.2); }
         .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-bottom: 14px; }
 
-        /* ===== HERO ===== */
         .hero-card { background: linear-gradient(145deg, rgba(0, 229, 200, 0.08), rgba(14, 40, 52, 0.7) 50%, rgba(255, 107, 107, 0.04)); border-color: rgba(0, 229, 200, 0.15); overflow: hidden; position: relative; min-height: 200px; }
         .hero-card::before { content: '🏄'; position: absolute; font-size: 120px; right: -10px; bottom: -20px; opacity: 0.08; transform: rotate(-10deg); }
         .hero-card::after { content: '🌊'; position: absolute; font-size: 80px; left: -10px; top: -10px; opacity: 0.06; }
         .hero-wave { position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: repeating-linear-gradient(90deg, transparent, rgba(0, 229, 200, 0.03) 20px, transparent 40px); animation: waveMove 6s ease-in-out infinite; }
 
-        /* ===== BUTTONS ===== */
         .btn { padding: 12px 20px; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; -webkit-tap-highlight-color: transparent; }
         .btn:active { transform: scale(0.96); }
         .btn-primary { background: var(--gradient-main); color: #07141a; box-shadow: 0 8px 30px rgba(0, 229, 200, 0.15); }
@@ -176,7 +157,6 @@
         .btn-support:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 40px rgba(255, 107, 107, 0.3); }
         .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
 
-        /* ===== FORMS ===== */
         .form-group { margin: 12px 0; }
         .form-group label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 5px; }
         .form-group input, .form-group select, .form-group textarea {
@@ -190,7 +170,6 @@
         }
         .form-group textarea { resize: vertical; min-height: 70px; }
 
-        /* ===== BALANCE ===== */
         .balance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .balance-item { display: flex; flex-direction: column; align-items: center; padding: 12px 8px; background: rgba(0, 0, 0, 0.15); border-radius: var(--radius-sm); border: 1px solid var(--border-color); transition: all 0.3s; }
         .balance-item:hover { border-color: rgba(0, 229, 200, 0.15); transform: translateY(-2px); }
@@ -201,7 +180,6 @@
         .balance-item .value.rub { color: var(--success); }
         .balance-item .value.uah { color: var(--coral); }
 
-        /* ===== DEALS ===== */
         .deal-card { background: rgba(0, 0, 0, 0.15); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); transition: all 0.3s; }
         .deal-card:hover { border-color: rgba(0, 229, 200, 0.1); }
         .deal-status { display: inline-block; padding: 2px 14px; border-radius: 30px; font-size: 10px; font-weight: 700; }
@@ -222,7 +200,6 @@
         .verification-status.verified { background: rgba(0, 229, 160, 0.08); border: 1px solid rgba(0, 229, 160, 0.15); color: var(--success); }
         .verification-status.unverified { background: rgba(255, 217, 61, 0.08); border: 1px solid rgba(255, 217, 61, 0.15); color: var(--sunny); }
 
-        /* ===== WIZARD ===== */
         .wizard-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 12px 0 16px; }
         .wizard-dot { height: 6px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
         .wizard-dot.active { background: var(--gradient-main); box-shadow: 0 0 24px rgba(0, 229, 200, 0.2); }
@@ -230,27 +207,23 @@
         .wizard-panel.active { display: block; }
         .wizard-preview { padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(0, 229, 200, 0.14); background: rgba(0, 229, 200, 0.04); margin-top: 10px; }
 
-        /* ===== MODAL ===== */
         .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(24px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
         .modal.active { display: flex; }
         .modal-content { background: var(--bg-secondary); border-radius: var(--radius); padding: 24px; max-width: 480px; width: 100%; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5); animation: slideFade 0.4s ease; }
         .modal-close { float: right; font-size: 24px; cursor: pointer; color: var(--text-muted); background: none; border: none; transition: 0.3s; padding: 4px; }
         .modal-close:hover { color: var(--text-primary); transform: rotate(90deg); }
 
-        /* ===== TOAST ===== */
         .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--bg-secondary); color: var(--text-primary); padding: 14px 24px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); box-shadow: 0 16px 60px rgba(0, 0, 0, 0.4); z-index: 2000; animation: slideFade 0.4s ease; max-width: 92%; text-align: center; font-weight: 500; font-size: 14px; backdrop-filter: blur(20px); }
         .toast.success { border-color: rgba(0, 229, 160, 0.3); }
         .toast.error { border-color: rgba(255, 107, 107, 0.3); }
         .toast.info { border-color: rgba(0, 229, 200, 0.3); }
 
-        /* ===== TICKET CARDS ===== */
         .ticket-card { background: rgba(0, 0, 0, 0.15); border-radius: var(--radius-sm); padding: 14px; margin: 6px 0; border: 1px solid var(--border-color); }
         .ticket-status { font-size: 11px; font-weight: 700; padding: 2px 12px; border-radius: 30px; display: inline-block; }
         .ticket-status.open { background: rgba(0, 229, 160, 0.1); color: var(--success); border: 1px solid rgba(0, 229, 160, 0.1); }
         .ticket-status.closed { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); border: 1px solid var(--border-color); }
         .ticket-status.waiting { background: rgba(255, 217, 61, 0.1); color: var(--sunny); border: 1px solid rgba(255, 217, 61, 0.1); }
 
-        /* ===== ADMIN ===== */
         .admin-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
         .admin-stat-card { padding: 18px 16px; border-radius: var(--radius-sm); background: rgba(0, 0, 0, 0.15); border: 1px solid var(--border-color); text-align: center; transition: 0.4s; animation: slideFade 0.5s ease backwards; }
         .admin-stat-card:nth-child(1) { animation-delay: 0.05s; }
@@ -270,14 +243,12 @@
         .admin-panel { display: none; animation: slideFade 0.4s ease; }
         .admin-panel.active { display: block; }
 
-        /* ===== NFT CARD ===== */
         .nft-card { display: inline-flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: var(--radius-sm); background: rgba(0, 229, 200, 0.04); border: 1px solid rgba(0, 229, 200, 0.08); margin-top: 6px; }
         .nft-card .icon { font-size: 28px; }
         .nft-card .info .name { font-weight: 700; color: var(--aqua); }
         .nft-card .info .number { font-size: 12px; color: var(--text-muted); }
         .nft-card .info .link { font-size: 11px; color: var(--text-secondary); word-break: break-all; }
 
-        /* ===== CHAT ===== */
         .chat-container { display: flex; flex-direction: column; height: 500px; max-height: 70vh; background: rgba(0, 0, 0, 0.15); border-radius: var(--radius-sm); border: 1px solid var(--border-color); overflow: hidden; }
         .chat-header { padding: 14px 18px; background: rgba(0, 229, 200, 0.04); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         .chat-header .avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-main); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #07141a; }
@@ -403,7 +374,7 @@
 
     <div id="content">
 
-        <!-- ===== MAIN ===== -->
+        <!-- MAIN -->
         <div class="page active" id="page-main">
             <div class="card hero-card glass">
                 <div class="hero-wave"></div>
@@ -453,7 +424,7 @@
             </div>
         </div>
 
-        <!-- ===== CREATE ===== -->
+        <!-- CREATE -->
         <div class="page" id="page-create">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-plus-circle"></i> <span>Создать сделку</span></div>
@@ -467,8 +438,7 @@
                         <span class="wizard-dot" data-dot="4"></span>
                     </div>
                     <div class="wizard-panel active" data-step="0">
-                        <div class="form-group">
-                            <label><i class="fas fa-tag"></i> Категория</label>
+                        <div class="form-group"><label><i class="fas fa-tag"></i> Категория</label>
                             <select id="categorySelect">
                                 <option value="nft_gift">🖼️ NFT / Подарок</option>
                                 <option value="game_account">🎮 Аккаунт игры</option>
@@ -478,50 +448,29 @@
                         <button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button>
                     </div>
                     <div class="wizard-panel" data-step="1">
-                        <div class="form-group">
-                            <label><i class="fas fa-gift"></i> Название товара</label>
-                            <input type="text" id="productInput" placeholder="Например: NFT Pepe / Аккаунт CS2" required>
-                        </div>
+                        <div class="form-group"><label><i class="fas fa-gift"></i> Название товара</label><input type="text" id="productInput" placeholder="Например: NFT Pepe / Аккаунт CS2" required></div>
                         <div style="display:flex;gap:8px;">
                             <button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button>
                             <button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button>
                         </div>
                     </div>
                     <div class="wizard-panel" data-step="2">
-                        <div class="form-group">
-                            <label><i class="fas fa-link"></i> Ссылка на NFT</label>
-                            <input type="text" id="nftLinkInput" placeholder="t.me/nft/XmasStocking-53840">
-                            <div id="nftParseResult" style="margin-top:4px;"></div>
-                        </div>
+                        <div class="form-group"><label><i class="fas fa-link"></i> Ссылка на NFT</label><input type="text" id="nftLinkInput" placeholder="t.me/nft/XmasStocking-53840"><div id="nftParseResult" style="margin-top:4px;"></div></div>
                         <div style="display:flex;gap:8px;">
                             <button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button>
                             <button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button>
                         </div>
                     </div>
                     <div class="wizard-panel" data-step="3">
-                        <div class="form-group">
-                            <label><i class="fas fa-coins"></i> Валюта</label>
-                            <select id="currencySelect">
-                                <option value="TON">💎 TON</option>
-                                <option value="STARS">⭐️ STARS</option>
-                                <option value="RUB">💰 RUB</option>
-                                <option value="UAH">🌐 UAH</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-dollar-sign"></i> Сумма</label>
-                            <input type="number" id="amountInput" placeholder="100" required min="0.01" step="0.01">
-                        </div>
+                        <div class="form-group"><label><i class="fas fa-coins"></i> Валюта</label><select id="currencySelect"><option value="TON">💎 TON</option><option value="STARS">⭐️ STARS</option><option value="RUB">💰 RUB</option><option value="UAH">🌐 UAH</option></select></div>
+                        <div class="form-group"><label><i class="fas fa-dollar-sign"></i> Сумма</label><input type="number" id="amountInput" placeholder="100" required min="0.01" step="0.01"></div>
                         <div style="display:flex;gap:8px;">
                             <button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button>
                             <button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button>
                         </div>
                     </div>
                     <div class="wizard-panel" data-step="4">
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> Username покупателя (без @)</label>
-                            <input type="text" id="buyerInput" placeholder="john_doe" required>
-                        </div>
+                        <div class="form-group"><label><i class="fas fa-user"></i> Username покупателя (без @)</label><input type="text" id="buyerInput" placeholder="john_doe" required></div>
                         <div style="display:flex;gap:8px;">
                             <button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button>
                             <button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Создать</button>
@@ -533,7 +482,7 @@
             </div>
         </div>
 
-        <!-- ===== DEALS ===== -->
+        <!-- DEALS -->
         <div class="page" id="page-deals">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-list"></i> Мои сделки</div>
@@ -542,7 +491,7 @@
             </div>
         </div>
 
-        <!-- ===== BALANCE ===== -->
+        <!-- BALANCE -->
         <div class="page" id="page-balance">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-wallet"></i> Мой баланс</div>
@@ -563,7 +512,7 @@
             </div>
         </div>
 
-        <!-- ===== PROFILE ===== -->
+        <!-- PROFILE -->
         <div class="page" id="page-profile">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-user-shield"></i> Профиль</div>
@@ -584,7 +533,7 @@
             <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
         </div>
 
-        <!-- ===== SUPPORT (CHAT) ===== -->
+        <!-- SUPPORT (CHAT) -->
         <div class="page" id="page-support">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-headset"></i> <span>Поддержка</span></div>
@@ -608,7 +557,7 @@
             </div>
         </div>
 
-        <!-- ===== ADMIN ===== -->
+        <!-- ADMIN -->
         <div class="page" id="page-admin">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-crown"></i> Админ панель</div>
@@ -619,7 +568,7 @@
 
     </div>
 
-    <!-- ===== MODAL ===== -->
+    <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -657,12 +606,8 @@
                             username: initUser.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
                             firstName: initUser.first_name || 'Пользователь'
                         };
-                    } else {
-                        throw new Error('No user data');
-                    }
-                } else {
-                    throw new Error('Telegram WebApp not available');
-                }
+                    } else { throw new Error('No user data'); }
+                } else { throw new Error('Telegram WebApp not available'); }
             } catch (e) {
                 console.warn('Using fallback user data:', e);
                 user = {
@@ -1900,34 +1845,59 @@
                 var resultDiv = document.getElementById('balanceResult');
                 if (resultDiv) resultDiv.innerHTML = '⏳ Обработка...';
 
-                try {
-                    var endpoint = '';
-                    var actionMap = {};
-                    if (action === 'add') { endpoint = '/api/admin_add_balance';
-                        actionMap = { 'add': '➕ Пополнено' }; } else if (action === 'set') { endpoint =
-                            '/api/admin_set_balance';
-                        actionMap = { 'set': '✏️ Установлено' }; } else if (action === 'remove') { endpoint =
-                            '/api/admin_remove_balance';
-                        actionMap = { 'remove': '➖ Списано' }; } else if (action === 'bonus') { endpoint =
-                            '/api/admin_add_balance';
-                        actionMap = { 'bonus': '🎁 Бонус начислен' }; }
+                var endpoint = '';
+                var actionLabel = '';
+                switch (action) {
+                    case 'add':
+                        endpoint = '/api/admin_add_balance';
+                        actionLabel = '➕ Пополнено';
+                        break;
+                    case 'set':
+                        endpoint = '/api/admin_set_balance';
+                        actionLabel = '✏️ Установлено';
+                        break;
+                    case 'remove':
+                        endpoint = '/api/admin_remove_balance';
+                        actionLabel = '➖ Списано';
+                        break;
+                    case 'bonus':
+                        endpoint = '/api/admin_add_balance';
+                        actionLabel = '🎁 Бонус начислен';
+                        break;
+                    default:
+                        showToast('❌ Неизвестное действие', 'error');
+                        return;
+                }
 
+                try {
                     var data = await apiCall(endpoint, {
                         target_user_id: parseInt(userId, 10),
                         currency: currency,
                         amount: amount
                     });
                     if (data.success) {
-                        if (resultDiv) resultDiv.innerHTML = '✅ ' + (actionMap[action] || 'Изменено') + ' ' +
-                            amount + ' ' + currency + ' пользователю ' + userId;
-                        showToast('✅ ' + amount + ' ' + currency + ' ' + (actionMap[action] || 'изменено'),
-                        'success');
+                        if (resultDiv) {
+                            resultDiv.innerHTML = '✅ ' + actionLabel + ' ' + amount + ' ' + currency +
+                                ' пользователю ' + userId;
+                            resultDiv.style.color = 'var(--success)';
+                        }
+                        showToast('✅ ' + amount + ' ' + currency + ' ' + actionLabel.toLowerCase(), 'success');
                         loadBalance();
                         loadAdminPanel();
-                    } else { if (resultDiv) resultDiv.innerHTML = '❌ ' + (data.error || 'Ошибка');
-                        showToast('❌ ' + (data.error || 'Ошибка'), 'error'); }
-                } catch (e) { if (resultDiv) resultDiv.innerHTML = '❌ ' + e.message;
-                    showToast('❌ ' + e.message, 'error'); }
+                    } else {
+                        if (resultDiv) {
+                            resultDiv.innerHTML = '❌ ' + (data.error || 'Ошибка начисления');
+                            resultDiv.style.color = 'var(--danger)';
+                        }
+                        showToast('❌ ' + (data.error || 'Ошибка'), 'error');
+                    }
+                } catch (e) {
+                    if (resultDiv) {
+                        resultDiv.innerHTML = '❌ ' + e.message;
+                        resultDiv.style.color = 'var(--danger)';
+                    }
+                    showToast('❌ ' + e.message, 'error');
+                }
             };
 
             window.adminUserAction = function(userId, action) {
@@ -2093,5 +2063,6 @@
 
         })();
     </script>
+
 </body>
 </html>
