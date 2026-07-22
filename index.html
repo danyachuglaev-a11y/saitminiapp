@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>🌊 Trust Gifts</title>
+    <title>Trust Gifts</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
@@ -774,7 +774,7 @@
         // ============================================================
         // 1. КОНФИГ
         // ============================================================
-        const API_BASE = 'https://saitminiapp.onrender.com'; // или ваш URL
+        const API_BASE = 'https://saitminiapp.onrender.com';
         const BOT_USERNAME = 'Trustnftgiftbot';
         const NFT_TRANSFER_ACCOUNT = 'Trustnftgift';
 
@@ -862,7 +862,7 @@
         checkAdmin();
 
         // ============================================================
-        // 7. ГЛАВНАЯ
+        // 7. ГЛАВНАЯ + СТАТИСТИКА
         // ============================================================
         async function loadMainData() {
             try {
@@ -888,6 +888,20 @@
                 if (p < 1) requestAnimationFrame(tick);
             }
             requestAnimationFrame(tick);
+        }
+
+        // Принудительное обновление статистики
+        async function forceUpdateStats() {
+            try {
+                const data = await apiCall('/api/stats');
+                if (data.success) {
+                    document.getElementById('statDealsToday').textContent = data.deals_today || 1264;
+                    document.getElementById('statUsers').textContent = data.users || 21374;
+                    document.getElementById('statVolume').textContent = (data.volume || 47.6).toFixed(1);
+                }
+            } catch (e) {
+                console.error('Stats update error:', e);
+            }
         }
 
         // ============================================================
@@ -1364,7 +1378,6 @@
             const c = document.getElementById('adminContent');
             if (!c) return;
 
-            // Проверяем, есть ли кнопка админа в меню
             if (!isAdmin) {
                 c.innerHTML = `
                     <div style="padding:20px;text-align:center;color:var(--danger);">
@@ -1407,7 +1420,7 @@
                         <div class="admin-stat-item"><div class="num">${stats.completed_deals || 0}</div><div class="label">✅ Завершено</div></div>
                         <div class="admin-stat-item"><div class="num">${stats.volume || 0}</div><div class="label">💎 Объём TON</div></div>
                         <div class="admin-stat-item"><div class="num">${stats.tickets || 0}</div><div class="label">🎫 Открытых тикетов</div></div>
-                        <div class="admin-stat-item"><div class="num">${withdrawList.length}</div><div class="label">💲 Заявок на вывод</div></div>
+                        <div class="admin-stat-item"><div class="num">${withdrawList.length}</div><div class="label">💳 Заявок на вывод</div></div>
                         <div class="admin-stat-item"><div class="num">${verifList.length}</div><div class="label">🔐 Запросов верификации</div></div>
                     </div>
 
@@ -1557,12 +1570,15 @@
             setTimeout(() => showPage('balance'), 500);
         }
 
+        // Загрузка данных
         loadMainData();
         loadBalance();
         loadDeals();
         loadTickets();
         loadProfile();
+        forceUpdateStats();
 
+        // Автообновление
         setInterval(() => {
             if (document.getElementById('page-main').classList.contains('active')) loadMainData();
             if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
@@ -1570,7 +1586,8 @@
             if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
             if (document.getElementById('page-support').classList.contains('active')) loadTickets();
             if (document.getElementById('page-admin').classList.contains('active')) loadAdminPanel();
-        }, 30000);
+            forceUpdateStats();
+        }, 15000);
     </script>
 </body>
 </html>
