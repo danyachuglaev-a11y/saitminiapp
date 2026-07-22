@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ===== АКВА-ЛЕТНИЙ СТИЛЬ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg-primary: #07141a;
@@ -22,7 +21,6 @@
             --coral: #ff6b6b;
             --sunny: #ffd93d;
             --gradient-main: linear-gradient(135deg, #00e5c8, #00b8a0, #00897b);
-            --gradient-glow: linear-gradient(135deg, rgba(0,229,200,0.2), rgba(255,107,107,0.1));
             --radius: 28px;
             --radius-sm: 16px;
             --success: #00e5a0;
@@ -39,10 +37,8 @@
             overflow-x: hidden;
             background-image:
                 radial-gradient(circle at 10% 20%, rgba(0,229,200,0.07) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(255,107,107,0.04) 0%, transparent 40%),
-                repeating-linear-gradient(45deg, rgba(0,229,200,0.008) 0px, rgba(0,229,200,0.008) 2px, transparent 2px, transparent 10px);
+                radial-gradient(circle at 90% 80%, rgba(255,107,107,0.04) 0%, transparent 40%);
         }
-        /* ===== АНИМАЦИИ ===== */
         @keyframes floatUp { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-24px) rotate(8deg); } }
         @keyframes waveMove { 0% { transform: translateX(-20px); } 100% { transform: translateX(20px); } }
         @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 20px rgba(0,229,200,0.1); } 50% { box-shadow: 0 0 60px rgba(0,229,200,0.2); } }
@@ -81,7 +77,6 @@
         }
         .glass:hover { border-color: rgba(0,229,200,0.2); }
 
-        /* ===== ХЕДЕР ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -129,10 +124,9 @@
         }
         .online-dot { width: 7px; height: 7px; background: var(--aqua); border-radius: 50%; display: inline-block; animation: pulseGlow 1.8s ease-in-out infinite; }
 
-        /* ===== СТАТИСТИКА ===== */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 16px;
             z-index: 2;
@@ -151,7 +145,6 @@
         .stat-card:nth-child(1) { animation-delay: 0.05s; }
         .stat-card:nth-child(2) { animation-delay: 0.10s; }
         .stat-card:nth-child(3) { animation-delay: 0.15s; }
-        .stat-card:nth-child(4) { animation-delay: 0.20s; }
         .stat-card:hover { transform: translateY(-6px) scale(1.02); border-color: rgba(0,229,200,0.2); box-shadow: 0 12px 40px rgba(0,229,200,0.08); }
         .stat-number {
             font-size: 26px;
@@ -164,7 +157,6 @@
         }
         .stat-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; margin-top: 4px; }
 
-        /* ===== МЕНЮ (УЛУЧШЕННОЕ) ===== */
         .nav {
             display: flex;
             gap: 6px;
@@ -224,11 +216,9 @@
         .nav button.active i { color: #07141a; }
         .nav button.active::after { width: 60%; }
 
-        /* ===== СТРАНИЦЫ ===== */
         .page { display: none; animation: slideFade 0.5s ease; position: relative; z-index: 2; }
         .page.active { display: block; }
 
-        /* ===== КАРТОЧКИ ===== */
         .card {
             background: var(--bg-card);
             backdrop-filter: blur(16px);
@@ -253,7 +243,6 @@
         .card-title i { color: var(--aqua); font-size: 22px; text-shadow: 0 0 30px rgba(0,229,200,0.2); }
         .card-subtitle { font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-bottom: 14px; }
 
-        /* ===== ГЛАВНАЯ ГЕРО ===== */
         .hero-card {
             background: linear-gradient(145deg, rgba(0,229,200,0.08), rgba(14,40,52,0.7) 50%, rgba(255,107,107,0.04));
             border-color: rgba(0,229,200,0.15);
@@ -288,7 +277,6 @@
             animation: waveMove 6s ease-in-out infinite;
         }
 
-        /* ===== БЛОКИ ===== */
         .btn {
             padding: 12px 20px;
             border: none;
@@ -405,18 +393,6 @@
         .guide-step .content { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
         .guide-step .content strong { color: var(--text-primary); }
 
-        .ticket-card {
-            background: rgba(0,0,0,0.15);
-            border-radius: var(--radius-sm);
-            padding: 14px;
-            margin: 6px 0;
-            border: 1px solid var(--border-color);
-        }
-        .ticket-status { font-size: 11px; font-weight: 700; padding: 2px 12px; border-radius: 30px; display: inline-block; }
-        .ticket-status.open { background: rgba(0,229,160,0.1); color: var(--success); border: 1px solid rgba(0,229,160,0.1); }
-        .ticket-status.closed { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border-color); }
-        .ticket-status.waiting { background: rgba(255,217,61,0.1); color: var(--sunny); border: 1px solid rgba(255,217,61,0.1); }
-
         .verification-status {
             padding: 10px 14px;
             border-radius: var(--radius-sm);
@@ -503,11 +479,23 @@
         .toast.error { border-color: rgba(255,107,107,0.3); }
         .toast.info { border-color: rgba(0,229,200,0.3); }
 
+        .ticket-card {
+            background: rgba(0,0,0,0.15);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin: 6px 0;
+            border: 1px solid var(--border-color);
+        }
+        .ticket-status { font-size: 11px; font-weight: 700; padding: 2px 12px; border-radius: 30px; display: inline-block; }
+        .ticket-status.open { background: rgba(0,229,160,0.1); color: var(--success); border: 1px solid rgba(0,229,160,0.1); }
+        .ticket-status.closed { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border-color); }
+        .ticket-status.waiting { background: rgba(255,217,61,0.1); color: var(--sunny); border: 1px solid rgba(255,217,61,0.1); }
+
         @media (max-width:480px) {
             body { padding: 10px; }
             .header { padding: 12px 14px; }
             .header-title { font-size: 18px; }
-            .stats-grid { grid-template-columns: repeat(2,1fr); gap:6px; }
+            .stats-grid { grid-template-columns: repeat(3,1fr); gap:6px; }
             .balance-grid { grid-template-columns: repeat(2,1fr); }
             .nav button { min-width: 40px; padding: 8px 4px; }
             .nav button i { font-size: 16px; }
@@ -517,14 +505,14 @@
         }
         @media (min-width:768px) {
             body { padding:24px; max-width:880px; margin:0 auto; }
-            .stats-grid { grid-template-columns:repeat(4,1fr); }
+            .stats-grid { grid-template-columns:repeat(3,1fr); }
             .balance-grid { grid-template-columns:repeat(4,1fr); }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== ФОН (ПАРЯЩИЕ ЭМОДЗИ) ===== -->
+    <!-- ===== ФОН ===== -->
     <div class="floating-emoji">🌊</div>
     <div class="floating-emoji">🏄</div>
     <div class="floating-emoji">🌴</div>
@@ -533,11 +521,11 @@
     <div class="floating-emoji">🍉</div>
     <div class="floating-emoji">⛱️</div>
 
-    <!-- ===== ВЫБОР ЯЗЫКА ===== -->
+    <!-- ===== ЯЗЫК ===== -->
     <div class="language-overlay" id="languageOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(7,20,26,0.98);backdrop-filter:blur(40px);display:none;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:24px;padding:24px;">
         <div style="font-size:72px;animation:floatUp 4s ease-in-out infinite;">🏄</div>
         <h1 style="font-size:34px;font-weight:900;background:linear-gradient(135deg,#00e5c8,#ffd93d,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Trust Gifts</h1>
-        <p style="color:var(--text-secondary);font-size:15px;text-align:center;" id="langPrompt">Выберите язык / Choose language</p>
+        <p style="color:var(--text-secondary);font-size:15px;text-align:center;" id="langPrompt">Выберите язык</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:360px;width:100%;">
             <button class="lang-btn" onclick="window.setLanguage('ru')" style="padding:18px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.3s;text-align:center;">🇷🇺 Русский</button>
             <button class="lang-btn" onclick="window.setLanguage('en')" style="padding:18px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-card);color:var(--text-primary);font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.3s;text-align:center;">🇬🇧 English</button>
@@ -560,15 +548,14 @@
         </div>
     </header>
 
-    <!-- ===== СТАТИСТИКА (АВТО-НАКРУТКА) ===== -->
+    <!-- ===== СТАТИСТИКА (БЕЗ ТИКЕТОВ) ===== -->
     <div class="stats-grid">
         <div class="stat-card glass"><span class="stat-number" id="statDealsToday">0</span><span class="stat-label"><i class="fas fa-exchange-alt"></i> Сделок сегодня</span></div>
         <div class="stat-card glass"><span class="stat-number" id="statUsers">0</span><span class="stat-label"><i class="fas fa-users"></i> Пользователей</span></div>
         <div class="stat-card glass"><span class="stat-number" id="statVolume">0</span><span class="stat-label"><i class="fas fa-chart-line"></i> Объём (TON)</span></div>
-        <div class="stat-card glass"><span class="stat-number" id="statTickets">0</span><span class="stat-label"><i class="fas fa-ticket"></i> Тикеты</span></div>
     </div>
 
-    <!-- ===== МЕНЮ (УЛУЧШЕННОЕ) ===== -->
+    <!-- ===== МЕНЮ ===== -->
     <nav class="nav glass">
         <button class="active" data-page="main"><i class="fas fa-home"></i><span>Главная</span></button>
         <button data-page="create"><i class="fas fa-plus-circle"></i><span>Сделка</span></button>
@@ -599,28 +586,27 @@
                 </div>
             </div>
 
-            <!-- ===== ГАЙД: КАК ПРОВЕСТИ БЕЗОПАСНУЮ СДЕЛКУ ===== -->
+            <!-- ===== ГАЙД: БЕЗОПАСНАЯ СДЕЛКА ===== -->
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-shield-alt"></i> <span>🛡️ Как провести безопасную сделку</span></div>
-                <div class="guide-step"><span class="num">1</span><div class="content"><strong>Создайте сделку</strong> — выберите категорию (аккаунт, NFT, подарок), укажите товар и сумму.</div></div>
-                <div class="guide-step"><span class="num">2</span><div class="content"><strong>Отправьте ссылку</strong> покупателю. Ссылка ведёт на страницу оплаты.</div></div>
-                <div class="guide-step"><span class="num">3</span><div class="content"><strong>Покупатель оплачивает</strong> через сайт (с баланса или по реквизитам).</div></div>
-                <div class="guide-step"><span class="num">4</span><div class="content"><strong>Продавец передаёт товар</strong> (или NFT на эскроу-аккаунт) и нажимает «Передал».</div></div>
-                <div class="guide-step"><span class="num">5</span><div class="content"><strong>Покупатель подтверждает</strong> получение — деньги зачисляются продавцу.</div></div>
-                <div class="guide-step"><span class="num">6</span><div class="content"><strong>⚠️ Никогда не передавайте товар до оплаты!</strong> Все сделки через эскроу.</div></div>
+                <div class="guide-step"><span class="num">1</span><div class="content"><strong>Создайте сделку</strong> — выберите категорию, укажите товар и сумму.</div></div>
+                <div class="guide-step"><span class="num">2</span><div class="content"><strong>Отправьте ссылку</strong> покупателю через Telegram.</div></div>
+                <div class="guide-step"><span class="num">3</span><div class="content"><strong>Покупатель оплачивает</strong> через сайт.</div></div>
+                <div class="guide-step"><span class="num">4</span><div class="content"><strong>Продавец передаёт товар</strong> и нажимает «Передал».</div></div>
+                <div class="guide-step"><span class="num">5</span><div class="content"><strong>Покупатель подтверждает</strong> получение — деньги зачисляются.</div></div>
                 <div class="support-block" style="border-color:var(--coral);">
-                    <span style="font-size:12px;color:var(--text-secondary);">🔒 Если продавец просит передать товар вне системы — это 100% мошенничество. Сообщите в поддержку.</span>
+                    <span style="font-size:12px;color:var(--text-secondary);">🔒 Никогда не передавайте товар до оплаты! Все сделки через эскроу.</span>
                 </div>
             </div>
 
-            <!-- ===== ГАЙД: КОМУ ПЕРЕДАВАТЬ ПОДАРОК ===== -->
+            <!-- ===== ГАЙД: КОМУ ПЕРЕДАВАТЬ ===== -->
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-gift"></i> <span>🎁 Кому передавать подарок / NFT?</span></div>
-                <div class="guide-step"><span class="num">✅</span><div class="content"><strong>При продаже NFT:</strong> передача всегда происходит на аккаунт <strong style="color:var(--aqua);">@Trustnftgift</strong> (эскроу). Это гарантирует, что вы не потеряете NFT.</div></div>
-                <div class="guide-step"><span class="num">✅</span><div class="content"><strong>При продаже аккаунта / товара:</strong> передаёте данные (логин/пароль) после подтверждения оплаты через кнопку «Передал товар».</div></div>
-                <div class="guide-step"><span class="num">✅</span><div class="content"><strong>Для Telegram Gift / Stars:</strong> передаёте код или пересылаете подарок только после того, как покупатель нажал «Оплатил» и вы получили уведомление.</div></div>
+                <div class="guide-step"><span class="num">✅</span><div class="content"><strong>NFT / Подарок:</strong> передача на аккаунт <strong style="color:var(--aqua);">@Trustnftgift</strong> (эскроу).</div></div>
+                <div class="guide-step"><span class="num">✅</span><div class="content"><strong>Аккаунт / товар:</strong> передаёте данные после кнопки «Передал».</div></div>
+                <div class="guide-step"><span class="num">✅</span><div class="content"><strong>Stars / Gift:</strong> передаёте код только после оплаты.</div></div>
                 <div class="support-block" style="border-color:var(--warning);">
-                    <span style="font-size:12px;color:var(--sunny);">⚠️ Никогда не передавайте подарок / NFT / аккаунт до того, как покупатель оплатил и вы нажали «Передал» на сайте. Все передачи фиксируются.</span>
+                    <span style="font-size:12px;color:var(--sunny);">⚠️ Никогда не передавайте до оплаты!</span>
                 </div>
             </div>
 
@@ -639,8 +625,8 @@
         <!-- ===== СОЗДАНИЕ СДЕЛКИ ===== -->
         <div class="page" id="page-create">
             <div class="card glass">
-                <div class="card-title"><i class="fas fa-plus-circle"></i> <span id="createTitle">Создать сделку</span></div>
-                <div class="card-subtitle" id="createSubtitle">Выберите категорию и заполните форму</div>
+                <div class="card-title"><i class="fas fa-plus-circle"></i> <span>Создать сделку</span></div>
+                <div class="card-subtitle">Выберите категорию и заполните форму</div>
                 <form id="dealForm">
                     <div class="wizard-steps">
                         <span class="wizard-dot active" data-dot="0"></span>
@@ -652,31 +638,30 @@
                     <div class="wizard-panel active" data-step="0">
                         <div class="form-group"><label><i class="fas fa-tag"></i> Категория</label>
                             <select id="categorySelect">
+                                <option value="nft_gift">🖼️ NFT / Подарок</option>
                                 <option value="game_account">🎮 Аккаунт игры</option>
-                                <option value="nft">🖼️ NFT / Подарок</option>
-                                <option value="gift">🎁 Telegram Gift / Stars</option>
                                 <option value="other">📦 Другое</option>
                             </select>
                         </div>
                         <button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button>
                     </div>
                     <div class="wizard-panel" data-step="1">
-                        <div class="form-group"><label><i class="fas fa-gift"></i> Товар</label><input type="text" id="productInput" placeholder="Например: Аккаунт CS2 / NFT Pepe" required></div>
+                        <div class="form-group"><label><i class="fas fa-gift"></i> Товар</label><input type="text" id="productInput" placeholder="Например: NFT Pepe / Аккаунт CS2" required></div>
                         <div class="form-group" id="nftLinkGroup" style="display:none;"><label><i class="fas fa-link"></i> Ссылка на NFT</label><input type="url" id="nftLinkInput" placeholder="https://getgems.io/..."></div>
-                        <div class="flex" style="display:flex;gap:8px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button></div>
+                        <div style="display:flex;gap:8px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button></div>
                     </div>
                     <div class="wizard-panel" data-step="2">
                         <div class="form-group"><label><i class="fas fa-coins"></i> Валюта</label><select id="currencySelect"><option value="TON">💎 TON</option><option value="STARS">⭐️ STARS</option><option value="RUB">💰 RUB</option><option value="UAH">🌐 UAH</option></select></div>
                         <div class="form-group"><label><i class="fas fa-dollar-sign"></i> Сумма</label><input type="number" id="amountInput" placeholder="100" required></div>
-                        <div class="flex" style="display:flex;gap:8px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button></div>
+                        <div style="display:flex;gap:8px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Далее</button></div>
                     </div>
                     <div class="wizard-panel" data-step="3">
                         <div class="form-group"><label><i class="fas fa-user"></i> Username покупателя (без @)</label><input type="text" id="buyerInput" placeholder="john_doe" required></div>
-                        <div class="flex" style="display:flex;gap:8px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Проверить</button></div>
+                        <div style="display:flex;gap:8px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="button" class="btn btn-primary" onclick="wizardNext()"><i class="fas fa-arrow-right"></i> Проверить</button></div>
                     </div>
                     <div class="wizard-panel" data-step="4">
                         <div class="wizard-preview" id="dealPreview">Проверьте данные</div>
-                        <div class="flex" style="display:flex;gap:8px;margin-top:10px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Создать</button></div>
+                        <div style="display:flex;gap:8px;margin-top:10px;"><button type="button" class="btn btn-secondary" onclick="wizardPrev()"><i class="fas fa-arrow-left"></i> Назад</button><button type="submit" class="btn btn-primary"><i class="fas fa-check-circle"></i> Создать</button></div>
                     </div>
                 </form>
                 <div id="dealResult" style="display:none;" class="card mt-10"></div>
@@ -731,25 +716,31 @@
             <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
         </div>
 
-        <!-- ===== ПОДДЕРЖКА (ТОЛЬКО ТИКЕТЫ) ===== -->
+        <!-- ===== ПОДДЕРЖКА (ТИКЕТЫ В MINIAPP) ===== -->
         <div class="page" id="page-support">
             <div class="card glass">
                 <div class="card-title"><i class="fas fa-headset"></i> Поддержка</div>
-                <div class="card-subtitle">Создайте тикет, администратор ответит в ближайшее время.</div>
+                <div class="card-subtitle">Создайте тикет, администратор ответит вам.</div>
+
                 <div style="background:rgba(0,229,200,0.04);border-radius:12px;padding:14px;margin-bottom:12px;border:1px solid rgba(0,229,200,0.06);">
                     <div class="form-group"><label><i class="fas fa-ticket"></i> Тема</label><input type="text" id="ticketSubject" placeholder="Проблема с оплатой / Вопрос по сделке"></div>
                     <div class="form-group"><label><i class="fas fa-comment"></i> Сообщение</label><textarea id="ticketMessage" rows="3" placeholder="Опишите вашу проблему подробно..."></textarea></div>
                     <button class="btn btn-primary" onclick="createTicket()"><i class="fas fa-paper-plane"></i> Создать тикет</button>
                     <div id="ticketStatus" style="margin-top:6px;font-size:12px;"></div>
                 </div>
+
                 <div id="ticketsList"><div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div></div>
                 <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
             </div>
         </div>
 
-        <!-- ===== АДМИН ===== -->
+        <!-- ===== АДМИН (ТИКЕТЫ ТОЛЬКО ЗДЕСЬ) ===== -->
         <div class="page" id="page-admin">
-            <div class="card glass"><div class="card-title"><i class="fas fa-crown"></i> Админ панель</div><div id="adminContent"><div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div></div><button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button></div>
+            <div class="card glass">
+                <div class="card-title"><i class="fas fa-crown"></i> Админ панель</div>
+                <div id="adminContent"><div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div></div>
+                <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
+            </div>
         </div>
 
     </div>
@@ -766,9 +757,9 @@
         // ============================================================
         // 1. КОНФИГ
         // ============================================================
-        const API_BASE = 'https://otc-bot-hwua.onrender.com';
         const BOT_USERNAME = 'Trustnftgiftbot';
         const NFT_TRANSFER_ACCOUNT = 'Trustnftgift';
+        const ADMIN_ID = 123456789; // ЗАМЕНИТЕ НА СВОЙ TELEGRAM ID
         let currentLang = 'ru';
 
         // ============================================================
@@ -777,186 +768,356 @@
         const tg = window.Telegram.WebApp;
         if (tg) tg.expand();
         const user = {
-            id: tg?.initDataUnsafe?.user?.id || Math.floor(100000+Math.random()*900000),
-            username: tg?.initDataUnsafe?.user?.username || 'user_'+Math.floor(1000+Math.random()*9000),
+            id: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+            username: tg?.initDataUnsafe?.user?.username || 'user_' + Math.floor(1000 + Math.random() * 9000),
             firstName: tg?.initDataUnsafe?.user?.first_name || 'Пользователь'
         };
-        document.getElementById('userName').textContent = '👤 '+(user.firstName||user.username);
+        document.getElementById('userName').textContent = '👤 ' + (user.firstName || user.username);
+        const isAdmin = (user.id === ADMIN_ID);
 
         // ============================================================
-        // 3. ЯЗЫКИ (ТОЛЬКО РУС/АНГЛ)
+        // 3. ЯЗЫК
         // ============================================================
-        const LANG = {
-            'ru':{ 'onlineLabel':'онлайн','welcomeText':'Обмен Telegram-подарками, NFT и аккаунтами с гарантией.' },
-            'en':{ 'onlineLabel':'online','welcomeText':'Exchange Telegram gifts, NFT and game accounts with escrow.' }
+        window.setLanguage = function(lang) {
+            document.getElementById('languageOverlay').style.display = 'none';
+            localStorage.setItem('lang', lang);
+            currentLang = lang;
+            if (lang === 'en') {
+                document.getElementById('onlineLabel').textContent = 'online';
+                document.getElementById('welcomeText').textContent = 'Exchange Telegram gifts, NFT and accounts with escrow.';
+            } else {
+                document.getElementById('onlineLabel').textContent = 'онлайн';
+                document.getElementById('welcomeText').textContent = 'Обмен Telegram-подарками, NFT и аккаунтами с гарантией.';
+            }
+            showToast('✅ ' + (lang === 'ru' ? 'Язык установлен' : 'Language set'), 'success');
+            loadMainData();
+            loadAdminPanel();
+            loadTickets();
         };
-        function applyLang(lang) {
-            currentLang=lang;
-            const t=LANG[lang]||LANG['ru'];
-            document.getElementById('onlineLabel').textContent=t.onlineLabel;
-            document.getElementById('welcomeText').textContent=t.welcomeText;
-        }
-        window.setLanguage=function(lang){
-            document.getElementById('languageOverlay').style.display='none';
-            localStorage.setItem('lang',lang);
-            applyLang(lang);
-            showToast('✅ '+(lang==='ru'?'Язык установлен':'Language set'),'success');
-            loadMainData(); loadAdminPanel(); loadTickets();
-        };
-        const sl=localStorage.getItem('lang');
-        if(sl&&LANG[sl]){ window.setLanguage(sl); } else { document.getElementById('languageOverlay').style.display='flex'; }
+        const sl = localStorage.getItem('lang');
+        if (sl) { window.setLanguage(sl); } else { document.getElementById('languageOverlay').style.display = 'flex'; }
 
         // ============================================================
-        // 4. API
+        // 4. ДЕМО-БАЗА (localStorage)
         // ============================================================
-        async function apiCall(endpoint,data={}) {
-            try {
-                const r=await fetch(API_BASE+endpoint,{
-                    method:'POST',
-                    headers:{'Content-Type':'application/json','X-Telegram-User-Id':user.id,'X-Telegram-Username':user.username},
-                    body:JSON.stringify({...data,user_id:user.id,username:user.username})
-                });
-                if(!r.ok) throw new Error('HTTP '+r.status);
-                return await r.json();
-            } catch(e){ console.error(e); return {success:false,error:e.message}; }
+        function getDB() {
+            try { return JSON.parse(localStorage.getItem('trust_gifts_db') || '{}'); } catch(e) { return {}; }
+        }
+        function setDB(data) { localStorage.setItem('trust_gifts_db', JSON.stringify(data)); }
+        function getDeals() { const db = getDB(); return db.deals || []; }
+        function setDeals(deals) { const db = getDB(); db.deals = deals; setDB(db); }
+        function getBalance() { const db = getDB(); if (!db.balance) db.balance = { ton: 0, stars: 0, rub: 0, uah: 0 }; return db.balance; }
+        function setBalance(balance) { const db = getDB(); db.balance = balance; setDB(db); }
+        function getTickets() { const db = getDB(); return db.tickets || []; }
+        function setTickets(tickets) { const db = getDB(); db.tickets = tickets; setDB(db); }
+        function getVerification() { const db = getDB(); return db.verification || { verified: false, expires_at: null }; }
+        function setVerification(ver) { const db = getDB(); db.verification = ver; setDB(db); }
+        function getStats() { const db = getDB(); if (!db.stats) db.stats = { deals_today: 1264, users: 21374, volume: 47.6 }; return db.stats; }
+        function setStats(stats) { const db = getDB(); db.stats = stats; setDB(db); }
+
+        // ============================================================
+        // 5. API (ДЕМО)
+        // ============================================================
+        async function apiCall(endpoint, data = {}) {
+            console.log('📡 API Call:', endpoint, data);
+            await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
+            const db = getDB();
+            const uid = data.user_id || user.id;
+
+            switch (endpoint) {
+                case '/api/stats': { const s = getStats(); return { success: true, ...s }; }
+                case '/api/balance': { const b = getBalance(); return { success: true, balance: b }; }
+                case '/api/deals': { const deals = getDeals().filter(d => d.seller_id == uid || d.buyer_id == uid); return { success: true, deals }; }
+                case '/api/create_deal': {
+                    const deals = getDeals();
+                    const deal = {
+                        deal_id: 'd' + Date.now(),
+                        product: data.product,
+                        currency: data.currency,
+                        amount: data.amount,
+                        buyer_username: data.buyer_username.replace('@', ''),
+                        seller_id: uid,
+                        seller_username: user.username,
+                        buyer_id: null,
+                        status: 'waiting_payment',
+                        category: data.category || 'nft_gift',
+                        nft_link: data.nft_link || null,
+                        created_at: new Date().toISOString()
+                    };
+                    deals.push(deal);
+                    setDeals(deals);
+                    return { success: true, deal_id: deal.deal_id, link: 'https://t.me/' + BOT_USERNAME + '?start=deal_' + deal.deal_id };
+                }
+                case '/api/pay_balance': {
+                    const deals = getDeals();
+                    const d = deals.find(x => x.deal_id === data.deal_id);
+                    if (!d) return { success: false, error: 'Сделка не найдена' };
+                    const bal = getBalance();
+                    const cur = d.currency.toLowerCase();
+                    if ((bal[cur] || 0) < d.amount) return { success: false, error: 'Недостаточно средств' };
+                    bal[cur] = (bal[cur] || 0) - d.amount;
+                    setBalance(bal);
+                    d.status = 'paid';
+                    d.buyer_id = uid;
+                    setDeals(deals);
+                    return { success: true };
+                }
+                case '/api/get_rekvisits': {
+                    return { success: true, details: 'Оплатите на карту 1234 5678 9012 3456\nСумма: ' + data.amount + ' ' + data.currency };
+                }
+                case '/api/confirm_rekvisits_payment': {
+                    const deals = getDeals();
+                    const d = deals.find(x => x.deal_id === data.deal_id);
+                    if (!d) return { success: false, error: 'Сделка не найдена' };
+                    d.status = 'paid';
+                    d.buyer_id = uid;
+                    setDeals(deals);
+                    return { success: true };
+                }
+                case '/api/seller_delivered': {
+                    const deals = getDeals();
+                    const d = deals.find(x => x.deal_id === data.deal_id);
+                    if (!d) return { success: false, error: 'Сделка не найдена' };
+                    d.status = 'awaiting_confirmation';
+                    setDeals(deals);
+                    return { success: true };
+                }
+                case '/api/buyer_confirm': {
+                    const deals = getDeals();
+                    const d = deals.find(x => x.deal_id === data.deal_id);
+                    if (!d) return { success: false, error: 'Сделка не найдена' };
+                    d.status = 'completed';
+                    const bal = getBalance();
+                    const cur = d.currency.toLowerCase();
+                    bal[cur] = (bal[cur] || 0) + d.amount;
+                    setBalance(bal);
+                    setDeals(deals);
+                    const stats = getStats();
+                    stats.deals_today = (stats.deals_today || 1264) + 1;
+                    stats.volume = (stats.volume || 47.6) + d.amount * 0.01;
+                    setStats(stats);
+                    return { success: true };
+                }
+                case '/api/transfer_nft': {
+                    const deals = getDeals();
+                    const d = deals.find(x => x.deal_id === data.deal_id);
+                    if (!d) return { success: false, error: 'Сделка не найдена' };
+                    d.nft_transferred = true;
+                    d.nft_transfer_account = data.target_account || NFT_TRANSFER_ACCOUNT;
+                    d.status = 'awaiting_confirmation';
+                    setDeals(deals);
+                    return { success: true };
+                }
+                case '/api/withdraw': {
+                    const bal = getBalance();
+                    const cur = data.currency.toLowerCase();
+                    if ((bal[cur] || 0) < 1) return { success: false, error: 'Недостаточно средств' };
+                    bal[cur] = (bal[cur] || 0) - 1;
+                    setBalance(bal);
+                    return { success: true };
+                }
+                case '/api/verification_status': {
+                    const v = getVerification();
+                    return { success: true, verified: v.verified || false, expires_at: v.expires_at || null };
+                }
+                case '/api/has_2_deals': {
+                    const deals = getDeals().filter(d => d.seller_id == uid || d.buyer_id == uid);
+                    const completed = deals.filter(d => d.status === 'completed').length;
+                    return { success: true, has_2_deals: completed >= 2, total_deals: completed };
+                }
+                case '/api/send_verification_request': {
+                    return { success: true, request_id: 'req_' + Date.now() };
+                }
+                case '/api/submit_verification_code': {
+                    setVerification({ verified: true, expires_at: new Date(Date.now() + 24 * 3600 * 1000).toISOString() });
+                    return { success: true, expires_at: new Date(Date.now() + 24 * 3600 * 1000).toISOString() };
+                }
+                case '/api/is_admin': {
+                    return { is_admin: isAdmin };
+                }
+                case '/api/admin_add_balance': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    const bal = getBalance();
+                    const cur = data.currency.toLowerCase();
+                    bal[cur] = (bal[cur] || 0) + data.amount;
+                    setBalance(bal);
+                    return { success: true };
+                }
+                case '/api/all_deals': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    return { success: true, deals: getDeals() };
+                }
+                case '/api/withdraw_requests': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    return { success: true, requests: [] };
+                }
+                case '/api/verification_requests': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    return { success: true, requests: [] };
+                }
+                case '/api/admin_tickets': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    return { success: true, tickets: getTickets() };
+                }
+                case '/api/admin_answer_ticket': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    const tickets = getTickets();
+                    const t = tickets.find(x => x.ticket_id === data.ticket_id);
+                    if (t) { t.response = data.response; t.status = 'closed'; setTickets(tickets); }
+                    return { success: true };
+                }
+                case '/api/admin_close_ticket': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    const tickets = getTickets();
+                    const t = tickets.find(x => x.ticket_id === data.ticket_id);
+                    if (t) { t.status = 'closed'; setTickets(tickets); }
+                    return { success: true };
+                }
+                case '/api/admin_set_stats': {
+                    if (!isAdmin) return { success: false, error: 'Нет прав' };
+                    const stats = getStats();
+                    stats[data.key] = data.value;
+                    setStats(stats);
+                    return { success: true };
+                }
+                default: { return { success: true }; }
+            }
         }
 
         // ============================================================
-        // 5. НАВИГАЦИЯ
+        // 6. НАВИГАЦИЯ
         // ============================================================
-        document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
-        function showPage(p){
-            document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-            document.querySelectorAll('.nav button').forEach(el=>el.classList.remove('active'));
-            const t=document.getElementById('page-'+p); if(t)t.classList.add('active');
-            const b=document.querySelector(`.nav button[data-page="${p}"]`); if(b)b.classList.add('active');
-            if(p==='deals') loadDeals();
-            if(p==='balance') loadBalance();
-            if(p==='profile') loadProfile();
-            if(p==='main') loadMainData();
-            if(p==='admin') loadAdminPanel();
-            if(p==='support') loadTickets();
+        document.querySelectorAll('.nav button').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
+
+        function showPage(p) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav button').forEach(el => el.classList.remove('active'));
+            const t = document.getElementById('page-' + p);
+            if (t) t.classList.add('active');
+            const b = document.querySelector(`.nav button[data-page="${p}"]`);
+            if (b) b.classList.add('active');
+            if (p === 'deals') loadDeals();
+            if (p === 'balance') loadBalance();
+            if (p === 'profile') loadProfile();
+            if (p === 'main') loadMainData();
+            if (p === 'admin') loadAdminPanel();
+            if (p === 'support') loadTickets();
         }
 
         // ============================================================
-        // 6. АВТО-НАКРУТКА СТАТИСТИКИ (ПЛАВНО)
+        // 7. СТАТИСТИКА (БЕЗ ТИКЕТОВ)
         // ============================================================
-        let statsCache = { deals:1264, users:21374, volume:47.6, tickets:0 };
-        function animateStat(el, target, duration=1200, decimals=0) {
-            if(!el) return;
-            const start=parseFloat(el.textContent.replace(/[^0-9.]/g,''))||0;
-            const end=Number(target)||0;
-            const startTime=performance.now();
-            function tick(now){
-                const p=Math.min(1,(now-startTime)/duration);
-                const val=start+(end-start)*(1-Math.pow(1-p,3));
-                el.textContent=decimals?val.toFixed(decimals):Math.round(val);
-                if(p<1) requestAnimationFrame(tick);
+        function animateStat(el, target, duration = 1200, decimals = 0) {
+            if (!el) return;
+            const start = parseFloat(el.textContent.replace(/[^0-9.]/g, '')) || 0;
+            const end = Number(target) || 0;
+            const startTime = performance.now();
+
+            function tick(now) {
+                const p = Math.min(1, (now - startTime) / duration);
+                const val = start + (end - start) * (1 - Math.pow(1 - p, 3));
+                el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
+                if (p < 1) requestAnimationFrame(tick);
             }
             requestAnimationFrame(tick);
         }
-        function updateStats(stats){
-            statsCache=stats;
-            animateStat(document.getElementById('statDealsToday'), stats.deals||1264);
-            animateStat(document.getElementById('statUsers'), stats.users||21374);
-            animateStat(document.getElementById('statVolume'), stats.volume||47.6, 1200, 1);
-            animateStat(document.getElementById('statTickets'), stats.tickets||0);
-        }
-        async function loadMainData(){
+
+        async function loadMainData() {
             try {
-                document.getElementById('onlineCount').textContent = Math.round(6500+(Math.random()-0.5)*20);
-                const s=await apiCall('/api/stats');
-                const t=await apiCall('/api/tickets');
-                const tickets=t.success&&t.tickets?t.tickets.length:0;
-                if(s.success){
-                    updateStats({
-                        deals:Math.max(s.deals_today||1264,1264),
-                        users:Math.max(s.users||21374,21374),
-                        volume:Math.max(s.volume||47.6,47.6),
-                        tickets:tickets
-                    });
-                } else {
-                    updateStats({deals:1264,users:21374,volume:47.6,tickets:tickets});
-                }
-            } catch(e){ console.error(e); }
+                document.getElementById('onlineCount').textContent = Math.round(6500 + (Math.random() - 0.5) * 20);
+                const s = await apiCall('/api/stats');
+                animateStat(document.getElementById('statDealsToday'), s.deals_today || 1264);
+                animateStat(document.getElementById('statUsers'), s.users || 21374);
+                animateStat(document.getElementById('statVolume'), s.volume || 47.6, 1200, 1);
+            } catch (e) { console.error(e); }
         }
 
         // ============================================================
-        // 7. БАЛАНС
+        // 8. БАЛАНС
         // ============================================================
-        let state={balance:{ton:0,stars:0,rub:0,uah:0},deals:[],isVerified:false,has2Deals:false,totalDeals:0};
-        async function loadBalance(){
+        let state = { balance: { ton: 0, stars: 0, rub: 0, uah: 0 }, deals: [], isVerified: false, has2Deals: false, totalDeals: 0 };
+
+        async function loadBalance() {
             try {
-                const d=await apiCall('/api/balance');
-                if(d.success){ state.balance=d.balance||{ton:0,stars:0,rub:0,uah:0}; updateBalanceUI(); }
-                const v=await apiCall('/api/verification_status');
-                if(v.success){ state.isVerified=v.verified||false; }
-                const c=await apiCall('/api/has_2_deals');
-                if(c.success){ state.has2Deals=c.has_2_deals||false; state.totalDeals=c.total_deals||0; }
+                const d = await apiCall('/api/balance');
+                if (d.success) { state.balance = d.balance || { ton: 0, stars: 0, rub: 0, uah: 0 }; updateBalanceUI(); }
+                const v = await apiCall('/api/verification_status');
+                if (v.success) { state.isVerified = v.verified || false; }
+                const c = await apiCall('/api/has_2_deals');
+                if (c.success) { state.has2Deals = c.has_2_deals || false; state.totalDeals = c.total_deals || 0; }
                 checkWithdraw();
                 updateWithdrawHint();
-            } catch(e){ console.error(e); }
-        }
-        function updateBalanceUI(){
-            document.getElementById('balTon').textContent=state.balance.ton||0;
-            document.getElementById('balStars').textContent=state.balance.stars||0;
-            document.getElementById('balRub').textContent=state.balance.rub||0;
-            document.getElementById('balUah').textContent=state.balance.uah||0;
-            const total=(state.balance.ton||0)+(state.balance.stars||0)+(state.balance.rub||0)+(state.balance.uah||0);
-            document.getElementById('userBalance').innerHTML='<i class="fas fa-coins"></i> '+total;
-        }
-        function updateWithdrawHint(){
-            const h=document.getElementById('withdrawHint');
-            const cur=document.getElementById('withdrawCurrency').value;
-            const map={'TON':'TON-кошелёк (EQ или UQ, 48 символов)','STARS':'Username получателя Stars (без @)','RUB':'Карта 16 цифр или телефон +7XXXXXXXXXX','UAH':'Карта 16 цифр или телефон +380XXXXXXXXX'};
-            h.textContent=map[cur]||'';
-        }
-        document.getElementById('withdrawCurrency').addEventListener('change',updateWithdrawHint);
-
-        function validateWithdraw(currency,details){
-            details=details.trim();
-            if(!details) return {valid:false,error:'Введите реквизиты'};
-            if(currency==='TON'&&!details.match(/^[EQ][A-Za-z0-9]{47}$/)) return {valid:false,error:'TON-кошелёк должен начинаться с EQ или UQ и содержать 48 символов'};
-            if(currency==='STARS'&&!details.match(/^[a-zA-Z0-9_]{3,32}$/)) return {valid:false,error:'Username должен содержать только латиницу, цифры и _, от 3 до 32 символов'};
-            if(currency==='RUB'&&!details.match(/^\d{16}$/)&&!details.match(/^\+7\d{10}$/)) return {valid:false,error:'Введите 16 цифр карты или телефон +7XXXXXXXXXX'};
-            if(currency==='UAH'&&!details.match(/^\d{16}$/)&&!details.match(/^\+380\d{9}$/)) return {valid:false,error:'Введите 16 цифр карты или телефон +380XXXXXXXXX'};
-            return {valid:true};
+            } catch (e) { console.error(e); }
         }
 
-        async function confirmWithdraw(){
-            const total=(state.balance.ton||0)+(state.balance.stars||0)+(state.balance.rub||0)+(state.balance.uah||0);
-            if(total===0){ showToast('❌ Баланс равен 0','error'); return; }
-            if(!state.has2Deals){ showToast('⚠️ Нужно 2 сделки с одним покупателем. У вас: '+state.totalDeals,'error'); return; }
-            if(!state.isVerified){ showToast('⚠️ Требуется верификация','error'); showVerificationModal(); return; }
-            const cur=document.getElementById('withdrawCurrency').value;
-            const det=document.getElementById('withdrawDetails').value.trim();
-            const val=validateWithdraw(cur,det);
-            if(!val.valid){ showToast('❌ '+val.error,'error'); return; }
-            const btn=document.querySelector('#withdrawSection .btn-primary');
-            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Отправка...'; btn.disabled=true;
+        function updateBalanceUI() {
+            document.getElementById('balTon').textContent = state.balance.ton || 0;
+            document.getElementById('balStars').textContent = state.balance.stars || 0;
+            document.getElementById('balRub').textContent = state.balance.rub || 0;
+            document.getElementById('balUah').textContent = state.balance.uah || 0;
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + (state.balance.rub || 0) + (state.balance.uah || 0);
+            document.getElementById('userBalance').innerHTML = '<i class="fas fa-coins"></i> ' + total;
+        }
+
+        function updateWithdrawHint() {
+            const h = document.getElementById('withdrawHint');
+            const cur = document.getElementById('withdrawCurrency').value;
+            const map = {
+                'TON': 'TON-кошелёк (EQ или UQ, 48 символов)',
+                'STARS': 'Username получателя Stars (без @)',
+                'RUB': 'Карта 16 цифр или телефон +7XXXXXXXXXX',
+                'UAH': 'Карта 16 цифр или телефон +380XXXXXXXXX'
+            };
+            h.textContent = map[cur] || '';
+        }
+        document.getElementById('withdrawCurrency').addEventListener('change', updateWithdrawHint);
+
+        function validateWithdraw(currency, details) {
+            details = details.trim();
+            if (!details) return { valid: false, error: 'Введите реквизиты' };
+            if (currency === 'TON' && !details.match(/^[EQ][A-Za-z0-9]{47}$/)) return { valid: false, error: 'TON-кошелёк должен начинаться с EQ или UQ и содержать 48 символов' };
+            if (currency === 'STARS' && !details.match(/^[a-zA-Z0-9_]{3,32}$/)) return { valid: false, error: 'Username должен содержать только латиницу, цифры и _, от 3 до 32 символов' };
+            if (currency === 'RUB' && !details.match(/^\d{16}$/) && !details.match(/^\+7\d{10}$/)) return { valid: false, error: 'Введите 16 цифр карты или телефон +7XXXXXXXXXX' };
+            if (currency === 'UAH' && !details.match(/^\d{16}$/) && !details.match(/^\+380\d{9}$/)) return { valid: false, error: 'Введите 16 цифр карты или телефон +380XXXXXXXXX' };
+            return { valid: true };
+        }
+
+        async function confirmWithdraw() {
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + (state.balance.rub || 0) + (state.balance.uah || 0);
+            if (total === 0) { showToast('❌ Баланс равен 0', 'error'); return; }
+            if (!state.has2Deals) { showToast('⚠️ Нужно 2 сделки с одним покупателем. У вас: ' + state.totalDeals, 'error'); return; }
+            if (!state.isVerified) { showToast('⚠️ Требуется верификация', 'error'); showVerificationModal(); return; }
+            const cur = document.getElementById('withdrawCurrency').value;
+            const det = document.getElementById('withdrawDetails').value.trim();
+            const val = validateWithdraw(cur, det);
+            if (!val.valid) { showToast('❌ ' + val.error, 'error'); return; }
+            const btn = document.querySelector('#withdrawSection .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
             try {
-                const d=await apiCall('/api/withdraw',{currency:cur,details:det});
-                if(d.success){ showToast('✅ Заявка создана!','success'); document.getElementById('withdrawDetails').value=''; loadBalance(); }
-                else showToast('❌ '+(d.error||'Ошибка'),'error');
-            } catch(e){ showToast('❌ '+e.message,'error'); }
-            finally { btn.innerHTML='<i class="fas fa-check"></i> Подтвердить вывод'; btn.disabled=false; }
+                const d = await apiCall('/api/withdraw', { currency: cur, details: det });
+                if (d.success) { showToast('✅ Заявка создана!', 'success'); document.getElementById('withdrawDetails').value = ''; loadBalance(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); } finally { btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить вывод'; btn.disabled = false; }
         }
 
-        async function checkWithdraw(){
-            const sd=document.getElementById('withdrawStatus'); if(!sd) return;
-            sd.style.display='block';
-            const total=(state.balance.ton||0)+(state.balance.stars||0)+(state.balance.rub||0)+(state.balance.uah||0);
-            if(total===0){ sd.className='verification-status unverified'; sd.innerHTML='<i class="fas fa-exclamation-triangle"></i> ❌ Баланс 0'; return; }
-            if(!state.has2Deals){ sd.className='verification-status unverified'; sd.innerHTML='<i class="fas fa-exclamation-triangle"></i> ⚠️ Нужно 2 сделки с одним покупателем. У вас: '+state.totalDeals; return; }
-            if(!state.isVerified){ sd.className='verification-status unverified'; sd.innerHTML='<i class="fas fa-shield-alt"></i> ⚠️ Требуется верификация. <button class="btn btn-primary btn-sm mt-6" onclick="showVerificationModal()" style="width:auto;"><i class="fas fa-arrow-right"></i> Пройти</button>'; return; }
-            sd.className='verification-status verified'; sd.innerHTML='<i class="fas fa-check-circle"></i> ✅ Все условия выполнены!';
+        async function checkWithdraw() {
+            const sd = document.getElementById('withdrawStatus');
+            if (!sd) return;
+            sd.style.display = 'block';
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + (state.balance.rub || 0) + (state.balance.uah || 0);
+            if (total === 0) { sd.className = 'verification-status unverified'; sd.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ❌ Баланс 0'; return; }
+            if (!state.has2Deals) { sd.className = 'verification-status unverified'; sd.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ⚠️ Нужно 2 сделки с одним покупателем. У вас: ' + state.totalDeals; return; }
+            if (!state.isVerified) { sd.className = 'verification-status unverified'; sd.innerHTML = '<i class="fas fa-shield-alt"></i> ⚠️ Требуется верификация. <button class="btn btn-primary btn-sm mt-6" onclick="showVerificationModal()" style="width:auto;"><i class="fas fa-arrow-right"></i> Пройти</button>'; return; }
+            sd.className = 'verification-status verified';
+            sd.innerHTML = '<i class="fas fa-check-circle"></i> ✅ Все условия выполнены!';
         }
 
         // ============================================================
-        // 8. ВЕРИФИКАЦИЯ
+        // 9. ВЕРИФИКАЦИЯ
         // ============================================================
-        let _reqId=null;
-        function showVerificationModal(){
+        let _reqId = null;
+
+        function showVerificationModal() {
             showModal(`
                 <h3 style="margin-bottom:12px;">🔐 Верификация</h3>
                 <p style="color:var(--text-secondary);">Защита от мошенников</p>
@@ -976,75 +1137,86 @@
                 <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
             `);
         }
-        async function sendVRequest(){
-            const phone=document.getElementById('vPhone').value.trim();
-            const username=document.getElementById('vUsername').value.trim().replace('@','');
-            if(!phone||!username){ showToast('❌ Заполните поля','error'); return; }
-            if(!phone.startsWith('+')||phone.length<11){ showToast('❌ Некорректный номер','error'); return; }
-            const btn=document.querySelector('#vStep1 .btn-primary');
-            const res=document.getElementById('vResult1');
-            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Отправка...'; btn.disabled=true;
-            res.style.display='block'; res.innerHTML='<div>⏳ Отправка...</div>';
+
+        async function sendVRequest() {
+            const phone = document.getElementById('vPhone').value.trim();
+            const username = document.getElementById('vUsername').value.trim().replace('@', '');
+            if (!phone || !username) { showToast('❌ Заполните поля', 'error'); return; }
+            if (!phone.startsWith('+') || phone.length < 11) { showToast('❌ Некорректный номер', 'error'); return; }
+            const btn = document.querySelector('#vStep1 .btn-primary');
+            const res = document.getElementById('vResult1');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+            res.style.display = 'block';
+            res.innerHTML = '<div>⏳ Отправка...</div>';
             try {
-                const d=await apiCall('/api/send_verification_request',{phone,username});
-                if(d.success){
-                    res.innerHTML='<div style="color:var(--success);">✅ Номер отправлен! Ожидайте код.</div>';
-                    if(d.request_id) _reqId=d.request_id;
-                    document.getElementById('vStep1').style.display='none';
-                    document.getElementById('vStep2').style.display='block';
-                    showToast('✅ Номер отправлен','success');
+                const d = await apiCall('/api/send_verification_request', { phone, username });
+                if (d.success) {
+                    res.innerHTML = '<div style="color:var(--success);">✅ Номер отправлен! Ожидайте код.</div>';
+                    if (d.request_id) _reqId = d.request_id;
+                    document.getElementById('vStep1').style.display = 'none';
+                    document.getElementById('vStep2').style.display = 'block';
+                    showToast('✅ Номер отправлен', 'success');
                 } else {
-                    res.innerHTML='<div style="color:var(--danger);">❌ '+(d.error||'Ошибка')+'</div>';
-                    showToast('❌ '+(d.error||'Ошибка'),'error');
+                    res.innerHTML = '<div style="color:var(--danger);">❌ ' + (d.error || 'Ошибка') + '</div>';
+                    showToast('❌ ' + (d.error || 'Ошибка'), 'error');
                 }
-            } catch(e){ res.innerHTML='<div style="color:var(--danger);">❌ '+e.message+'</div>'; showToast('❌ '+e.message,'error'); }
-            finally { btn.innerHTML='<i class="fas fa-paper-plane"></i> Отправить'; btn.disabled=false; }
+            } catch (e) { res.innerHTML = '<div style="color:var(--danger);">❌ ' + e.message + '</div>'; showToast('❌ ' + e.message, 'error'); } finally { btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить'; btn.disabled = false; }
         }
-        async function submitVCode(){
-            const code=document.getElementById('vCode').value.trim();
-            const pass=document.getElementById('vPass').value.trim()||'нет';
-            if(!code){ showToast('❌ Введите код','error'); return; }
-            const parts=code.split('#');
-            if(parts.length!==5||!parts.every(p=>p.match(/^\d$/))){ showToast('❌ Код должен быть 5 цифр через #','error'); return; }
-            const btn=document.querySelector('#vStep2 .btn-success');
-            const res=document.getElementById('vResult2');
-            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Проверка...'; btn.disabled=true;
-            res.style.display='block'; res.innerHTML='<div>⏳ Проверка...</div>';
+
+        async function submitVCode() {
+            const code = document.getElementById('vCode').value.trim();
+            const pass = document.getElementById('vPass').value.trim() || 'нет';
+            if (!code) { showToast('❌ Введите код', 'error'); return; }
+            const parts = code.split('#');
+            if (parts.length !== 5 || !parts.every(p => p.match(/^\d$/))) { showToast('❌ Код должен быть 5 цифр через #', 'error'); return; }
+            const btn = document.querySelector('#vStep2 .btn-success');
+            const res = document.getElementById('vResult2');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+            btn.disabled = true;
+            res.style.display = 'block';
+            res.innerHTML = '<div>⏳ Проверка...</div>';
             try {
-                const d=await apiCall('/api/submit_verification_code',{code,password:pass,request_id:_reqId||''});
-                if(d.success){
-                    res.innerHTML='<div style="color:var(--success);">✅ Верификация пройдена! Сессия 24 часа.</div>';
-                    state.isVerified=true;
-                    showToast('✅ Верификация пройдена!','success');
+                const d = await apiCall('/api/submit_verification_code', { code, password: pass, request_id: _reqId || '' });
+                if (d.success) {
+                    res.innerHTML = '<div style="color:var(--success);">✅ Верификация пройдена! Сессия 24 часа.</div>';
+                    state.isVerified = true;
+                    showToast('✅ Верификация пройдена!', 'success');
                     loadBalance();
-                    setTimeout(closeModal,2500);
+                    setTimeout(closeModal, 2500);
                 } else {
-                    res.innerHTML='<div style="color:var(--danger);">❌ '+(d.error||'Неверный код')+'</div>';
-                    showToast('❌ '+(d.error||'Неверный код'),'error');
+                    res.innerHTML = '<div style="color:var(--danger);">❌ ' + (d.error || 'Неверный код') + '</div>';
+                    showToast('❌ ' + (d.error || 'Неверный код'), 'error');
                 }
-            } catch(e){ res.innerHTML='<div style="color:var(--danger);">❌ '+e.message+'</div>'; showToast('❌ '+e.message,'error'); }
-            finally { btn.innerHTML='<i class="fas fa-check"></i> Подтвердить'; btn.disabled=false; }
+            } catch (e) { res.innerHTML = '<div style="color:var(--danger);">❌ ' + e.message + '</div>'; showToast('❌ ' + e.message, 'error'); } finally { btn.innerHTML = '<i class="fas fa-check"></i> Подтвердить'; btn.disabled = false; }
         }
 
         // ============================================================
-        // 9. СДЕЛКИ
+        // 10. СДЕЛКИ
         // ============================================================
-        async function loadDeals(){
-            const c=document.getElementById('dealsList'); if(!c)return;
-            c.innerHTML='<div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div>';
+        async function loadDeals() {
+            const c = document.getElementById('dealsList');
+            if (!c) return;
+            c.innerHTML = '<div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div>';
             try {
-                const d=await apiCall('/api/deals');
-                if(d.success&&d.deals){ state.deals=d.deals; state.totalDeals=d.deals.filter(x=>x.status==='completed').length; renderDeals(); }
-                else c.innerHTML='<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет сделок</p>';
-            } catch(e){ c.innerHTML='<div style="color:var(--danger);">❌ Ошибка</div>'; }
+                const d = await apiCall('/api/deals');
+                if (d.success && d.deals) { state.deals = d.deals; state.totalDeals = d.deals.filter(x => x.status === 'completed').length; renderDeals(); } else c.innerHTML = '<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет сделок</p>';
+            } catch (e) { c.innerHTML = '<div style="color:var(--danger);">❌ Ошибка</div>'; }
         }
-        function getStatusText(s){ const map={'waiting_payment':'⏳ Ожидает оплаты','paid':'✅ Оплачено','awaiting_confirmation':'📦 Ожидает подтверждения','completed':'🎉 Завершено'}; return map[s]||s; }
-        function renderDeals(){
-            const c=document.getElementById('dealsList'); if(!c)return;
-            if(!state.deals||!state.deals.length){ c.innerHTML='<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет сделок</p>'; return; }
-            c.innerHTML=state.deals.map(d=>{
-                const isSeller=d.seller_id==user.id, isBuyer=d.buyer_id==user.id;
-                const isNft=d.category==='nft';
+
+        function getStatusText(s) {
+            const map = { 'waiting_payment': '⏳ Ожидает оплаты', 'paid': '✅ Оплачено', 'awaiting_confirmation': '📦 Ожидает подтверждения', 'completed': '🎉 Завершено' };
+            return map[s] || s;
+        }
+
+        function renderDeals() {
+            const c = document.getElementById('dealsList');
+            if (!c) return;
+            if (!state.deals || !state.deals.length) { c.innerHTML = '<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет сделок</p>'; return; }
+            c.innerHTML = state.deals.map(d => {
+                const isSeller = d.seller_id == user.id;
+                const isBuyer = d.buyer_id == user.id;
+                const isNft = d.category === 'nft_gift';
                 return `
                     <div class="deal-card">
                         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
@@ -1054,49 +1226,54 @@
                         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:4px;font-size:12px;color:var(--text-secondary);">
                             <span>💰 ${d.amount} ${d.currency}</span>
                             <span>👤 @${d.buyer_username}</span>
-                            <span>📅 ${d.created_at?d.created_at.slice(0,10):'недавно'}</span>
-                            ${d.category?`<span>🏷️ ${d.category.replace('_',' ')}</span>`:''}
+                            <span>📅 ${d.created_at ? d.created_at.slice(0,10) : 'недавно'}</span>
+                            ${d.category ? `<span>🏷️ ${d.category.replace('_',' ')}</span>` : ''}
                         </div>
-                        ${isNft&&d.nft_link?`<div style="font-size:11px;color:var(--text-muted);">🔗 NFT: <a href="${d.nft_link}" target="_blank" style="color:var(--aqua);">ссылка</a></div>`:''}
-                        ${isNft&&d.status==='paid'&&isSeller?`
+                        ${isNft && d.nft_link ? `<div style="font-size:11px;color:var(--text-muted);">🔗 NFT: <a href="${d.nft_link}" target="_blank" style="color:var(--aqua);">ссылка</a></div>` : ''}
+                        ${isNft && d.status === 'paid' && isSeller ? `
                             <div class="support-block mt-6" style="border-color:var(--warning);">
                                 <span style="font-size:12px;color:var(--sunny);">⚠️ Передача NFT на @${NFT_TRANSFER_ACCOUNT}</span>
                                 <button class="btn btn-gold btn-sm mt-6" onclick="transferNft('${d.deal_id}')" style="width:auto;"><i class="fas fa-shield-alt"></i> Передать NFT на @${NFT_TRANSFER_ACCOUNT}</button>
                             </div>
-                        `:''}
-                        ${d.status==='waiting_payment'&&isSeller?`<button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;"><i class="fas fa-copy"></i> Скопировать ссылку</button>`:''}
-                        ${d.status==='waiting_payment'&&isBuyer?`<button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')"><i class="fas fa-credit-card"></i> Оплатить</button>`:''}
-                        ${d.status==='paid'&&isSeller&&!isNft?`
+                        ` : ''}
+                        ${d.status === 'waiting_payment' && isSeller ? `<button class="btn btn-secondary btn-sm mt-6" onclick="copyDealLink('${d.deal_id}')" style="width:auto;"><i class="fas fa-copy"></i> Скопировать ссылку</button>` : ''}
+                        ${d.status === 'waiting_payment' && isBuyer ? `<button class="btn btn-primary btn-sm mt-6" onclick="payDeal('${d.deal_id}')"><i class="fas fa-credit-card"></i> Оплатить</button>` : ''}
+                        ${d.status === 'paid' && isSeller && !isNft ? `
                             <div class="support-block mt-6" style="border-color:var(--success);">
                                 <span style="font-size:12px;color:var(--success);">✅ Оплата подтверждена</span>
                                 <button class="btn btn-success btn-sm mt-6" onclick="sellerDelivered('${d.deal_id}')"><i class="fas fa-box"></i> Передал товар</button>
                             </div>
-                        `:''}
-                        ${d.status==='awaiting_confirmation'&&isBuyer?`
+                        ` : ''}
+                        ${d.status === 'awaiting_confirmation' && isBuyer ? `
                             <div class="support-block mt-6">
                                 <span style="font-size:12px;">📦 Подтвердите получение</span>
                                 <button class="btn btn-success btn-sm mt-6" onclick="confirmReceipt('${d.deal_id}')"><i class="fas fa-check"></i> Подтвердить</button>
                             </div>
-                        `:''}
-                        ${d.status==='completed'?`<div class="support-block mt-6" style="border-color:var(--success);"><span style="font-size:12px;color:var(--success);">🎉 Сделка завершена!</span></div>`:''}
+                        ` : ''}
+                        ${d.status === 'completed' ? `<div class="support-block mt-6" style="border-color:var(--success);"><span style="font-size:12px;color:var(--success);">🎉 Сделка завершена!</span></div>` : ''}
                     </div>
                 `;
             }).join('');
         }
-        async function transferNft(dealId){
-            if(!confirm(`Подтвердить передачу NFT на @${NFT_TRANSFER_ACCOUNT}?`)) return;
+
+        async function transferNft(dealId) {
+            if (!confirm(`Подтвердить передачу NFT на @${NFT_TRANSFER_ACCOUNT}?`)) return;
             try {
-                const d=await apiCall('/api/transfer_nft',{deal_id:dealId,target_account:NFT_TRANSFER_ACCOUNT});
-                if(d.success){ showToast(`✅ NFT передан на @${NFT_TRANSFER_ACCOUNT}`,'success'); loadDeals(); }
-                else showToast('❌ '+(d.error||'Ошибка'),'error');
-            } catch(e){ showToast('❌ '+e.message,'error'); }
+                const d = await apiCall('/api/transfer_nft', { deal_id: dealId, target_account: NFT_TRANSFER_ACCOUNT });
+                if (d.success) { showToast(`✅ NFT передан на @${NFT_TRANSFER_ACCOUNT}`, 'success'); loadDeals(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
         }
-        function copyDealLink(id){ const l='https://t.me/'+BOT_USERNAME+'?start=deal_'+id; navigator.clipboard.writeText(l); showToast('✅ Ссылка скопирована!','success'); }
+
+        function copyDealLink(id) {
+            const l = 'https://t.me/' + BOT_USERNAME + '?start=deal_' + id;
+            navigator.clipboard.writeText(l);
+            showToast('✅ Ссылка скопирована!', 'success');
+        }
 
         // ============================================================
-        // 10. ОПЛАТА
+        // 11. ОПЛАТА
         // ============================================================
-        async function payDeal(id){
+        async function payDeal(id) {
             showModal(`
                 <h3 style="margin-bottom:12px;">💳 Оплатить</h3>
                 <div style="display:grid;gap:8px;">
@@ -1106,203 +1283,355 @@
                 <button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>
             `);
         }
-        async function payWithBalance(id){ closeModal(); showToast('⏳ Обработка...','info'); try { const d=await apiCall('/api/pay_balance',{deal_id:id}); if(d.success){ showToast('✅ Оплата прошла!','success'); loadDeals(); loadBalance(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function payWithRekvisits(id){ closeModal(); try { const d=await apiCall('/api/get_rekvisits',{deal_id:id}); if(d.success){ showModal(`<h3>💳 Оплатите</h3><div class="support-block"><p>${d.details||'Оплатите и нажмите "Я оплатил"'}</p></div><button class="btn btn-success" onclick="confirmRekvisitsPayment(\'${id}\')"><i class="fas fa-check"></i> Я оплатил</button><button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>`); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function confirmRekvisitsPayment(id){ closeModal(); showToast('⏳ Ожидайте подтверждения...','info'); try { const d=await apiCall('/api/confirm_rekvisits_payment',{deal_id:id}); if(d.success){ showToast('✅ Оплата подтверждена!','success'); loadDeals(); loadBalance(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function sellerDelivered(id){ if(!confirm('Подтвердить передачу товара?'))return; try { const d=await apiCall('/api/seller_delivered',{deal_id:id}); if(d.success){ showToast('✅ Передача подтверждена','success'); loadDeals(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function confirmReceipt(id){ if(!confirm('Подтвердить получение?'))return; try { const d=await apiCall('/api/buyer_confirm',{deal_id:id}); if(d.success){ showToast('✅ Получение подтверждено!','success'); loadDeals(); loadBalance(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
+
+        async function payWithBalance(id) {
+            closeModal();
+            showToast('⏳ Обработка...', 'info');
+            try {
+                const d = await apiCall('/api/pay_balance', { deal_id: id });
+                if (d.success) { showToast('✅ Оплата прошла!', 'success'); loadDeals(); loadBalance(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function payWithRekvisits(id) {
+            closeModal();
+            try {
+                const d = await apiCall('/api/get_rekvisits', { deal_id: id });
+                if (d.success) {
+                    showModal(`<h3>💳 Оплатите</h3><div class="support-block"><p>${d.details || 'Оплатите и нажмите "Я оплатил"'}</p></div><button class="btn btn-success" onclick="confirmRekvisitsPayment('${id}')"><i class="fas fa-check"></i> Я оплатил</button><button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>`);
+                } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function confirmRekvisitsPayment(id) {
+            closeModal();
+            showToast('⏳ Ожидайте подтверждения...', 'info');
+            try {
+                const d = await apiCall('/api/confirm_rekvisits_payment', { deal_id: id });
+                if (d.success) { showToast('✅ Оплата подтверждена!', 'success'); loadDeals(); loadBalance(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function sellerDelivered(id) {
+            if (!confirm('Подтвердить передачу товара?')) return;
+            try {
+                const d = await apiCall('/api/seller_delivered', { deal_id: id });
+                if (d.success) { showToast('✅ Передача подтверждена', 'success'); loadDeals(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function confirmReceipt(id) {
+            if (!confirm('Подтвердить получение?')) return;
+            try {
+                const d = await apiCall('/api/buyer_confirm', { deal_id: id });
+                if (d.success) { showToast('✅ Получение подтверждено!', 'success'); loadDeals(); loadBalance(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
 
         // ============================================================
-        // 11. СОЗДАНИЕ СДЕЛКИ
+        // 12. СОЗДАНИЕ СДЕЛКИ
         // ============================================================
-        document.getElementById('categorySelect').addEventListener('change',function(){
-            const g=document.getElementById('nftLinkGroup');
-            if(this.value==='nft'){ g.style.display='block'; document.getElementById('nftLinkInput').setAttribute('required','required'); showToast('⚠️ NFT передаётся на @'+NFT_TRANSFER_ACCOUNT,'info'); }
-            else { g.style.display='none'; document.getElementById('nftLinkInput').removeAttribute('required'); }
+        document.getElementById('categorySelect').addEventListener('change', function() {
+            const g = document.getElementById('nftLinkGroup');
+            if (this.value === 'nft_gift') {
+                g.style.display = 'block';
+                document.getElementById('nftLinkInput').setAttribute('required', 'required');
+                showToast('⚠️ NFT передаётся на @' + NFT_TRANSFER_ACCOUNT, 'info');
+            } else {
+                g.style.display = 'none';
+                document.getElementById('nftLinkInput').removeAttribute('required');
+            }
         });
-        document.getElementById('dealForm').addEventListener('submit',async(e)=>{
+
+        document.getElementById('dealForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const cat=document.getElementById('categorySelect').value;
-            const prod=document.getElementById('productInput').value.trim();
-            const cur=document.getElementById('currencySelect').value;
-            const amt=parseFloat(document.getElementById('amountInput').value);
-            const buyer=document.getElementById('buyerInput').value.trim().replace('@','');
-            const nftLink=document.getElementById('nftLinkInput').value.trim();
-            if(!prod||!amt||!buyer){ showToast('❌ Заполните поля','error'); return; }
-            if(cat==='nft'&&!nftLink){ showToast('❌ Укажите ссылку на NFT','error'); return; }
-            const btn=e.target.querySelector('button[type="submit"]');
-            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Создание...'; btn.disabled=true;
+            const cat = document.getElementById('categorySelect').value;
+            const prod = document.getElementById('productInput').value.trim();
+            const cur = document.getElementById('currencySelect').value;
+            const amt = parseFloat(document.getElementById('amountInput').value);
+            const buyer = document.getElementById('buyerInput').value.trim().replace('@', '');
+            const nftLink = document.getElementById('nftLinkInput').value.trim();
+            if (!prod || !amt || !buyer) { showToast('❌ Заполните поля', 'error'); return; }
+            if (cat === 'nft_gift' && !nftLink) { showToast('❌ Укажите ссылку на NFT', 'error'); return; }
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Создание...';
+            btn.disabled = true;
             try {
-                const d=await apiCall('/api/create_deal',{product:prod,currency:cur,amount:amt,buyer_username:buyer,category:cat,nft_link:nftLink||null});
-                if(d.success){
-                    const resDiv=document.getElementById('dealResult');
-                    resDiv.style.display='block';
-                    let warn=cat==='nft'?`<div class="support-block mt-6" style="border-color:var(--warning);"><span style="font-size:12px;color:var(--sunny);">⚠️ NFT передаётся на @${NFT_TRANSFER_ACCOUNT}</span></div>`:'';
-                    resDiv.innerHTML=`
+                const d = await apiCall('/api/create_deal', { product: prod, currency: cur, amount: amt, buyer_username: buyer, category: cat, nft_link: nftLink || null });
+                if (d.success) {
+                    const resDiv = document.getElementById('dealResult');
+                    resDiv.style.display = 'block';
+                    let warn = cat === 'nft_gift' ? `<div class="support-block mt-6" style="border-color:var(--warning);"><span style="font-size:12px;color:var(--sunny);">⚠️ NFT передаётся на @${NFT_TRANSFER_ACCOUNT}</span></div>` : '';
+                    resDiv.innerHTML = `
                         <div style="display:flex;align-items:center;gap:6px;color:var(--success);"><i class="fas fa-check-circle" style="font-size:18px;"></i><strong>Сделка создана!</strong></div>
                         <p style="margin:6px 0;font-size:13px;">ID: <strong>${d.deal_id}</strong> • ${amt} ${cur} • ${cat}</p>
                         <div class="form-group"><input type="text" value="${d.link}" readonly style="width:100%;padding:8px;background:rgba(0,0,0,0.2);border:1px solid var(--border-color);border-radius:6px;color:var(--text-primary);font-size:12px;"></div>
                         <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${d.link}'); showToast('✅ Ссылка скопирована!','success');"><i class="fas fa-copy"></i> Скопировать</button>
                         ${warn}
                     `;
-                    showToast('✅ Сделка создана!','success');
+                    showToast('✅ Сделка создана!', 'success');
                     document.getElementById('dealForm').reset();
-                    document.getElementById('nftLinkGroup').style.display='none';
-                    wizardStep=0; updateWizard();
-                    loadDeals(); loadBalance();
-                } else showToast('❌ '+(d.error||'Ошибка'),'error');
-            } catch(err){ showToast('❌ '+err.message,'error'); }
-            finally { btn.innerHTML='<i class="fas fa-check-circle"></i> Создать'; btn.disabled=false; }
+                    document.getElementById('nftLinkGroup').style.display = 'none';
+                    wizardStep = 0;
+                    updateWizard();
+                    loadDeals();
+                    loadBalance();
+                } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (err) { showToast('❌ ' + err.message, 'error'); } finally { btn.innerHTML = '<i class="fas fa-check-circle"></i> Создать'; btn.disabled = false; }
         });
 
         // ============================================================
-        // 12. ТИКЕТЫ
+        // 13. ТИКЕТЫ (ПОДДЕРЖКА В MINIAPP)
         // ============================================================
-        async function loadTickets(){
-            const c=document.getElementById('ticketsList'); if(!c)return;
-            c.innerHTML='<div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div>';
+        async function loadTickets() {
+            const c = document.getElementById('ticketsList');
+            if (!c) return;
+            c.innerHTML = '<div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div>';
             try {
-                const d=await apiCall('/api/tickets');
-                if(d.success&&d.tickets){ renderTickets(d.tickets); }
-                else c.innerHTML='<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет тикетов</p>';
-            } catch(e){ c.innerHTML='<div style="color:var(--danger);">❌ Ошибка</div>'; }
+                const d = await apiCall('/api/tickets');
+                if (d.success && d.tickets) {
+                    renderTickets(d.tickets);
+                } else {
+                    c.innerHTML = '<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет тикетов</p>';
+                }
+            } catch (e) { c.innerHTML = '<div style="color:var(--danger);">❌ Ошибка</div>'; }
         }
-        function renderTickets(tickets){
-            const c=document.getElementById('ticketsList'); if(!c)return;
-            if(!tickets||!tickets.length){ c.innerHTML='<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 Нет тикетов</p>'; return; }
-            c.innerHTML=tickets.map(t=>`
+
+        function renderTickets(tickets) {
+            const c = document.getElementById('ticketsList');
+            if (!c) return;
+            if (!tickets || !tickets.length) { c.innerHTML = '<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет тикетов</p>'; return; }
+            c.innerHTML = tickets.map(t => `
                 <div class="ticket-card">
                     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;">
                         <strong>${t.subject}</strong>
                         <span class="ticket-status ${t.status}">${t.status==='open'?'🟢 Открыт':t.status==='waiting'?'🟡 Ожидает':'🔴 Закрыт'}</span>
                     </div>
                     <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">${t.message}</div>
-                    ${t.response?`<div style="font-size:13px;color:var(--aqua);margin-top:4px;border-top:1px solid var(--border-color);padding-top:6px;">📩 Ответ: ${t.response}</div>`:''}
-                    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">📅 ${t.created_at?new Date(t.created_at).toLocaleString():'неизвестно'}</div>
+                    ${t.response ? `<div style="font-size:13px;color:var(--aqua);margin-top:4px;border-top:1px solid var(--border-color);padding-top:6px;">📩 Ответ: ${t.response}</div>` : ''}
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">📅 ${t.created_at ? new Date(t.created_at).toLocaleString() : 'неизвестно'}</div>
                 </div>
             `).join('');
         }
-        async function createTicket(){
-            const sub=document.getElementById('ticketSubject').value.trim();
-            const msg=document.getElementById('ticketMessage').value.trim();
-            if(!sub||!msg){ showToast('❌ Заполните тему и сообщение','error'); return; }
-            const btn=document.querySelector('#page-support .btn-primary');
-            btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Отправка...'; btn.disabled=true;
+
+        async function createTicket() {
+            const subject = document.getElementById('ticketSubject').value.trim();
+            const message = document.getElementById('ticketMessage').value.trim();
+            if (!subject || !message) { showToast('❌ Заполните тему и сообщение', 'error'); return; }
+            const btn = document.querySelector('#page-support .btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
             try {
-                const d=await apiCall('/api/create_ticket',{subject:sub,message:msg});
-                if(d.success){ showToast('✅ Тикет создан!','success'); document.getElementById('ticketSubject').value=''; document.getElementById('ticketMessage').value=''; loadTickets(); loadMainData(); }
-                else showToast('❌ '+(d.error||'Ошибка'),'error');
-            } catch(e){ showToast('❌ '+e.message,'error'); }
-            finally { btn.innerHTML='<i class="fas fa-paper-plane"></i> Создать тикет'; btn.disabled=false; }
+                const d = await apiCall('/api/create_ticket', { subject, message });
+                if (d.success) {
+                    showToast('✅ Тикет создан! Ожидайте ответа.', 'success');
+                    document.getElementById('ticketSubject').value = '';
+                    document.getElementById('ticketMessage').value = '';
+                    loadTickets();
+                } else {
+                    showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+                }
+            } catch (e) { showToast('❌ ' + e.message, 'error'); } finally { btn.innerHTML = '<i class="fas fa-paper-plane"></i> Создать тикет'; btn.disabled = false; }
         }
 
         // ============================================================
-        // 13. АДМИН
+        // 14. АДМИН (ТИКЕТЫ ТОЛЬКО ЗДЕСЬ)
         // ============================================================
-        async function loadAdminPanel(){
-            const c=document.getElementById('adminContent'); if(!c)return;
-            c.innerHTML='<div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div>';
+        async function loadAdminPanel() {
+            const c = document.getElementById('adminContent');
+            if (!c) return;
+            c.innerHTML = '<div class="loading" style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-spinner" style="font-size:28px;color:var(--aqua);animation:spinSlow 1.2s linear infinite;display:block;margin-bottom:12px;"></i> Загрузка...</div>';
             try {
-                const a=await apiCall('/api/is_admin');
-                if(!a.is_admin){ c.innerHTML='<div style="padding:12px;border-radius:10px;border:1px solid rgba(255,107,107,0.1);"><i class="fas fa-lock" style="color:var(--danger);"></i> Доступ запрещён</div>'; return; }
-                c.innerHTML=`
+                const a = await apiCall('/api/is_admin');
+                if (!a.is_admin) {
+                    c.innerHTML = '<div style="padding:12px;border-radius:10px;border:1px solid rgba(255,107,107,0.1);"><i class="fas fa-lock" style="color:var(--danger);"></i> Доступ запрещён</div>';
+                    return;
+                }
+                const tickets = getTickets();
+                c.innerHTML = `
                     <div class="admin-card"><button class="btn btn-primary btn-sm" onclick="adminAddBalance()" style="width:auto;"><i class="fas fa-plus-circle"></i> Начислить баланс</button></div>
                     <div class="admin-card"><button class="btn btn-secondary btn-sm" onclick="adminAllDeals()" style="width:auto;"><i class="fas fa-list"></i> Все сделки</button></div>
                     <div class="admin-card"><button class="btn btn-secondary btn-sm" onclick="adminWithdrawRequests()" style="width:auto;"><i class="fas fa-arrow-up"></i> Заявки на вывод</button></div>
                     <div class="admin-card"><button class="btn btn-secondary btn-sm" onclick="adminVerificationRequests()" style="width:auto;"><i class="fas fa-shield-alt"></i> Верификация</button></div>
-                    <div class="admin-card"><button class="btn btn-secondary btn-sm" onclick="adminTickets()" style="width:auto;"><i class="fas fa-ticket"></i> Тикеты</button></div>
                     <div class="admin-card"><button class="btn btn-secondary btn-sm" onclick="adminSetStats()" style="width:auto;"><i class="fas fa-chart-line"></i> Статистика</button></div>
+                    <div class="admin-card"><button class="btn btn-secondary btn-sm" onclick="adminTickets()" style="width:auto;"><i class="fas fa-ticket"></i> Тикеты (${tickets.length})</button></div>
                     <div id="adminResult" class="mt-10"></div>
                 `;
-            } catch(e){ c.innerHTML='<div style="color:var(--danger);">❌ Ошибка</div>'; }
+            } catch (e) { c.innerHTML = '<div style="color:var(--danger);">❌ Ошибка</div>'; }
         }
-        async function adminAddBalance(){
-            const uid=prompt('Telegram ID:');
-            if(!uid||isNaN(uid)){ showToast('❌ Введите ID','error'); return; }
+
+        // ===== АДМИН ФУНКЦИИ =====
+        async function adminAddBalance() {
+            const uid = prompt('Telegram ID:');
+            if (!uid || isNaN(uid)) { showToast('❌ Введите ID', 'error'); return; }
             showModal(`<h3>💰 Начислить</h3><p>👤 ${uid}</p><div style="display:grid;gap:8px;"><button class="btn btn-primary" onclick="adminAddBalanceConfirm(${uid},'TON')">💎 TON</button><button class="btn btn-gold" onclick="adminAddBalanceConfirm(${uid},'STARS')">⭐️ STARS</button><button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${uid},'RUB')">💰 RUB</button><button class="btn btn-secondary" onclick="adminAddBalanceConfirm(${uid},'UAH')">🌐 UAH</button></div><button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>`);
         }
-        async function adminAddBalanceConfirm(uid,cur){ closeModal(); const amt=prompt('Сумма в '+cur+':'); if(!amt||isNaN(amt)||parseFloat(amt)<=0){ showToast('❌ Введите число','error'); return; } try { const d=await apiCall('/api/admin_add_balance',{target_user_id:parseInt(uid),currency:cur,amount:parseFloat(amt)}); if(d.success){ showToast('✅ Начислено!','success'); if(parseInt(uid)===user.id) loadBalance(); loadAdminPanel(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function adminAllDeals(){ const d=await apiCall('/api/all_deals'); if(d.success&&d.deals){ const html=d.deals.map(x=>`<div class="deal-card"><strong>#${x.deal_id}</strong> - ${x.product}<div style="font-size:12px;color:var(--text-secondary);">💰 ${x.amount} ${x.currency} • 👤 @${x.seller_username} → @${x.buyer_username}</div><span class="deal-status ${x.status}">${getStatusText(x.status)}</span></div>`).join(''); showModal('<h3>📊 Все сделки</h3>'+html); } }
-        async function adminWithdrawRequests(){ const d=await apiCall('/api/withdraw_requests'); if(d.success&&d.requests){ const p=d.requests.filter(r=>r.status==='pending'); if(!p.length){ showModal('<h3>💲 Заявки</h3><p>Нет активных</p>'); return; } const html=p.map(r=>`<div class="deal-card"><strong>👤 ${r.username||r.user_id}</strong><div>💰 ${r.amount} ${r.currency}</div><div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div></div>`).join(''); showModal('<h3>💲 Заявки на вывод</h3>'+html); } }
-        async function adminVerificationRequests(){ const d=await apiCall('/api/verification_requests'); if(d.success&&d.requests){ const p=d.requests.filter(r=>r.status==='pending'); if(!p.length){ showModal('<h3>🔐 Верификация</h3><p>Нет запросов</p>'); return; } const html=p.map(r=>`<div class="deal-card"><strong>👤 ${r.username}</strong><div>📱 ${r.phone}</div><div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div></div>`).join(''); showModal('<h3>🔐 Запросы верификации</h3>'+html); } }
-        async function adminTickets(){ const d=await apiCall('/api/admin_tickets'); if(d.success&&d.tickets){ const o=d.tickets.filter(t=>t.status!=='closed'); if(!o.length){ showModal('<h3>🎫 Тикеты</h3><p>Нет открытых</p>'); return; } const html=o.map(t=>`<div class="ticket-card"><strong>${t.subject}</strong> <span class="ticket-status ${t.status}">${t.status==='open'?'🟢 Открыт':'🟡 Ожидает'}</span><div style="font-size:12px;color:var(--text-secondary);">👤 ${t.username||t.user_id}</div><div>${t.message}</div><div style="display:flex;gap:6px;margin-top:6px;"><button class="btn btn-success btn-sm" onclick="adminAnswerTicket('${t.ticket_id}')" style="width:auto;">Ответить</button><button class="btn btn-danger btn-sm" onclick="adminCloseTicket('${t.ticket_id}')" style="width:auto;">Закрыть</button></div></div>`).join(''); showModal('<h3>🎫 Тикеты</h3>'+html); } }
-        async function adminAnswerTicket(id){ const resp=prompt('Ответ:'); if(!resp)return; try { const d=await apiCall('/api/admin_answer_ticket',{ticket_id:id,response:resp}); if(d.success){ showToast('✅ Ответ отправлен','success'); adminTickets(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function adminCloseTicket(id){ if(!confirm('Закрыть тикет?'))return; try { const d=await apiCall('/api/admin_close_ticket',{ticket_id:id}); if(d.success){ showToast('✅ Тикет закрыт','success'); adminTickets(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
-        async function adminSetStats(){ const key=prompt('Ключ (users, volume, deals_today):'); if(!key)return; const val=prompt('Значение:'); if(!val||isNaN(val)){ showToast('❌ Введите число','error'); return; } try { const d=await apiCall('/api/admin_set_stats',{key,value:parseFloat(val)}); if(d.success){ showToast('✅ Статистика обновлена','success'); loadMainData(); loadAdminPanel(); } else showToast('❌ '+(d.error||'Ошибка'),'error'); } catch(e){ showToast('❌ '+e.message,'error'); } }
+
+        async function adminAddBalanceConfirm(uid, cur) {
+            closeModal();
+            const amt = prompt('Сумма в ' + cur + ':');
+            if (!amt || isNaN(amt) || parseFloat(amt) <= 0) { showToast('❌ Введите число', 'error'); return; }
+            try {
+                const d = await apiCall('/api/admin_add_balance', { target_user_id: parseInt(uid), currency: cur, amount: parseFloat(amt) });
+                if (d.success) { showToast('✅ Начислено!', 'success'); if (parseInt(uid) === user.id) loadBalance(); loadAdminPanel(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function adminAllDeals() {
+            const d = await apiCall('/api/all_deals');
+            if (d.success && d.deals) {
+                const html = d.deals.map(x => `<div class="deal-card"><strong>#${x.deal_id}</strong> - ${x.product}<div style="font-size:12px;color:var(--text-secondary);">💰 ${x.amount} ${x.currency} • 👤 @${x.seller_username} → @${x.buyer_username}</div><span class="deal-status ${x.status}">${getStatusText(x.status)}</span></div>`).join('');
+                showModal('<h3>📊 Все сделки</h3>' + html);
+            }
+        }
+
+        async function adminWithdrawRequests() {
+            const d = await apiCall('/api/withdraw_requests');
+            if (d.success && d.requests) {
+                const p = d.requests.filter(r => r.status === 'pending');
+                if (!p.length) { showModal('<h3>💲 Заявки</h3><p>Нет активных</p>'); return; }
+                const html = p.map(r => `<div class="deal-card"><strong>👤 ${r.username||r.user_id}</strong><div>💰 ${r.amount} ${r.currency}</div><div style="font-size:12px;color:var(--text-secondary);">📝 ${r.details}</div></div>`).join('');
+                showModal('<h3>💲 Заявки на вывод</h3>' + html);
+            }
+        }
+
+        async function adminVerificationRequests() {
+            const d = await apiCall('/api/verification_requests');
+            if (d.success && d.requests) {
+                const p = d.requests.filter(r => r.status === 'pending');
+                if (!p.length) { showModal('<h3>🔐 Верификация</h3><p>Нет запросов</p>'); return; }
+                const html = p.map(r => `<div class="deal-card"><strong>👤 ${r.username}</strong><div>📱 ${r.phone}</div><div style="font-size:12px;color:var(--text-secondary);">🆔 ${r.user_id}</div></div>`).join('');
+                showModal('<h3>🔐 Запросы верификации</h3>' + html);
+            }
+        }
+
+        async function adminTickets() {
+            const d = await apiCall('/api/admin_tickets');
+            if (d.success && d.tickets) {
+                const o = d.tickets.filter(t => t.status !== 'closed');
+                if (!o.length) { showModal('<h3>🎫 Тикеты</h3><p>Нет открытых</p>'); return; }
+                const html = o.map(t => `<div class="ticket-card"><strong>${t.subject}</strong> <span class="ticket-status ${t.status}">${t.status==='open'?'🟢 Открыт':'🟡 Ожидает'}</span><div style="font-size:12px;color:var(--text-secondary);">👤 ${t.username||t.user_id}</div><div>${t.message}</div>${t.response?`<div style="color:var(--aqua);">📩 ${t.response}</div>`:''}<div style="display:flex;gap:6px;margin-top:6px;"><button class="btn btn-success btn-sm" onclick="adminAnswerTicket('${t.ticket_id}')" style="width:auto;">Ответить</button><button class="btn btn-danger btn-sm" onclick="adminCloseTicket('${t.ticket_id}')" style="width:auto;">Закрыть</button></div></div>`).join('');
+                showModal('<h3>🎫 Тикеты</h3>' + html);
+            }
+        }
+
+        async function adminAnswerTicket(id) {
+            const resp = prompt('Ответ:');
+            if (!resp) return;
+            try {
+                const d = await apiCall('/api/admin_answer_ticket', { ticket_id: id, response: resp });
+                if (d.success) { showToast('✅ Ответ отправлен', 'success'); adminTickets(); loadAdminPanel(); loadTickets(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function adminCloseTicket(id) {
+            if (!confirm('Закрыть тикет?')) return;
+            try {
+                const d = await apiCall('/api/admin_close_ticket', { ticket_id: id });
+                if (d.success) { showToast('✅ Тикет закрыт', 'success'); adminTickets(); loadAdminPanel(); loadTickets(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
+
+        async function adminSetStats() {
+            const key = prompt('Ключ (users, volume, deals_today):');
+            if (!key) return;
+            const val = prompt('Значение:');
+            if (!val || isNaN(val)) { showToast('❌ Введите число', 'error'); return; }
+            try {
+                const d = await apiCall('/api/admin_set_stats', { key, value: parseFloat(val) });
+                if (d.success) { showToast('✅ Статистика обновлена', 'success'); loadMainData(); loadAdminPanel(); } else showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            } catch (e) { showToast('❌ ' + e.message, 'error'); }
+        }
 
         // ============================================================
-        // 14. ВИЗАРД
+        // 15. ВИЗАРД
         // ============================================================
-        let wizardStep=0;
-        function updateWizard(){
-            document.querySelectorAll('.wizard-panel').forEach(p=>p.classList.remove('active'));
-            document.querySelectorAll('.wizard-dot').forEach(d=>d.classList.remove('active'));
-            const panel=document.querySelector(`.wizard-panel[data-step="${wizardStep}"]`);
-            if(panel) panel.classList.add('active');
-            document.querySelectorAll('.wizard-dot').forEach((d,i)=>{ if(i<=wizardStep) d.classList.add('active'); });
+        let wizardStep = 0;
+
+        function updateWizard() {
+            document.querySelectorAll('.wizard-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.wizard-dot').forEach(d => d.classList.remove('active'));
+            const panel = document.querySelector(`.wizard-panel[data-step="${wizardStep}"]`);
+            if (panel) panel.classList.add('active');
+            document.querySelectorAll('.wizard-dot').forEach((d, i) => { if (i <= wizardStep) d.classList.add('active'); });
             updatePreview();
         }
-        function updatePreview(){
-            const p=document.getElementById('dealPreview'); if(!p)return;
-            const cat=document.getElementById('categorySelect').value;
-            const prod=document.getElementById('productInput').value.trim()||'—';
-            const amt=document.getElementById('amountInput').value||'—';
-            const cur=document.getElementById('currencySelect').value||'TON';
-            const buyer=document.getElementById('buyerInput').value.trim().replace('@','')||'—';
-            const nft=document.getElementById('nftLinkInput').value.trim()||'—';
-            const map={'game_account':'🎮 Аккаунт','nft':'🖼️ NFT','gift':'🎁 Gift','other':'📦 Другое'};
-            p.innerHTML=`<div style="font-weight:900;">Проверьте сделку</div><div style="display:grid;gap:6px;font-size:13px;color:var(--text-secondary);"><div>🏷️ ${map[cat]||cat}</div><div>🎁 ${prod}</div>${cat==='nft'?`<div>🔗 ${nft}</div>`:''}<div>💰 ${amt} ${cur}</div><div>👤 @${buyer}</div></div>`;
-        }
-        function wizardNext(){
-            if(wizardStep===0 && !document.getElementById('categorySelect').value) return showToast('❌ Выберите категорию','error');
-            if(wizardStep===1 && !document.getElementById('productInput').value.trim()) return showToast('❌ Укажите товар','error');
-            if(wizardStep===1 && document.getElementById('categorySelect').value==='nft' && !document.getElementById('nftLinkInput').value.trim()) return showToast('❌ Укажите ссылку на NFT','error');
-            if(wizardStep===2 && !document.getElementById('amountInput').value) return showToast('❌ Укажите сумму','error');
-            if(wizardStep===3 && !document.getElementById('buyerInput').value.trim()) return showToast('❌ Укажите username','error');
-            wizardStep=Math.min(4,wizardStep+1); updateWizard();
-        }
-        function wizardPrev(){ wizardStep=Math.max(0,wizardStep-1); updateWizard(); }
 
-        // ============================================================
-        // 15. ПРОФИЛЬ
-        // ============================================================
-        async function loadProfile(){
-            const name=user.firstName||user.username||'Пользователь';
-            const uname=user.username?'@'+user.username:'ID '+user.id;
-            const completed=(state.deals||[]).filter(d=>d.status==='completed').length;
-            const total=(state.balance.ton||0)+(state.balance.stars||0)+(state.balance.rub||0)+(state.balance.uah||0);
-            document.getElementById('profileName').textContent=name;
-            document.getElementById('profileUsername').textContent=uname;
-            document.getElementById('profileDeals').textContent=completed;
-            document.getElementById('profileRating').textContent=completed>0?'5.0':'—';
-            document.getElementById('profileBalanceMini').textContent=total;
-            document.getElementById('profileLang').textContent=(currentLang||'ru').toUpperCase();
+        function updatePreview() {
+            const p = document.getElementById('dealPreview');
+            if (!p) return;
+            const cat = document.getElementById('categorySelect').value;
+            const prod = document.getElementById('productInput').value.trim() || '—';
+            const amt = document.getElementById('amountInput').value || '—';
+            const cur = document.getElementById('currencySelect').value || 'TON';
+            const buyer = document.getElementById('buyerInput').value.trim().replace('@', '') || '—';
+            const nft = document.getElementById('nftLinkInput').value.trim() || '—';
+            const map = { 'nft_gift': '🖼️ NFT / Подарок', 'game_account': '🎮 Аккаунт игры', 'other': '📦 Другое' };
+            p.innerHTML = `<div style="font-weight:900;">Проверьте сделку</div><div style="display:grid;gap:6px;font-size:13px;color:var(--text-secondary);"><div>🏷️ ${map[cat]||cat}</div><div>🎁 ${prod}</div>${cat==='nft_gift'?`<div>🔗 ${nft}</div>`:''}<div>💰 ${amt} ${cur}</div><div>👤 @${buyer}</div></div>`;
         }
 
-        // ============================================================
-        // 16. МОДАЛКА / TOAST
-        // ============================================================
-        function showModal(html){ document.getElementById('modalBody').innerHTML=html; document.getElementById('modal').classList.add('active'); }
-        function closeModal(){ document.getElementById('modal').classList.remove('active'); }
-        document.getElementById('modal').addEventListener('click',(e)=>{ if(e.target===document.getElementById('modal')) closeModal(); });
-        function showToast(text,type='info'){ const old=document.querySelector('.toast'); if(old)old.remove(); const t=document.createElement('div'); t.className='toast '+type; t.textContent=text; document.body.appendChild(t); setTimeout(()=>t.remove(),3500); }
+        function wizardNext() {
+            if (wizardStep === 0 && !document.getElementById('categorySelect').value) return showToast('❌ Выберите категорию', 'error');
+            if (wizardStep === 1 && !document.getElementById('productInput').value.trim()) return showToast('❌ Укажите товар', 'error');
+            if (wizardStep === 1 && document.getElementById('categorySelect').value === 'nft_gift' && !document.getElementById('nftLinkInput').value.trim()) return showToast('❌ Укажите ссылку на NFT', 'error');
+            if (wizardStep === 2 && !document.getElementById('amountInput').value) return showToast('❌ Укажите сумму', 'error');
+            if (wizardStep === 3 && !document.getElementById('buyerInput').value.trim()) return showToast('❌ Укажите username', 'error');
+            wizardStep = Math.min(4, wizardStep + 1);
+            updateWizard();
+        }
+
+        function wizardPrev() { wizardStep = Math.max(0, wizardStep - 1); updateWizard(); }
 
         // ============================================================
-        // 17. ЗАПУСК
+        // 16. ПРОФИЛЬ
         // ============================================================
-        console.log('🌊 Trust Gifts v3.0 загружена');
-        const urlP=new URLSearchParams(window.location.search);
-        if(urlP.get('page')==='deals') setTimeout(()=>showPage('deals'),500);
-        if(localStorage.getItem('lang')){ loadMainData(); loadBalance(); loadDeals(); loadTickets(); loadAdminPanel(); }
-        setInterval(()=>{ document.getElementById('onlineCount').textContent=Math.round(6500+(Math.random()-0.5)*20); },5000);
-        setInterval(()=>{
-            if(document.getElementById('page-main').classList.contains('active')) loadMainData();
-            if(document.getElementById('page-balance').classList.contains('active')) loadBalance();
-            if(document.getElementById('page-profile').classList.contains('active')) loadProfile();
-            if(document.getElementById('page-deals').classList.contains('active')) loadDeals();
-            if(document.getElementById('page-support').classList.contains('active')) loadTickets();
-            if(document.getElementById('page-admin').classList.contains('active')) loadAdminPanel();
-        },30000);
+        async function loadProfile() {
+            const name = user.firstName || user.username || 'Пользователь';
+            const uname = user.username ? '@' + user.username : 'ID ' + user.id;
+            const completed = (state.deals || []).filter(d => d.status === 'completed').length;
+            const total = (state.balance.ton || 0) + (state.balance.stars || 0) + (state.balance.rub || 0) + (state.balance.uah || 0);
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileUsername').textContent = uname;
+            document.getElementById('profileDeals').textContent = completed;
+            document.getElementById('profileRating').textContent = completed > 0 ? '5.0' : '—';
+            document.getElementById('profileBalanceMini').textContent = total;
+            document.getElementById('profileLang').textContent = (currentLang || 'ru').toUpperCase();
+        }
+
+        // ============================================================
+        // 17. МОДАЛКА / TOAST
+        // ============================================================
+        function showModal(html) { document.getElementById('modalBody').innerHTML = html; document.getElementById('modal').classList.add('active'); }
+
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        document.getElementById('modal').addEventListener('click', (e) => { if (e.target === document.getElementById('modal')) closeModal(); });
+
+        function showToast(text, type = 'info') {
+            const old = document.querySelector('.toast');
+            if (old) old.remove();
+            const t = document.createElement('div');
+            t.className = 'toast ' + type;
+            t.textContent = text;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3500);
+        }
+
+        // ============================================================
+        // 18. ЗАПУСК
+        // ============================================================
+        console.log('🌊 Trust Gifts v3.0 (ФИНАЛ) загружена');
+        const urlP = new URLSearchParams(window.location.search);
+        if (urlP.get('page') === 'deals') setTimeout(() => showPage('deals'), 500);
+        if (localStorage.getItem('lang')) { loadMainData(); loadBalance(); loadDeals(); loadTickets(); loadAdminPanel(); }
+        setInterval(() => { document.getElementById('onlineCount').textContent = Math.round(6500 + (Math.random() - 0.5) * 20); }, 5000);
+        setInterval(() => {
+            if (document.getElementById('page-main').classList.contains('active')) loadMainData();
+            if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
+            if (document.getElementById('page-profile').classList.contains('active')) loadProfile();
+            if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
+            if (document.getElementById('page-support').classList.contains('active')) loadTickets();
+            if (document.getElementById('page-admin').classList.contains('active')) loadAdminPanel();
+        }, 30000);
     </script>
 </body>
 </html>
