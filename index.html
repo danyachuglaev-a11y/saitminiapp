@@ -368,7 +368,6 @@
             cursor: pointer;
             font-size: 13px;
         }
-        /* scrollbar */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
@@ -379,6 +378,68 @@
             .admin-stat-grid { grid-template-columns: 1fr 1fr; }
         }
         #adminNavBtn { display: none; }
+
+        /* Стили для модалки верификации */
+        .verify-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .verify-modal-box {
+            background: var(--tg-theme-bg-color, #1a1a2e);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+        }
+        .verify-modal-box h3 {
+            margin-bottom: 12px;
+        }
+        .verify-modal-box p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .verify-modal-box input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            background: rgba(0,0,0,0.2);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+        }
+        .verify-modal-box .btn-verify {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: #6c5ce7;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        .verify-modal-box .btn-cancel {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -470,7 +531,7 @@
                     </div>
                 </div>
 
-                <!-- Шаг 3: NFT ссылка (если выбрано) -->
+                <!-- Шаг 3: NFT ссылка -->
                 <div class="wizard-panel" data-step="2">
                     <div id="nftLinkGroup">
                         <div class="form-group">
@@ -533,9 +594,10 @@
                 <div class="stat-card"><div class="num" id="balRub">0</div><div class="label">💰 RUB</div></div>
                 <div class="stat-card"><div class="num" id="balUah">0</div><div class="label">🌐 UAH</div></div>
             </div>
+            <!-- КНОПКА ВЫВОДА (ДОБАВЛЕНА) -->
             <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="btn btn-secondary btn-sm" onclick="showVerificationModal()"><i class="fas fa-shield-alt"></i> Верификация</button>
-                <button class="btn btn-secondary btn-sm" onclick="showModalWithdraw()"><i class="fas fa-arrow-up"></i> Вывод</button>
+                <button class="btn btn-secondary btn-sm" onclick="showWithdrawModal()"><i class="fas fa-arrow-up"></i> Вывод</button>
             </div>
         </div>
         <div class="card">
@@ -604,7 +666,6 @@
     <!-- TOAST -->
     <div id="toastContainer"></div>
 
-    <!-- FONTAWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <script>
@@ -1021,6 +1082,8 @@
         if (d.success && d.deals) {
             dealsState = d.deals;
             renderDeals(container);
+            // Проверяем верификацию после загрузки сделок
+            checkVerificationAfterDeals();
         } else {
             container.innerHTML = '<p class="text-muted text-center" style="padding:15px;">📭 У вас нет сделок</p>';
         }
@@ -1723,49 +1786,101 @@
     }
 
     // ============================================================
-    // 17. ВЕРИФИКАЦИЯ (после 2 сделок)
+    // 17. ⭐ НОВЫЕ ФУНКЦИИ (ВЕРИФИКАЦИЯ ПОСЛЕ 2 СДЕЛОК + ВЫВОД)
     // ============================================================
-    function showVerificationModal() {
-        const completedDeals = dealsState.filter(d => d.status === 'completed').length;
-        if (completedDeals < 2) {
-            showToast('⚠️ Нужно завершить 2 сделки для верификации', 'info');
-            return;
+
+    // Проверка верификации после загрузки сделок
+    function checkVerificationAfterDeals() {
+        const completed = dealsState.filter(d => d.status === 'completed').length;
+        if (completed >= 2) {
+            const verified = localStorage.getItem('verified_' + user.id);
+            if (!verified) {
+                // Показываем модалку верификации автоматически
+                setTimeout(showVerificationModal, 1000);
+            }
         }
-        showModal(
-            '<h3 style="margin-bottom:12px;">🔐 Верификация</h3>' +
-            '<p style="color:var(--text-secondary);margin-bottom:12px;">Вы завершили 2 сделки. Пройдите верификацию для повышения лимитов.</p>' +
-            '<div class="form-group"><label>📱 Номер телефона</label><input type="text" id="verifyPhone" placeholder="+79001234567"></div>' +
-            '<div class="form-group"><label>👤 Ваш Telegram ID</label><input type="text" id="verifyId" value="' + user
-            .id + '" readonly style="background:rgba(0,0,0,0.3);"></div>' +
-            '<button class="btn btn-primary" onclick="submitVerification()"><i class="fas fa-check"></i> Пройти верификацию</button>' +
-            '<button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>'
-        );
     }
 
+    // Модалка верификации (всплывает сама)
+    function showVerificationModal() {
+        // Проверяем, не открыта ли уже
+        if (document.querySelector('.verify-modal-overlay')) return;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'verify-modal-overlay';
+        overlay.innerHTML = `
+            <div class="verify-modal-box">
+                <h3>🔐 Верификация</h3>
+                <p>Вы завершили 2 сделки! Пройдите верификацию для повышения лимитов.</p>
+                <input type="text" id="verifyPhoneInput" placeholder="📱 Введите номер телефона">
+                <button class="btn-verify" onclick="submitVerification()">✅ Пройти верификацию</button>
+                <button class="btn-cancel" onclick="closeVerificationModal()">Отмена</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    // Отправка верификации
     function submitVerification() {
-        const phone = document.getElementById('verifyPhone').value.trim();
+        const phone = document.getElementById('verifyPhoneInput').value.trim();
         if (!phone || phone.length < 10) {
             showToast('❌ Введите корректный номер', 'error');
             return;
         }
+        localStorage.setItem('verified_' + user.id, 'true');
+        closeVerificationModal();
         showToast('✅ Верификация пройдена! Лимиты повышены.', 'success');
-        closeModal();
     }
 
-    // ============================================================
-    // 18. ВЫВОД
-    // ============================================================
-    function showModalWithdraw() {
-        showModal(
-            '<h3 style="margin-bottom:12px;">💸 Вывод средств</h3>' +
-            '<div class="form-group"><label>Валюта</label><select id="withdrawCurrency"><option value="TON">💎 TON</option><option value="STARS">⭐️ STARS</option><option value="RUB">💰 RUB</option><option value="UAH">🌐 UAH</option></select></div>' +
-            '<div class="form-group"><label>Сумма</label><input type="number" id="withdrawAmount" placeholder="Минимум 1"></div>' +
-            '<div class="form-group"><label>Адрес / Реквизиты</label><input type="text" id="withdrawAddress" placeholder="Введите адрес"></div>' +
-            '<button class="btn btn-success" onclick="submitWithdraw()"><i class="fas fa-arrow-up"></i> Вывести</button>' +
-            '<button class="btn btn-secondary mt-10" onclick="closeModal()">Отмена</button>'
-        );
+    // Закрыть модалку верификации
+    function closeVerificationModal() {
+        const overlay = document.querySelector('.verify-modal-overlay');
+        if (overlay) overlay.remove();
     }
 
+    // Проверка верификации (для вывода)
+    function isVerified() {
+        return localStorage.getItem('verified_' + user.id) === 'true';
+    }
+
+    // Модалка вывода (кнопка на странице баланса)
+    function showWithdrawModal() {
+        // Проверяем верификацию
+        if (!isVerified()) {
+            const completed = dealsState.filter(d => d.status === 'completed').length;
+            if (completed < 2) {
+                showToast('⚠️ Нужно завершить 2 сделки и пройти верификацию', 'error');
+                return;
+            }
+            showToast('⚠️ Сначала пройдите верификацию', 'error');
+            return;
+        }
+
+        showModal(`
+            <h3 style="margin-bottom:12px;">💸 Вывод средств</h3>
+            <div class="form-group">
+                <label>Валюта</label>
+                <select id="withdrawCurrency" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(0,0,0,0.2);color:var(--text-primary);font-size:14px;font-family:inherit;outline:none;">
+                    <option value="TON">💎 TON</option>
+                    <option value="STARS">⭐️ STARS</option>
+                    <option value="RUB">💰 RUB</option>
+                    <option value="UAH">🌐 UAH</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Сумма</label>
+                <input type="number" id="withdrawAmount" placeholder="Минимум 1" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(0,0,0,0.2);color:var(--text-primary);font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <div class="form-group">
+                <label>Адрес / Реквизиты</label>
+                <input type="text" id="withdrawAddress" placeholder="Введите адрес" style="width:100%;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border-color);background:rgba(0,0,0,0.2);color:var(--text-primary);font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <button class="btn btn-success" onclick="submitWithdraw()" style="width:100%;"><i class="fas fa-arrow-up"></i> Вывести</button>
+            <button class="btn btn-secondary mt-10" onclick="closeModal()" style="width:100%;">Отмена</button>
+        `);
+    }
+
+    // Отправка вывода
     async function submitWithdraw() {
         const currency = document.getElementById('withdrawCurrency').value;
         const amount = parseFloat(document.getElementById('withdrawAmount').value);
@@ -1779,11 +1894,13 @@
             showToast('✅ Заявка на вывод отправлена', 'success');
             loadBalance();
             closeModal();
-        } else { showToast('❌ ' + (d.error || 'Ошибка'), 'error'); }
+        } else {
+            showToast('❌ ' + (d.error || 'Ошибка'), 'error');
+        }
     }
 
     // ============================================================
-    // 19. MODAL / TOAST
+    // 18. MODAL / TOAST
     // ============================================================
     window.showModal = function(html) {
         document.getElementById('modalBody').innerHTML = html;
@@ -1799,7 +1916,7 @@
     });
 
     // ============================================================
-    // 20. ЗАПУСК
+    // 19. ЗАПУСК
     // ============================================================
     console.log('🌊 Trust Gift Mini App загружена');
 
